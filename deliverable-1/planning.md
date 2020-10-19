@@ -89,22 +89,40 @@ List/describe the artifacts you will produce in order to organize your team.
    * How do tasks get assigned to team members?
    * How do you determine the status of work from inception to completion?
 
+The main artifact we will use to organize our tasks will be a **GitHub Projects** board. Firstly, we have a list called Design where we will put our design documents for easy access. Secondly, we will have a General list for other notes unrelated to development such as meeting minutes. Finally, we will keep track of the development tasks we need to complete by placing them in a backlog, and moving them further down our pipeline as work progresses. The categories we have on our GitHub Projects board for development are Backlog, Dev In Progress, Dev Code Review, Dev Testing and Complete. In our GitHub Projects board, we will prioritize tasks within lists by sorting our tasks by importance, where the most important task will be at the top. If we need to add more emphasis to a task, we will label the task so team members will know to pay special attention to that task. In order to assign tasks to team members, we will engage in frequent team meetings so we can go over what is required and who on the team is best suited to handle it. This means that we will collectively distribute tasks based on the skill sets and workloads of team members. We will determine the status of work by which stage the task is in the GitHub Projects board, where we will only say a task is complete once it has been thoroughly tested and reviewed. Our code review process will be conducted by 2 random group members different from the person submitting the code, who will determine whether or not the code’s style is good enough for the task to move forward in the pipeline.
+
+This document will also be a very important artifact for us to look back at as it clearly documents what we plan to deliver to our partner, along with how we plan on doing it. If a team member has any questions regarding project deliverables and designs, this document will be a good place to check. Other artifacts we will use include a weekly schedule for meetings with our partner as well as meeting minutes which are neatly written up and put on the GitHub Projects board.
+
 #### Q9: What are the rules regarding how your team works?
 
 Describe your team's working culture.
+
+As everyone in the group already knew each other before starting this project, we believe we will have a great environment for being productive and open with one another.
 
 **Communications:**
  * What is the expected frequency? What methods/channels are appropriate? 
  * If you have a partner project, what is your process (in detail) for communicating with your partner?
  
+We expect to have scheduled Zoom meetings several times a week. We have currently scheduled a meeting with our partner every Friday afternoon so we will also have a call after each one of those meetings to recap and decide on the steps forward. We also have a Facebook Messenger group which we use to send quick updates or questions. This Facebook group allows us to maintain constant communication throughout the week to coordinate efforts. We also have a GitHub Projects Board where we assign tasks. 
+
+At the moment we interact through email and Zoom. We have a weekly meeting scheduled for 1pm every Friday, and we also maintain communication through email in order to address any concerns throughout the week. 
+ 
 **Meetings:**
  * How are people held accountable for attending meetings, completing action items? Is there a moderator or process?
+ 
+Meeting attendance is assumed to be mandatory and we will keep track of attendance to determine if individuals are not participating. To ensure that action items are completed, we have the GitHub Projects Board to keep us up to date and ensure that we have not fallen behind on certain assigned tasks. Our Scrum Master will serve as a moderator and notify the group if we need to address an issue with completing items on the GitHub Projects board. 
  
 **Conflict Resolution:**
  * List at least three team scenarios/conflicts you discussed in lecture and how you decided you will resolve them. Indecisions? Non-responsive team members? Any other scenarios you can think of?
 
+<ins>Team members are split on how to implement a feature:</ins><br>
+We will first list out all the potential options that a team member has suggested for implementing the feature. Once we have that list, we will discuss our thoughts regarding why we think one solution might be better than the others. Once we have given our arguments, the team members closest to the feature will take a vote and the implementation with a majority will be selected. Other team members will join in on the vote if they feel qualified to do so regarding the technology in question.
 
+<ins>Non-responsive team members:</ins><br>
+As we have each other's contact information, we will try and contact them through several channels. We have decided that 3 days of no contact from a team member who the others have tried to reach will be our limit before we contact our TA. If we are aware that a team member is extremely sick or unable to do work for whatever reason, we will do our best to avoid contacting them regarding the project until they are available again.
 
+<ins>Work from other classes is affecting a team member's productivity:</ins><br>
+We are all open with eachother and if one person feels stressed because of another course's workload, it is our duty to help out and divide work to try and minimize everyone's stress as best as possible. All larger tasks will have more than 1 person assigned so it will up to them to coordinate and find a solution but if more help is required, we will all try to pitch in where we can. If we are all feeling overwhelmed, our first step will be to try and find a solution before reaching out to our TA and seeing if an extension is possible.
 
 ----
 ### Highlights
