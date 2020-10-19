@@ -65,6 +65,37 @@ Describe the different roles on the team and the responsibilities associated wit
 List each team member and:
  * A description of their role(s) and responsibilities including the components they'll work on and non-software related work
  * 3 technical strengths and weaknesses each (e.g. languages, frameworks, libraries, development methodologies, etc.)
+ 
+<ins>Team Members</ins>
+* <ins>Priyanshu Arora - Scrum Master and Full Stack Developer</ins>
+  * Responsible for organizing and updating the GitHub Projects board
+  * Responsible for organizing internal meetings
+  * Responsible for handling development tasks (both frontend and backend)
+  * **Strengths:** Experience with frontend development (ReactJS), Python and API development with Spring Boot
+  * **Weaknesses:** No experience with Flask, MP3 libraries and lack of experience with UI design
+* <ins>Aidan Brasseur - Product Manager and Full Stack Developer</ins>
+  * Responsible for organizing meetings and communications with our partner
+  * Responsible for handling development tasks (both frontend and backend)
+  * **Strengths:** Experience with Python, API development and database management (SQL)
+  * **Weaknesses:** Unfamiliar with UI design, React Native and Flask
+* <ins>James Currier - Full Stack Developer and Designer</ins>
+  * Responsible for handling development tasks (both frontend and backend) 
+  * Responsible for initial app mockups and progressive design mockups
+  * **Strengths:** Experience with React Native, Python and working with clients to determine designs
+  * **Weaknesses:** No experience with Flask, iOS development and CI tools
+* <ins>Saeyon Sivakumaran - Full Stack Developer and Database Administrator</ins>
+  * Responsible for handling development tasks (both frontend and backend) 
+  * Responsible for setting up and maintaining the database 
+  * **Strengths:** Experience with backend development (Java, C#), API development (Flask, Spring Boot) and databases (SQL)
+  * **Weaknesses:** Lack of experience with React Native and no experience with MP3 libraries and CircleCI
+* <ins>Tony Yi - Full Stack Developer</ins>
+  * Responsible for handling development tasks (both frontend and backend)
+  * **Strengths:** Experience with Python, frontend development (ReactJS) and transcoding audio/video files
+  * **Weaknesses:** Unfamiliar with testing an asynchronous frontend, iOS and React Native combination and CI/CD tools
+* <ins>Philippe Yu - Full Stack Developer</ins>
+  * Responsible for handling development tasks (both frontend and backend)
+  * **Strengths:** Fluent in French, experience with app development (iOS and Android) and experience with cloud solutions (AWS)
+  * **Weaknesses:** Lack of experience with CI tools, unfamiliar with React Native and API design patterns
 
 #### Q7: What operational events will you have as a team?
 
