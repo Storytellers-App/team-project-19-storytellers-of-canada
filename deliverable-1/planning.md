@@ -18,6 +18,19 @@
    For example: This is not the time or the place to talk about which programming language and/or framework you are planning to use.
  * **Feel free (and very much encouraged) to include useful diagrams, mock-ups and/or links**.
 
+We are planning to build a mobile app that allows storytellers and listeners to share their own stories, respond to other stories with their own story, and listen to the Storytellers of Canada radio station. The stories that users can submit will be voice recordings of up to 3 minutes of length.  
+
+StoryTellers of Canada (SS-CC) is a group of storytellers devoted to connecting people, reflecting culture, and inspiring discovery through the art of storytelling. Their biggest problem is that they have a radio set-up but lack listeners. Their organizational and artist goals include making connections through story, but connections require interactive opportunities. Storytellers of Canada need a platform that allows users to interact with each other and that is what we aim to create.
+
+<ins>Example Use Case:</ins><br>
+A storyteller or listener listens to the Storytellers Radio station, but feels disconnected because they cannot share their own story. Therefore, they simply stop listening. Our app will allow for more interactiveness as they are now able to share their own words, which will hopefully retain listeners and attract new storytellers. 
+
+<ins>What Exactly Our Product Will Do:</ins><br>
+Firstly, our app will allow users to create a personal profile. The user can then listen to the SC-Radio-CC’s radio station OnDemand, a stored story collection told by professional storytellers, and stories posted by other users of the app. The stories posted by users are recordings of up to 3 minutes in length and the stories in the stored collection are up to 30 minutes. Users can also search for tags; for example, a user can search for “summer” and a list of stories with the tag “summer” will appear. Next, users will be able to record their own story on the app and post it for everyone to listen. In addition, users can reply to other users’ story by simply clicking a reply icon and recording their response story. Every user will be able to see all the replies as well, similar to twitter.
+
+<ins>Mockup:</ins><br>
+[Mockup of our application on Figma](https://www.figma.com/file/x3QOGBEvcRuAzABjS5dh8Y/Storytellers?node-id=0%3A1)
+
 
 #### Q2: Who are your target users?
 
@@ -25,6 +38,8 @@
  * Be specific (e.g. a 'a third-year university student studying Computer Science' and not 'a student')
  * **Feel free (but not obligated) to use personas.         
    You can create your personas as part of this Markdown file, or add a link to an external site (for example, [Xtensio](https://xtensio.com/user-persona/)).**
+
+Our target users are French and English speaking Canadians wanting to listen to interesting stories and/or share their own experiences. Firstly we aim to target the current listeners of the Storytellers of Canada radio station, transitioning them to become not only consumers of stories but also producers of stories. We then want to extend this target net to attract a wider range of Candians, creating a network of shared knowledge and stories from people of all ages and backgrounds.  Another specific group to target would be members of the Canadian storytelling community, both those who already have a relationship with Storytellers of Canada  as well as those who currently have no presence on the platform. By targeting these members, we would be attracting talented storytellers, enriching the content on our new platform and driving further interaction with the application.  
 
 #### Q3: Why would your users choose your product? What are they using today to solve their problem/need?
 
@@ -37,6 +52,12 @@
     * Does this application exist in another form? If so, how does your differ and provide value to the users?
     * How does this align with your partner's organization's values/mission/mandate?
 
+Storytellers of Canada currently only has a website wherein people can stream their radio station. We aim to transform this by providing a dedicated web app, and mobile apps as well. We believe that the increased amount of mediums in which this radio station can be accessed through will increase the number of listeners.
+
+Engagement is a central priority for this app. Previously, there was no way at all to submit user stories, though manually emailing them to a member of their organization may work. With our app, users can comment on an existing story with their own 3 minute story, which would be vetted and approved by a volunteer. These stories could also receive comments as well, increasing engagement.
+
+Our app also allows metadata to be added and read, including tags, a short description (theme), and physical location. This would allow users to see similar stories, and to search existing stories.
+
 #### Q4: How will you build it?
 
 > Short (1-2 min' read max)
@@ -45,6 +66,13 @@
  * Describe the architecture - what are the high level components or patterns you will use? Diagrams are useful here. 
  * Will you be using third party applications or APIs? If so, what are they?
  * What is your testing strategy?
+
+<ins>Tech Stack and Deployment:</ins><br>
+Our mobile app and website will all be developed using React Native. We will develop our backend using Flask, which will be run on an EC2 instance on Amazon Web Services. The database will also be run on AWS using their RDS service. The stories that the users will upload will be stored on S3. The stories that we will be provided by the partner will be hosted either on S3, or their own service, that is unclear at the moment. We will deploy the mobile apps using Google Play and the Apple App Store. The website will be hosted on the EC2 instance running the backend. We are using two different repositories, one for the Backend and the other for the react app/website.
+
+<ins>Architecture:</ins><br>
+
+
 
 #### Q5: What are the user stories that make up the MVP?
 
