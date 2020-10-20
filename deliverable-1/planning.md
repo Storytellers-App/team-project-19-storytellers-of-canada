@@ -71,7 +71,15 @@ Our app also allows metadata to be added and read, including tags, a short descr
 Our mobile app and website will all be developed using React Native. We will develop our backend using Flask, which will be run on an EC2 instance on Amazon Web Services. The database will also be run on AWS using their RDS service. The stories that the users will upload will be stored on S3. The stories that we will be provided by the partner will be hosted either on S3, or their own service, that is unclear at the moment. We will deploy the mobile apps using Google Play and the Apple App Store. The website will be hosted on the EC2 instance running the backend. We are using two different repositories, one for the Backend and the other for the react app/website.
 
 <ins>Architecture:</ins><br>
+Our high level architecture and components can be seen in the UML diagram below:<br>
+![UML Diagram](https://github.com/csc301-fall-2020/team-project-19-storytellers-of-canada/blob/master/deliverable-1/UML.jpg)
+This high level architecture outlines a very simplistic model that we can utilize to create our first MVP. With this said, this architecture is modular enough for us to easily expand upon it to add additional functionality such as text comments
 
+<ins>Third Party Applications/APIs:</ins><br>
+We may have to use third party applications/apis depending on where the partner has stored the story save collection that we are supposed to access. This is unclear at this point in time.
+
+<ins>Testing Strategy:</ins><br>
+We will utilize CircleCI if possible (due to lack of credits) to build an automated testing CICD pipeline. We will create thorough unit tests for our backend and frontend where applicable which run upon pull request into our staging branch. We plan to have a continuous delivery system, where we run integration and UI tests as well as end to end user testing prior to deployment to production to ensure that we only deploy quality code to production.
 
 
 #### Q5: What are the user stories that make up the MVP?
@@ -80,6 +88,21 @@ Our mobile app and website will all be developed using React Native. We will dev
  * You must follow proper user story format (as taught in lecture) ```As a <user of the app>, I want to <do something in the app> in order to <accomplish some goal>```
  * If you have a partner, these must be reviewed and accepted by them
  * The user stories should be written in Github and each one must have clear acceptance criteria.
+ 
+As a user, I want to create an account in order to start posting my own stories<br>
+* **Acceptance Criteria:** The user is prompted to create a username and password, the account is created and the user will be prompted to login.
+
+As a user, I want to access the Storytellers of Canada radio station in order to listen to the station<br>
+* **Acceptance Criteria:** The radio station link is available on the home page and once clicked will play through the device's audio with options to play/pause.
+
+As a user, I want to record my story and submit it for review in order to share my story to the other users
+* **Acceptance Criteria:** Once a user clicks the button to add a story, a recording button is displayed which when clicked, will display an icon indicating that the   device is recording. Once the user clicks stop or the time limit is reached, buttons for play/pause and re-recording will display along with a submit option. When the submit button is clicked, a popup will show telling the user that their submission is under review.
+
+As an admin, I want to review and approve submitted stories in order to have the stories published on the app or rejected and deleted<br>
+* **Acceptance Criteria:** A tab is displayed that allows admins to review submitted stories that each have play/pause buttons along with options to accept/reject. If approved, the story is published to all users and is marked as approved in the user's account whereas if rejected, the story is deleted and marked as rejected in the user;s account.
+
+As a user, I want to reply to other users’ stories in order to interact with them<br>
+* **Acceptance Criteria:** A reply icon is displayed on every story card that when clicked, will follow the acceptance criteria of adding a story as explained above.
 
 ----
 
