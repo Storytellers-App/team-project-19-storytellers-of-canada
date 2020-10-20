@@ -72,7 +72,7 @@ Our mobile app and website will all be developed using React Native. We will dev
 
 <ins>Architecture:</ins><br>
 Our high level architecture and components can be seen in the UML diagram below:<br>
-![UML Diagram](https://github.com/csc301-fall-2020/team-project-19-storytellers-of-canada/blob/master/deliverable-1/UML.jpg)
+![UML Diagram](https://github.com/csc301-fall-2020/team-project-19-storytellers-of-canada/blob/master/deliverable-1/UML.jpg)<br>
 This high level architecture outlines a very simplistic model that we can utilize to create our first MVP. With this said, this architecture is modular enough for us to easily expand upon it to add additional functionality such as text comments
 
 <ins>Third Party Applications/APIs:</ins><br>
