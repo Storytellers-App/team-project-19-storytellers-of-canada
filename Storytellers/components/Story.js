@@ -8,7 +8,7 @@ class Story extends Component {
   render() {
     this.storyObject = getStoryById(this.props.storyId);
     return (
-      <Card key={'SavedStoryListItem:' + this.storyObject.id}>
+      <Card>
         <Card.Title>
           <Text style={styles.footer}>{this.storyObject.title}</Text>
         </Card.Title>

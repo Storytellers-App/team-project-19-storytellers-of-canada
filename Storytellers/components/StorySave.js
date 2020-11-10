@@ -10,7 +10,7 @@ class StorySave extends Component {
       <View>
         <Text style={styles.highlight}> StorySave</Text>
         {getStoriesByCategory('dogs').map((i) => (
-          <Story storyId={i} />
+          <Story key={'SavedStoryListItem:' + i} storyId={i} />
         ))}
       </View>
     );

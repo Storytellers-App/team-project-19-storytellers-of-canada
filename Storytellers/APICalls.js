@@ -11,5 +11,5 @@ export function getStoryById(id) {
 }
 
 export function getStoriesByCategory(category) {
-  return [3, 13, 41, 47];
+  return [3, 13, 41, 47, 48, 52, 71, 76, 99, 108, 111];
 }
