@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import {Card} from 'react-native-elements';
 import {getStoryById} from '../APICalls';
 import styles from './styles';
+import Reactions from './Reactions';
 
 class Story extends Component {
   render() {
@@ -10,8 +11,20 @@ class Story extends Component {
     return (
       <Card>
         <Card.Title>
-          <Text style={styles.footer}>{this.storyObject.title}</Text>
+          <Text style={styles.storyTitle}>{this.storyObject.title}</Text>
         </Card.Title>
+        <Image
+          style={{width: 'auto', height: 100}}
+          resizeMode="cover"
+          source={{
+            uri: this.storyObject.image,
+          }}
+        />
+        <Text style={styles.storyDescription}>
+          {this.storyObject.description}
+        </Text>
+        <Card.Divider style={styles.storyDivider} />
+        <Reactions />
       </Card>
     );
   }

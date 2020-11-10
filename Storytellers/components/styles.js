@@ -38,6 +38,16 @@ let styles = StyleSheet.create({
     paddingRight: 12,
     textAlign: 'right',
   },
+  storyTitle: {
+    fontSize: 14,
+  },
+  storyDescription: {
+    margin: 15,
+    fontSize: 12,
+  },
+  storyDivider: {
+    height: 2,
+  },
 });
 
 export default styles;
