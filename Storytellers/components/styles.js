@@ -58,7 +58,7 @@ let styles = StyleSheet.create({
     resizeMode: 'contain',
     height: null,
     width: null,
-    minHeight:70,
+    minHeight: 70,
   },
   storySaveTitle: {
     color: Colors.dark,

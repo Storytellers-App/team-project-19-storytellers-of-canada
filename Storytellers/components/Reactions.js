@@ -5,7 +5,11 @@ import {Text} from 'react-native';
 // I'll wait for everyone else
 class Reactions extends Component {
   render() {
-    return <Text style={{textAlign: 'center'}}>COMMENT SECTION</Text>;
+    return (
+      <Text style={{textAlign: 'center'}}>
+        COMMENT SECTION FOR STORY #{this.props.storyId}
+      </Text>
+    );
   }
 }
 

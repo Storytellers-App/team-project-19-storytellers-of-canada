@@ -4,6 +4,7 @@ import {Card} from 'react-native-elements';
 import {getStoryById} from '../APICalls';
 import styles from './styles';
 import Reactions from './Reactions';
+import Audio from './Audio';
 
 class Story extends Component {
   render() {
@@ -32,8 +33,9 @@ class Story extends Component {
         <Text style={styles.storyDescription}>
           {this.storyObject.description}
         </Text>
+        <Audio storyId={this.props.storyId} />
         <Card.Divider style={styles.storyDivider} />
-        <Reactions />
+        <Reactions storyId={this.props.storyId} />
       </Card>
     );
   }
