@@ -39,7 +39,12 @@ let styles = StyleSheet.create({
     textAlign: 'right',
   },
   storyTitle: {
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  storyAuthor: {
     fontSize: 14,
+    textAlign: 'center',
   },
   storyDescription: {
     margin: 15,
@@ -53,6 +58,7 @@ let styles = StyleSheet.create({
     resizeMode: 'contain',
     height: null,
     width: null,
+    minHeight:70,
   },
   storySaveTitle: {
     color: Colors.dark,
@@ -69,6 +75,13 @@ let styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: 10,
     minHeight: 100,
+  },
+  storyInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 0,
+    padding: 0,
   },
 });
 

@@ -6,7 +6,8 @@ export function getStoryById(id) {
     description:
       'A secret agent and an icy horsewoman become allies to go on a bender. The story is made difficult by a disaster.',
     story: 'RECORDING HERE SOMEHOW IDK',
-    image: 'https://picsum.photos/id/' + id + '/400/200',
+    image: 'https://picsum.photos/id/' + id + '/400/400',
+    date: 'Nov 9, 2015',
   };
 }
 

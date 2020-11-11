@@ -10,16 +10,25 @@ class Story extends Component {
     this.storyObject = getStoryById(this.props.storyId);
     return (
       <Card>
-        <Card.Title>
-          <Text style={styles.storyTitle}>{this.storyObject.title}</Text>
-        </Card.Title>
-        <Image
-          style={{width: 'auto', height: 100}}
-          resizeMode="cover"
-          source={{
-            uri: this.storyObject.image,
-          }}
-        />
+        <View style={styles.storyInfo}>
+          <View style={{flex: 0.3}}>
+            <Image
+              style={styles.topImage}
+              source={{
+                uri: this.storyObject.image,
+              }}
+            />
+          </View>
+          <View style={{flex: 0.7}}>
+            <Text style={styles.storyTitle}>{this.storyObject.title}</Text>
+            <Text style={styles.storyAuthor}>
+              By: {this.storyObject.author}
+            </Text>
+            <Text style={styles.storyAuthor}>
+              Posted On: {this.storyObject.date}
+            </Text>
+          </View>
+        </View>
         <Text style={styles.storyDescription}>
           {this.storyObject.description}
         </Text>
