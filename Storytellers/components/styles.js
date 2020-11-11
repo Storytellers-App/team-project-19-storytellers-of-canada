@@ -48,6 +48,28 @@ let styles = StyleSheet.create({
   storyDivider: {
     height: 2,
   },
+  topImage: {
+    flex: 1,
+    resizeMode: 'contain',
+    height: null,
+    width: null,
+  },
+  storySaveTitle: {
+    color: Colors.dark,
+    fontSize: 30,
+    fontWeight: '600',
+    padding: 4,
+    paddingRight: 12,
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  storySaveHeader: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 10,
+    minHeight: 100,
+  },
 });
 
 export default styles;
