@@ -1,31 +1,78 @@
+
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import {
+  View,
+  TextInput,
+  Image,
+  ScrollView,
+  StyleSheet,
+  ScrollViewProps,
+} from 'react-native';
+import { useScrollToTop, useTheme } from '@react-navigation/native';
+import {
+  Card,
+  Text,
+  Avatar,
+  Subheading,
+  IconButton,
+  Divider,
+} from 'react-native-paper';
+import Colors from '../constants/Colors';
+import useColorScheme from '../hooks/useColorScheme';
+import ProfilePicture from '../components/ProfilePicture';
+import UserStory from '../components/UserStory';
+import Feed from '../components/Feed';
+import NewRecordingButton from '../components/NewRecordingButton';
+type Props = Partial<ScrollViewProps> & {
+  date?: number;
+};
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
 
-export default function TabOneScreen() {
+export default function NewsFeed(props: Props) {
+  const ref = React.useRef<ScrollView>(null);
+
+  useScrollToTop(ref);
+
+  const colorScheme = useColorScheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Temporary Home Feed</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+
+    <View style={{flex:1}}>
+      <Feed></Feed>
+      <NewRecordingButton />
     </View>
+
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  input: {
+    padding: 16,
+    backgroundColor: 'transparent',
+    margin: 0,
+  },
+  card: {
+    marginVertical: 8,
+    borderRadius: 0,
+  },
+  cover: {
+    height: 160,
+    borderRadius: 0,
+  },
+  content: {
+    marginBottom: 12,
+  },
+  attribution: {
+    margin: 12,
+  },
+  author: {
+    marginHorizontal: 8,
+  },
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  icon: {
+    flex: 1,
   },
 });
