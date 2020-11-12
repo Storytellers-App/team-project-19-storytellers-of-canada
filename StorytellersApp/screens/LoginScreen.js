@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 
@@ -25,11 +25,18 @@ export default class LoginScreen extends Component {
     }
 
     /**
+     * Redirect to the main page
+     */
+    goToHome(){
+        Actions.HomeScreen();
+    }
+
+    /**
      * Login to the Storytellers app
      */
     login() {
         if (this.state.username === "test" && this.state.password === "test"){
-            Actions.HomeScreen();
+            this.goToHome();
         }
         /*
         // Submitting a login request
@@ -90,6 +97,13 @@ export default class LoginScreen extends Component {
                         type="outline"
                     />
                 </View>
+                {/* Option to enter the app as a guest */}
+                <View style={styles.guestButtonText}>
+                    <Text style={styles.text}>Don't want an account?</Text>
+                    <TouchableOpacity onPress={this.goToHome}>
+                        <Text style={styles.buttonText}> Login as a Guest</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
@@ -100,7 +114,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        margin: 50,
+        marginTop: 70,
+        marginBottom: 50,
+        marginLeft: 50,
+        marginRight: 50,
     },
     imageContainer: {
         justifyContent: 'center',
@@ -134,5 +151,19 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
         marginBottom: 40,
-    }
+    },
+    text: {
+        fontSize: 15,
+    },
+    buttonText: {
+        fontWeight: "bold",
+        fontSize: 15,
+    },
+    guestButtonText: {
+        flexGrow: 1,
+        alignItems: "flex-end",
+        justifyContent: "center",
+        paddingVertical: 16,
+        flexDirection: "row",
+    },
 });

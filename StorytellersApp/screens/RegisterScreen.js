@@ -67,7 +67,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        margin: 50,
+        marginTop: 90,
+        marginBottom: 90,
+        marginLeft: 50,
+        marginRight: 50,
     },
     title: {
         textAlignVertical: "center",
