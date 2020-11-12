@@ -1,13 +1,9 @@
 import os
 
-
+# Config values
 class Config(object):
-    pass
-    # SQLALCHEMY_DATABASE_URI = os.environ.get(
-    #     'DATABASE_URL') or 'mysql+mysqlconnector://'
-    # SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # SQLALCHEMY_ENGINE_OPTIONS = {
-    #     'pool_recycle': 59,
-    #     'pool_timeout': 20
-    # }
-    # SECRET_KEY = os.environ.get('SECRET_KEY') or 'PZti0RzxbE'
+    SQL_HOST = "csc301storytellers.c6sjsmci2h7j.us-east-2.rds.amazonaws.com"
+    SQL_PORT = "3306"
+    SQL_USERNAME = "admin"
+    SQL_PASSWORD = "+hB4+n#Y9Z?*Ca?Y"
+    SQL_DB = "storytellers_schema"
