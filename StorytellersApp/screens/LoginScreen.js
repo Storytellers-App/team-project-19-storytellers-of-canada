@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 
@@ -35,6 +35,12 @@ export default class LoginScreen extends Component {
      * Login to the Storytellers app
      */
     login() {
+        if (this.state.username === "" || this.state.password === ""){
+            Alert.alert(
+                "Missing Login Information",
+                "Please make sure you have entered information in all fields before trying to login."
+            );
+        }
         if (this.state.username === "test" && this.state.password === "test"){
             this.goToHome();
         }
