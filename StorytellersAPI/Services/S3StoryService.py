@@ -81,10 +81,7 @@ class S3StoryService:
             return None
 
         try:
-            return self.s3.generate_presigned_url('get_object', Params={'Bucket': 'my_bucket',
-                                                                    'Key': "How Heart Came Into The World - Dan "
-                                                                           "Yashinsky.mp3"},
-                                              HttpMethod="GET")
+            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key}, HttpMethod="GET")
         except:
             return None
 
