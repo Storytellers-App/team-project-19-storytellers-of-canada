@@ -108,7 +108,8 @@ export default class RadioPlayer extends React.Component {
             <Text style={styles.nowPlayingText} numberOfLines={2}>
                 {this.state.nowPlaying}
             </Text>
-            <TouchableWithoutFeedback onPress={this.updateNowPlaying}> 
+            <Text style={styles.liveText}>Live</Text>
+            <TouchableWithoutFeedback onPress={this.toggleAudio}> 
                  <Image 
                     style={styles.playButton}
                     source={
@@ -144,7 +145,14 @@ const styles = StyleSheet.create({
     nowPlayingText: {
         fontSize: 20,
         fontWeight: 'normal',
-        marginBottom: 30
+        marginBottom: 0,
+        textAlign: 'center'
+    },
+    liveText: {
+        fontSize: 20,
+        fontWeight: '700',
+        marginBottom: 30,
+        color: 'red'
     }
   });
   
