@@ -12,8 +12,10 @@ export default class RadioPlayer extends React.Component {
         super();
         this.state = {
             sound: new Audio.Sound(),
-            audioState: 'notLoaded'
+            audioState: 'notLoaded',
+            nowPlaying: ''
         };
+        this.updateNowPlaying();
     }
 
     _onPlaybackStatusUpdate = playbackStatus => {
@@ -83,25 +85,17 @@ export default class RadioPlayer extends React.Component {
         console.log(this.state.name);
     }
 
-    renderImage() {
-        if (this.state.audioState === 'audioPlaying' || this.state.audioState === 'audioBuffering') {
-            // Stop button
-            return (
-                <Image 
-                    style={styles.playButton}
-                    source={require('../assets/images/Pause.png')}
-                />
-            );
-        } else if (this.state.audioState === 'audioStopped' || this.state.audioState === 'notLoaded' || 
-        this.state.audioState === 'errorLoading') {
-            // Play button
-            return (
-                <Image 
-                    style={styles.playButton}
-                    source={require('../assets/images/Play.png')}
-                />
-            );
-        }
+    updateNowPlaying = async () => {
+        fetch("https://public.radio.co/api/v2/s8d7990b82/track/current")
+            .then(response => response.json())
+            .then((responseData) => {
+                this.setState((state) => {
+                    return {nowPlaying: responseData.data.title}
+                })
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     render() {
@@ -111,10 +105,10 @@ export default class RadioPlayer extends React.Component {
                 style={styles.logo}
                 source={require('../assets/images/SCCC_logo.png')}
             />
-            <Text style={styles.nowPlayingText}>
-                Clary Croft - Kilkelly Ireland
+            <Text style={styles.nowPlayingText} numberOfLines={2}>
+                {this.state.nowPlaying}
             </Text>
-            <TouchableWithoutFeedback onPress={this.toggleAudio}> 
+            <TouchableWithoutFeedback onPress={this.updateNowPlaying}> 
                  <Image 
                     style={styles.playButton}
                     source={
