@@ -17,13 +17,19 @@ class StoryFetchResource(Resource):
         """
         Gets url from file name.
         For now we are assuming all songs are in the same bucket.
+        Required args:
+        key: Name of the file to get the url of
+        bucket: Name of the bucket in which file_name is in.
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('file_name', required=True, help="File name cannot be blank!")
+        parser.add_argument('key', required=True, help="File name cannot be blank!")
+        parser.add_argument('bucket', required=True, help="Bucket name cannot be blank!")
         args = parser.parse_args()
-        url = self.s3_client.get_url_from_key("my_bucket", args.file_name)
+        if not self.s3_client.check_bucket(args.bucket):
+            return abort(404, description="Bucket {} not found.".format(args.bucket))
+        url = self.s3_client.get_url_from_key(args.bucket, args.key)
         if url is None:
             # TODO: is this the correct way to handle errors in Resources?
-            abort(404, description="Key {} not found.".format(args.file_name))
+            return abort(404, description="Key {} not found.".format(args.key))
 
         return jsonify(url=args.url)
