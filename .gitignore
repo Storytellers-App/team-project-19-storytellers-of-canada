@@ -1,0 +1,10 @@
+
+StorytellersAPI/.idea/
+
+StorytellersAPI/__pycache__/
+
+StorytellersAPI/Resources/__pycache__/
+
+StorytellersAPI/common/__pycache__/
+
+StorytellersAPI/Services/__pycache__/
