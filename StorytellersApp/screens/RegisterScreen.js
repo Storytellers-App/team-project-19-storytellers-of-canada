@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
 
@@ -9,10 +9,31 @@ import {Actions} from 'react-native-router-flux';
 class RegisterScreen extends Component {
 
     /**
+     * Constructor
+     */
+    constructor() {
+        super()
+        this.state = { name: "", email: "", username: "", password: "" }
+        this.register = this.register.bind(this)
+    }
+
+    /**
      * Redirect to the login page
      */
     goToLogin(){
         Actions.LoginScreen();
+    }
+
+    /**
+     * Register a Storytellers account
+     */
+    register(){
+        if (this.state.name === "" || this.state.email === "" || this.state.username === "" || this.state.password === ""){
+            Alert.alert(
+                "Missing Registration Information",
+                "Please make sure you have entered information in all fields before trying to register."
+            );
+        }        
     }
 
     /**
@@ -29,25 +50,30 @@ class RegisterScreen extends Component {
                     <Input
                         style={styles.input}
                         placeholder="Full Name"
+                        onChangeText={(text) => this.setState({ name: text })}
                     />
                     <Input
                         style={styles.input}
                         placeholder="Email"
+                        onChangeText={(text) => this.setState({ email: text })}
                     />
                     <Input
                         style={styles.input}
                         placeholder="Username"
+                        onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
                         secureTextEntry={true}
                         style={styles.input}
                         placeholder="Password"
+                        onChangeText={(text) => this.setState({ password: text })}
                     />
                 </View>
                 <View>
                     <Button
                         buttonStyle={styles.signUpButton}
                         title="Register"
+                        onPress={this.register}
                     />
                 </View>
                 {/* Option to return to the login screen */}
@@ -67,7 +93,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        margin: 50,
+        marginTop: 90,
+        marginBottom: 90,
+        marginLeft: 50,
+        marginRight: 50,
     },
     title: {
         textAlignVertical: "center",
