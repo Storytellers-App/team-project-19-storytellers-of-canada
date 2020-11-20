@@ -18,7 +18,7 @@ class StoryUpload(Resource):
     # TODO: need to clean key argument to prevent any attacks (secure filename)
     # also need to keep track of these additions in a separate SQL database
     # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
-    # To test: something like curl -X POST -F file=@'/tmp/sweetmp.png' http://192.168.3.50:5000/upload
+    # To test: something like curl -X PUT -F file=@'/path/to/file' -F key=[key_name] -F bucket=[bucket_name] http://[ip]:[port/story_upload
     # put because client specifies key
     def put(self):
         """
