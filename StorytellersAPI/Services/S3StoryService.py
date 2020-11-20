@@ -14,7 +14,7 @@ class S3StoryService:
 
     def __init__(self):
         # mock bucket for now
-        self.s3 = boto3.client('s3', endpoint_url='http://192.168.2.31:4567',
+        self.s3 = boto3.client('s3', endpoint_url='http://142.126.235.35:4567',
                                aws_access_key_id='123', aws_secret_access_key='abc')
 
         # List all buckets on your account.
