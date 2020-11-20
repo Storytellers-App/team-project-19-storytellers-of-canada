@@ -7,7 +7,7 @@ from Services.S3StoryService import S3StoryService
 import werkzeug.datastructures
 
 
-class StoryRenameResource(Resource):
+class StoryRename(Resource):
     def __init__(self):
         self.s3_client = S3StoryService()
 
@@ -22,9 +22,9 @@ class StoryRenameResource(Resource):
         """
         parser = reqparse.RequestParser()
         parser.add_argument('old_key', required=True, help="Key of file to rename - old_key - cannot be blank")
+        parser.add_argument('old_bucket', required=True, help="Bucket of key to rename - old_bucket - cannot be blank")
         parser.add_argument('new_key', required=True, help="New key for file - new_key - cannot be blank")
-        parser.add_argument('old_bucket', help="Bucket of key to rename. Default is my_bucket", default="my_bucket")
-        parser.add_argument('new_bucket', help="Bucket to move to. Default: my_bucket", default="my_bucket")
+        parser.add_argument('new_bucket', required=True, help="Bucket to move to - new_bucket - cannot be blank")
         args = parser.parse_args()
 
         # check if key is valid
@@ -36,7 +36,7 @@ class StoryRenameResource(Resource):
         if not self.s3_client.check_bucket(args.old_bucket):
             return abort(404, description="Old bucket {} not found.".format(args.old_bucket))
 
-        # check if new_bucket is valid:
+        # check if new_bucket exists:
         if not self.s3_client.check_bucket(args.new_bucket):
             # create new_bucket
             self.s3_client.create_bucket(args.new_bucket)

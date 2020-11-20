@@ -7,7 +7,7 @@ from Services.S3StoryService import S3StoryService
 import werkzeug.datastructures
 
 
-class StoryDeleteResource(Resource):
+class StoryDelete(Resource):
     def __init__(self):
         self.s3_client = S3StoryService()
 

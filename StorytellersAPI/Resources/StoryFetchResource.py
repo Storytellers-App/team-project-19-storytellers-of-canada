@@ -9,7 +9,7 @@ from Services.S3StoryService import S3StoryService
 import boto3
 
 
-class StoryFetchResource(Resource):
+class StoryFetch(Resource):
     def __init__(self):
         self.s3_client = S3StoryService()
 

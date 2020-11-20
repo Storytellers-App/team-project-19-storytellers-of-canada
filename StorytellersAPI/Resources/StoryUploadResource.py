@@ -1,5 +1,6 @@
 # Upload stories
 # https://www.boynux.com/live-stream-music-from-s3
+# https://github.com/flask-restful/flask-restful/issues/485
 from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
     marshal
 from flask import jsonify
@@ -9,7 +10,7 @@ from Services.S3StoryService import S3StoryService
 import werkzeug.datastructures
 
 
-class StoryUploadResource(Resource):
+class StoryUpload(Resource):
     def __init__(self):
         self.s3_client = S3StoryService()
 
@@ -17,6 +18,7 @@ class StoryUploadResource(Resource):
     # TODO: need to clean key argument to prevent any attacks (secure filename)
     # also need to keep track of these additions in a separate SQL database
     # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+    # To test: something like curl -X POST -F file=@'/tmp/sweetmp.png' http://192.168.3.50:5000/upload
     # put because client specifies key
     def put(self):
         """
@@ -28,9 +30,9 @@ class StoryUploadResource(Resource):
         """
         parser = reqparse.RequestParser()
         parser.add_argument('key', required=True, help="Key cannot be blank!")
+        parser.add_argument('bucket', required=True, help="Bucket name cannot be blank!")
         parser.add_argument('file', required=True, type=werkzeug.datastructures.FileStorage, location='files',
                             help="No file uploaded")
-        parser.add_argument('bucket', required=True, help="Bucket name cannot be blank!")
         args = parser.parse_args()
 
         # check if bucket exists
