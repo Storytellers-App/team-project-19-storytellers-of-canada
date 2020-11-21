@@ -99,8 +99,8 @@ class Responses(Resource):
         get_responses_args.add_argument("page", type=int, default=1)
         get_responses_args.add_argument("per_page", type=int, default=7)
         get_responses_args.add_argument("time",
-                                        type=lambda x: datetime.strptime(x,
-                                                                         '2020-11-21T04:43:41.262Z'))
+                                           type=lambda x: datetime.strptime(x,
+                                                                            '%Y-%m-%d %H:%M:%S'))
         args = get_responses_args.parse_args()
         time = None
         if 'time' in args and args['time'] is not None:
