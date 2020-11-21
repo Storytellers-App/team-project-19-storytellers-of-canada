@@ -36,6 +36,7 @@ export type StorySaveType = {
   recording: string,
   num_replies?: number,
   num_likes?: number,
+  tags: string[]
 }
 
 export type UserStoryType = {
@@ -49,6 +50,7 @@ export type UserStoryType = {
   user: UserType,
   parent?: UserStoryType,
   approved: boolean,
+  tags: string[]
 };
 
 export type StoryType = UserStoryType | StorySaveType;

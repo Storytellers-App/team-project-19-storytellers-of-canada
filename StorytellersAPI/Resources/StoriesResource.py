@@ -2,8 +2,7 @@ from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
     marshal
 from http import HTTPStatus
 from extensions import db
-from models import User
-from models import Story
+from models import Story, User, Tag
 from sqlalchemy.exc import *
 from sqlalchemy import func
 from datetime import datetime
@@ -24,6 +23,7 @@ userstory_fields = {
     'parent': fields.Integer,
     'num_likes': fields.Integer,
     'num_replies': fields.Integer,
+    'tags': fields.List(fields.String),
 }
 storysave_fields = {
     'id': fields.Integer,
@@ -34,6 +34,7 @@ storysave_fields = {
     'recording': fields.String,
     'num_likes': fields.Integer,
     'num_replies': fields.Integer,
+    'tags': fields.List(fields.String),
 }
 
 
@@ -73,6 +74,7 @@ class Stories(Resource):
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for story in stories:
+                tags = Tag.query.filter_by(storyid=story.id)
                 format_story = {
                     'id': story.id,
                     'user': {'username': story.username,
@@ -85,7 +87,8 @@ class Stories(Resource):
                     'author': story.author,
                     'image': story.image,
                     'num_likes': story.num_likes,
-                    'num_replies': story.num_replies
+                    'num_replies': story.num_replies,
+                    'tags': [tag.tag for tag in tags]
                 }
                 marshal_list.append(format_story)
         except SQLAlchemyError as e:
@@ -134,6 +137,7 @@ class Responses(Resource):
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for story in stories:
+                tags = Tag.query.filter_by(storyid=story.id)
                 format_story = {
                     'id': story.id,
                     'user': {'username': story.username,
@@ -146,7 +150,8 @@ class Responses(Resource):
                     'author': story.author,
                     'image': story.image,
                     'num_likes': story.num_likes,
-                    'num_replies': story.num_replies
+                    'num_replies': story.num_replies,
+                    'tags': [tag.tag for tag in tags]
                 }
                 marshal_list.append(format_story)
         except SQLAlchemyError as e:

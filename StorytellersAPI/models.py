@@ -32,3 +32,9 @@ class Story(db.Model):
     # posts as well
     num_likes = db.Column(db.Integer)
     num_replies = db.Column(db.Integer)
+
+
+class Tag(db.Model):
+    __tablename__ = 'Tags'
+    storyid = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String(100), primary_key=True)
