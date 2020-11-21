@@ -34,8 +34,8 @@ export type StorySaveType = {
   description: string,
   author: string,
   recording: string,
-  numberOfReplies?: number,
-  numberOfLikes?: number,
+  num_replies?: number,
+  num_likes?: number,
 }
 
 export type UserStoryType = {
@@ -44,8 +44,8 @@ export type UserStoryType = {
   title: string,
   description: string,
   recording: string,
-  numberOfReplies?: number,
-  numberOfLikes?: number,
+  num_likes?: number,
+  num_replies?: number,
   user: UserType,
   parent?: UserStoryType,
   approved: boolean,
