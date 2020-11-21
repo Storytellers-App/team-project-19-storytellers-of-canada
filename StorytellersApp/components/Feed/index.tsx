@@ -43,7 +43,7 @@ export default class Feed extends Component {
                     this.setState({
                         stories:
                             page === 1
-                                ? Array.from(response.data.stories)
+                                ? Array.from(response.data.stories === undefined ? [] : response.data.stories)
                                 : [...this.state.stories, ...response.data.stories],
                     }
                     );

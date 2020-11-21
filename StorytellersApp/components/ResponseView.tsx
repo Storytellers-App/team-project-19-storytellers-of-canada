@@ -7,6 +7,7 @@ import {
     Subheading,
     IconButton,
     Divider,
+    Appbar,
 } from 'react-native-paper';
 import UserStory from './UserStory';
 import { UserStoryType, UserType, StoryType, RootStackParamList, StorySaveType } from "../types";
@@ -14,6 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment'
+import Colors from '../constants/Colors';
 
 let url = "" //local ip address 
 
@@ -32,12 +34,24 @@ export default class ResponseFeed extends Component<Props> {
     };
 
 
-    Story = ({story}: Props) => {
+    Story = ({ story }: Props) => {
         if ((story as StorySaveType).author) {
             return <Text>Testing stored story</Text>;
         }
         else {
-            return <UserStory story={story as UserStoryType}></UserStory>;
+            return (
+                // Temporary styling to distinguish header story from replies
+                <View>
+                    <UserStory story={story as UserStoryType}></UserStory>
+                    <View
+                        style={{
+                            borderBottomColor: Colors.light.tint,
+                            borderBottomWidth: 2,
+                            marginVertical: 10,
+                        }}
+                    />
+                </View>
+            );
         }
     }
 
@@ -47,7 +61,6 @@ export default class ResponseFeed extends Component<Props> {
         const { page } = this.state;
         const { responses } = this.state;
         const { sessionStart } = this.state;
-        console.log(sessionStart);
         this.setState({
             loading: true
         });
@@ -56,7 +69,7 @@ export default class ResponseFeed extends Component<Props> {
 
             //get stories from backend
             // let story_arr = userstories as UserStoryType[];
-           
+
             axios.get(url + 'stories/responses', {
                 params: {
                     id: this.props.story.id,
@@ -68,7 +81,7 @@ export default class ResponseFeed extends Component<Props> {
                     this.setState({
                         responses:
                             page === 1
-                                ? Array.from(response.data.responses)
+                                ? Array.from(response.data.responses === undefined ? [] : response.data.responses)
                                 : [...this.state.responses, ...response.data.responses],
                     }
                     );
