@@ -6,7 +6,7 @@ from extensions import db
 
 from Resources.LoginResource import Login
 from Resources.RegisterResource import Register
-from Resources.StoriesResource import Stories
+from Resources.StoriesResource import Stories, Responses
 
 from Resources.StoryDeleteResource import StoryDelete
 from Resources.StoryFetchResource import StoryFetch
@@ -24,6 +24,7 @@ api.add_resource(Login, '/login')
 # POST /register?name&email&username&password
 api.add_resource(Register, '/register')
 api.add_resource(Stories, '/stories')
+api.add_resource(Responses, '/stories/responses')
 
 # DELETE /story_delete?key&bucket
 api.add_resource(StoryDelete, '/story_delete')
