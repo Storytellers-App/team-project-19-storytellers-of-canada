@@ -27,16 +27,8 @@ import { RouteProp } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import userstories from '../data/userstoriestest';
+import ResponseFeed from '../components/ResponseView'
 
-const Story = ({ route, navigation }: Props) => {
-    const story = route.params.story
-    if ((story as StorySaveType).author) {
-        return <Text>Testing stored story</Text>;
-    }
-    else {
-        return <UserStory story={route.params.story as UserStoryType}></UserStory>;
-    }
-}
 type StoryDetailsRouteProp = RouteProp<RootStackParamList, 'StoryResponse'>;
 type StoryDetailsNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -56,49 +48,8 @@ export default function StoryResponseScreen({ route, navigation }: Props) {
 
     return (
         <SafeAreaView>
-        <FlatList
-            ListHeaderComponent={<Story route={route} navigation={navigation}></Story>}
-            data={userstories as UserStoryType[]}
-            renderItem={({ item }) => <UserStory story={item} />}
-            keyExtractor={item => item.id.toString()}
-            // refreshing={loading}
-            // onRefresh={fetchStories}
-            // onEndReached={loadMore}
-            // onEndReachedThreshold={0.5}
-        />
+            <ResponseFeed route={route} navigation={navigation}></ResponseFeed>
         </SafeAreaView>
 
     );
 }
-
-const styles = StyleSheet.create({
-    input: {
-        padding: 16,
-        backgroundColor: 'transparent',
-        margin: 0,
-    },
-    card: {
-        marginVertical: 8,
-        borderRadius: 0,
-    },
-    cover: {
-        height: 160,
-        borderRadius: 0,
-    },
-    content: {
-        marginBottom: 12,
-    },
-    attribution: {
-        margin: 12,
-    },
-    author: {
-        marginHorizontal: 8,
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    icon: {
-        flex: 1,
-    },
-});

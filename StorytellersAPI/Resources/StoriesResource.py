@@ -62,7 +62,8 @@ class Stories(Resource):
                 User, User.username == Story.username).order_by(
                 Story.creationTime.desc(), Story.id.desc()).filter(
                 Story.creationTime < time).filter(
-                Story.type == args['type']).paginate(
+                Story.type == args['type']).filter(
+                Story.parent.is_(None)).paginate(
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for story in stories:
@@ -94,13 +95,13 @@ class Responses(Resource):
     def get(self):
         get_responses_args = reqparse.RequestParser()
         get_responses_args.add_argument('id', type=int)
-        get_responses_args.add_argument("type", type=str,
-                                        default=StoryType.USER.value)
+        # get_responses_args.add_argument("type", type=str,
+        #                                 default=StoryType.USER.value)
         get_responses_args.add_argument("page", type=int, default=1)
         get_responses_args.add_argument("per_page", type=int, default=7)
         get_responses_args.add_argument("time",
-                                           type=lambda x: datetime.strptime(x,
-                                                                            '%Y-%m-%d %H:%M:%S'))
+                                        type=lambda x: datetime.strptime(x,
+                                                                         '%Y-%m-%d %H:%M:%S'))
         args = get_responses_args.parse_args()
         time = None
         if 'time' in args and args['time'] is not None:
@@ -108,11 +109,36 @@ class Responses(Resource):
         if time is None:
             time = func.now()
         try:
-            stories = Story.query.order_by(
+            stories = Story.query.with_entities(Story.id,
+                                                Story.username, User.name,
+                                                Story.creationTime, Story.title,
+                                                Story.description,
+                                                Story.recording,
+                                                Story.parent,
+                                                Story.author,
+                                                Story.image
+                                                ).outerjoin(
+                User, User.username == Story.username).order_by(
                 Story.creationTime.desc(), Story.id.desc()).filter(
-                Story.creationTime < time).filter(Story.parent == id).paginate(
+                Story.creationTime < time).filter(
+                Story.parent == args['id']).paginate(
                 args['page'], args['per_page'], False).items
+            marshal_list = []
+            for story in stories:
+                format_story = {
+                    'id': story.id,
+                    'user': {'username': story.username,
+                             'name': story.name},
+                    'creationTime': story.creationTime,
+                    'title': story.title,
+                    'description': story.description,
+                    'recording': story.recording,
+                    'parent': story.parent,
+                    'author': story.author,
+                    'image': story.image
+                }
+                marshal_list.append(format_story)
         except SQLAlchemyError as e:
             abort(HTTPStatus.BAD_REQUEST, message=str(e.__dict__['orig']))
 
-        return stories, HTTPStatus.OK
+        return marshal_list, HTTPStatus.OK
