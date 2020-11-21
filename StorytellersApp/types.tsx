@@ -1,5 +1,10 @@
+import { UserStoryProps } from "./components/UserStory";
+
 export type RootStackParamList = {
   Root: undefined;
+  StoryResponse: {
+    story: StoryType;
+  };
   NotFound: undefined;
 };
 
@@ -17,21 +22,36 @@ export type TabTwoParamList = {
 };
 
 export type UserType = {
-  id: number,
   username: string,
+  name: string,
+  type: string,
   image?: string,
+}
+export type StorySaveType = {
+  id: number,
+  creationTime: string,
+  title: string,
+  description: string,
+  author: string,
+  recording: string,
+  numberOfReplies?: number,
+  numberOfLikes?: number,
 }
 
 export type UserStoryType = {
   id: number,
-  user: UserType,
   creationTime: string,
   title: string,
   description: string,
   recording: string,
   numberOfReplies?: number,
   numberOfLikes?: number,
+  user: UserType,
+  parent?: UserStoryType,
+  approved: boolean,
 };
+
+export type StoryType = UserStoryType | StorySaveType;
 
 
 
