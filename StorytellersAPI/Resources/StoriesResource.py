@@ -22,6 +22,8 @@ userstory_fields = {
     'description': fields.String,
     'recording': fields.String,
     'parent': fields.Integer,
+    'num_likes': fields.Integer,
+    'num_replies': fields.Integer,
 }
 storysave_fields = {
     'id': fields.Integer,
@@ -30,6 +32,8 @@ storysave_fields = {
     'title': fields.String,
     'description': fields.String,
     'recording': fields.String,
+    'num_likes': fields.Integer,
+    'num_replies': fields.Integer,
 }
 
 
@@ -57,7 +61,9 @@ class Stories(Resource):
                                                 Story.recording,
                                                 Story.parent,
                                                 Story.author,
-                                                Story.image
+                                                Story.image,
+                                                Story.num_likes,
+                                                Story.num_replies
                                                 ).outerjoin(
                 User, User.username == Story.username).order_by(
                 Story.creationTime.desc(), Story.id.desc()).filter(
@@ -77,7 +83,9 @@ class Stories(Resource):
                     'recording': story.recording,
                     'parent': story.parent,
                     'author': story.author,
-                    'image': story.image
+                    'image': story.image,
+                    'num_likes': story.num_likes,
+                    'num_replies': story.num_replies
                 }
                 marshal_list.append(format_story)
         except SQLAlchemyError as e:
@@ -116,8 +124,9 @@ class Responses(Resource):
                                                 Story.recording,
                                                 Story.parent,
                                                 Story.author,
-                                                Story.image
-                                                ).outerjoin(
+                                                Story.image,
+                                                Story.num_likes,
+                                                Story.num_replies).outerjoin(
                 User, User.username == Story.username).order_by(
                 Story.creationTime.desc(), Story.id.desc()).filter(
                 Story.creationTime < time).filter(
@@ -135,7 +144,9 @@ class Responses(Resource):
                     'recording': story.recording,
                     'parent': story.parent,
                     'author': story.author,
-                    'image': story.image
+                    'image': story.image,
+                    'num_likes': story.num_likes,
+                    'num_replies': story.num_replies
                 }
                 marshal_list.append(format_story)
         except SQLAlchemyError as e:

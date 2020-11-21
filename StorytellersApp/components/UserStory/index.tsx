@@ -32,33 +32,7 @@ import { memo } from 'react';
 export type UserStoryProps = {
     story: UserStoryType,
 }
-
-const Footer = (props: UserStoryProps) => {
-    return (
-        <View style={styles.iconcontainer}>
-            <View style={styles.icon}>
-                <IconButton size={16} icon="heart-outline" />
-                {!!props.story.numberOfLikes && <Text style={{
-                    marginLeft: 5,
-                    color: 'grey',
-                    textAlign: 'center'
-                }}>{props.story.numberOfLikes}</Text>}
-            </View>
-            <View style={styles.icon}>
-                <IconButton size={16} icon="comment-outline" />
-                {!!props.story.numberOfReplies && <Text style={{
-                    marginLeft: 5,
-                    color: 'grey',
-                    textAlign: 'center'
-                }}>{props.story.numberOfReplies}</Text>}
-            </View>
-            <IconButton style={styles.icon} size={16} icon="share-outline" />
-
-        </View>
-    );
-};
-
-
+import Footer from '../CardFooter';
 
 function UserStory(props: UserStoryProps) {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();

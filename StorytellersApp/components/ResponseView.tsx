@@ -17,15 +17,9 @@ import moment from 'moment'
 
 let url = "" //local ip address 
 
-type StoryDetailsRouteProp = RouteProp<RootStackParamList, 'StoryResponse'>;
 
-type StoryDetailsNavigationProp = StackNavigationProp<
-    RootStackParamList,
-    'StoryResponse'
->;
 type Props = {
-    route: StoryDetailsRouteProp;
-    navigation: StoryDetailsNavigationProp;
+    story: StoryType;
 }
 
 export default class ResponseFeed extends Component<Props> {
@@ -38,13 +32,12 @@ export default class ResponseFeed extends Component<Props> {
     };
 
 
-    Story = ({ route, navigation }: Props) => {
-        const story = route.params.story
+    Story = ({story}: Props) => {
         if ((story as StorySaveType).author) {
             return <Text>Testing stored story</Text>;
         }
         else {
-            return <UserStory story={route.params.story as UserStoryType}></UserStory>;
+            return <UserStory story={story as UserStoryType}></UserStory>;
         }
     }
 
@@ -66,7 +59,7 @@ export default class ResponseFeed extends Component<Props> {
            
             axios.get(url + 'stories/responses', {
                 params: {
-                    id: this.props.route.params.story.id,
+                    id: this.props.story.id,
                     time: sessionStart,
                     page: page
                 }
@@ -129,7 +122,7 @@ export default class ResponseFeed extends Component<Props> {
         return (
 
             <FlatList
-                ListHeaderComponent={<this.Story route={this.props.route} navigation={this.props.navigation}></this.Story>}
+                ListHeaderComponent={<this.Story story={this.props.story}></this.Story>}
                 data={responses}
                 renderItem={({ item }) => <UserStory story={item as UserStoryType} />}
                 keyExtractor={item => item.id.toString()}

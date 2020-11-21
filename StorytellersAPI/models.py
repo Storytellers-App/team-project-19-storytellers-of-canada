@@ -27,3 +27,8 @@ class Story(db.Model):
     image = db.Column(db.String(500))
     type = db.Column(db.String(455), nullable=False,
                      default=StoryType.USER.value)
+    # this will be a temporary solution to create likes
+    # will need to add separate table later to store which user liked certain
+    # posts as well
+    num_likes = db.Column(db.Integer)
+    num_replies = db.Column(db.Integer)

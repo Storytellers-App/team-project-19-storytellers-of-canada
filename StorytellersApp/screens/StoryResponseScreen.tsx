@@ -48,7 +48,7 @@ export default function StoryResponseScreen({ route, navigation }: Props) {
 
     return (
         <SafeAreaView>
-            <ResponseFeed route={route} navigation={navigation}></ResponseFeed>
+            <ResponseFeed story={route.params.story}></ResponseFeed>
         </SafeAreaView>
 
     );
