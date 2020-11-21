@@ -49,9 +49,9 @@ function UserStory(props: UserStoryProps) {
                         <Text style={styles.titleStyle}
                         >{props.story.title} </Text>
                         <View style={styles.userRow}>
-                            <Subheading style={styles.author}>{props.story.user.name}</Subheading>
-                            <Subheading style={styles.author}>{props.story.user.username}</Subheading>
-                            <Text style={styles.dateStyle} >{moment(props.story.creationTime).fromNow()}</Text>
+                            <Text style={styles.name}>{props.story.user.name}</Text>
+                            <Text style={styles.username}>{props.story.user.username}</Text>
+                            <Text style={styles.createdAt} >{moment(props.story.creationTime).fromNow()}</Text>
 
                         </View>
                     </View>
