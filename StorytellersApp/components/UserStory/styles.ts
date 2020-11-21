@@ -46,6 +46,11 @@ const styles = StyleSheet.create({
     icon: {
         alignItems: 'center',
         flexDirection: 'row',
+    },
+    userRow: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
     }
 });
 
