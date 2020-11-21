@@ -48,7 +48,7 @@ export default function StoryResponseScreen({ route, navigation }: Props) {
 
     const colorScheme = useColorScheme();
     return (
-        <View>
+        <View style={{flex: 1}}>
         <Appbar.Header style={{backgroundColor: 'white'}}>
         <Appbar.BackAction  onPress={() => navigation.goBack()}/>
         <Appbar.Content title="Responses"/>

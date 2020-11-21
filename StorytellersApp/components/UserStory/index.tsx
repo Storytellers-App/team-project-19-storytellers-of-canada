@@ -47,7 +47,7 @@ function UserStory(props: UserStoryProps) {
             <TouchableWithoutFeedback onPress={() => { storyDetails(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture size={42} />
+                        <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={42} />
                         <View>
                             <Text style={styles.titleStyle}
                             >{props.story.title} </Text>
