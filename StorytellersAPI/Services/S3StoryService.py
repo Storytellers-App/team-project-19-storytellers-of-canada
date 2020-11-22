@@ -15,7 +15,7 @@ class S3StoryService:
 
     def __init__(self):
         # mock bucket for now
-        self.s3 = boto3.client('s3', endpoint_url='http://142.126.235.35:4567',
+        self.s3 = boto3.client('s3', endpoint_url='http://192.168.2.31:4567',
                                aws_access_key_id='123', aws_secret_access_key='abc')
 
         # List all buckets on your account.
@@ -82,7 +82,9 @@ class S3StoryService:
             return None
 
         try:
-            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key}, HttpMethod="GET")
+            # URL expires in 200 years
+            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key},
+                                                  ExpiresIn=6307200000, HttpMethod="GET")
         except:
             return None
 
@@ -99,6 +101,7 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_file(file_name, bucket_name, key)
+            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
             return True
         except:
             return False
@@ -115,6 +118,7 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_fileobj(fileobj, bucket_name, key)
+            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
             return True
         except:
             return False
