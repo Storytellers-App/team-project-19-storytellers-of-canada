@@ -8,3 +8,5 @@ StorytellersAPI/Resources/__pycache__/
 StorytellersAPI/common/__pycache__/
 
 StorytellersAPI/Services/__pycache__/
+
+StorytellersAPI/Services/instance/config.py

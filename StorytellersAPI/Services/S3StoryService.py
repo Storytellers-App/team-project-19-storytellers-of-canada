@@ -5,6 +5,7 @@ import boto3
 import botocore.exceptions
 from pathlib import Path
 from botocore.errorfactory import ClientError
+from Services.instance.config import *
 
 
 class S3StoryService:
