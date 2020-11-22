@@ -7,9 +7,10 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
-import { BottomTabParamList, HomeNavigatorParamList, TabTwoParamList } from '../types';
+import { BottomTabParamList, HomeNavigatorParamList, RadioPlayerParamList, TabTwoParamList } from '../types';
 import ProfilePicture from '../components/ProfilePicture';
 import { ScreenStackHeaderLeftView } from 'react-native-screens';
+import RadioPlayer from '../screens/RadioPlayer';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -33,6 +34,13 @@ export default function BottomTabNavigator() {
       <BottomTab.Screen
         name="StoredStories"
         component={TabTwoNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="RadioPlayer"
+        component={RadioNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
         }}
@@ -84,4 +92,18 @@ function TabTwoNavigator() {
       />
     </TabTwoStack.Navigator>
   );
+}
+
+const RadioPlayerStack = createStackNavigator<RadioPlayerParamList>();
+
+function RadioNavigator() {
+  return (
+    <RadioPlayerStack.Navigator>
+      <RadioPlayerStack.Screen
+        name="RadioPlayer"
+        component={RadioPlayer}
+        options={{ headerTitle: 'Storytellers of Canada Radio' }}
+      />
+    </RadioPlayerStack.Navigator>
+  )
 }
