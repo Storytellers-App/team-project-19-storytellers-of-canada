@@ -22,4 +22,4 @@ class Login(Resource):
         if not user:
             return jsonify(success=False)
         # Returning the authToken is successful
-        return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email)
+        return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email, type=user.type)

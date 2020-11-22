@@ -16,7 +16,7 @@ export default class LoginScreen extends Component {
      */
     constructor() {
         super()
-        this.state = { username: "", password: "", name: "", email: "", authToken: "" }
+        this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "" }
         this.login = this.login.bind(this)
         this.host = Config.HOST
     }
@@ -36,13 +36,21 @@ export default class LoginScreen extends Component {
     }
 
     /**
+     * Redirect to the admin page
+     */
+    goToAdmin(){
+        Actions.AdminScreen();
+    }
+
+    /**
      * Set app-wide user information
      */
     setUserInfo = async () => {
-        await AsyncStorage.setItem("username", this.state.username);
-        await AsyncStorage.setItem("name", this.state.name);
-        await AsyncStorage.setItem("email", this.state.email);
-        await AsyncStorage.setItem("authToken", this.state.authToken);
+        await AsyncStorage.setItem("username", this.state.username)
+        await AsyncStorage.setItem("name", this.state.name)
+        await AsyncStorage.setItem("email", this.state.email)
+        await AsyncStorage.setItem("authToken", this.state.authToken)
+        await AsyncStorage.setItem("type", this.state.type)
     }
 
     /**
@@ -68,9 +76,16 @@ export default class LoginScreen extends Component {
                         this.state.authToken = result["authToken"]
                         this.state.name = result["name"]
                         this.state.email = result["email"]
+                        this.state.type = result["type"]
                         this.setUserInfo()
-                        // Going to the home screen
-                        this.goToHome();
+                        if (this.state.type === "ADMIN"){
+                            // Going to the admin screen
+                            this.goToAdmin();
+                        } else {
+                            // Going to the home screen
+                            this.goToHome();
+                        }
+                        
                     } else {
                         Alert.alert(
                             "Invalid Login Information",

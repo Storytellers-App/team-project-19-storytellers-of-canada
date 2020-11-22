@@ -11,6 +11,7 @@ export type RootStackParamList = {
 export type BottomTabParamList = {
   Home: undefined;
   StoredStories: undefined;
+  AdminPanelScreen: undefined;
 };
 
 export type HomeNavigatorParamList = {
@@ -19,6 +20,10 @@ export type HomeNavigatorParamList = {
 
 export type TabTwoParamList = {
   TabTwoScreen: undefined;
+};
+
+export type AdminPanelParamList = {
+    AdminPanelScreen: undefined;
 };
 
 export type UserType = {
