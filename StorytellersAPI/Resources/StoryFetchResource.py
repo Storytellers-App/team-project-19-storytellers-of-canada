@@ -32,4 +32,4 @@ class StoryFetch(Resource):
             # TODO: is this the correct way to handle errors in Resources?
             return abort(404, description="Key {} not found.".format(args.key))
 
-        return jsonify(url=args.url)
+        return jsonify(url=url)
