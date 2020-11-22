@@ -4,6 +4,8 @@ import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage'
 
+import * as Config from '../config';
+
 /**
  * Class for the login screen component
  */
@@ -16,6 +18,7 @@ export default class LoginScreen extends Component {
         super()
         this.state = { username: "", password: "", name: "", email: "", authToken: "" }
         this.login = this.login.bind(this)
+        this.host = Config.HOST
     }
 
     /**
@@ -46,22 +49,21 @@ export default class LoginScreen extends Component {
      * Login to the Storytellers app
      */
     login = async () => {
+        
         if (this.state.username === "" || this.state.password === "") {
             Alert.alert(
                 "Missing Login Information",
                 "Please make sure you have entered information in all fields before trying to login."
             );
         } else {
-            if (this.state.username === "test" && this.state.password === "test"){
-                this.goToHome();
-            }
             // Submitting a login request
-            /*fetch("https://csc301-assignment-2-67.herokuapp.com/menu")
+            fetch(this.host + `login?username=${this.state.username}&password=${this.state.password}`)
                 .then(response => {
                     return response.json()
                 })
                 .then(result => {
                     if (result["success"]) {
+                        console.log("Successful response")
                         // Setting app-wide info
                         this.state.authToken = result["authToken"]
                         this.state.name = result["name"]
@@ -69,11 +71,19 @@ export default class LoginScreen extends Component {
                         this.setUserInfo()
                         // Going to the home screen
                         this.goToHome();
+                    } else {
+                        Alert.alert(
+                            "Invalid Login Information",
+                            "Please make sure the username and password you enter is valid."
+                        )
                     }
                 })
                 .catch((error) => {
+                    Alert.alert(
+                        "Connection Error"
+                    )
                     console.error(error);
-                });*/
+                });
         }
     }
 
