@@ -7,7 +7,9 @@ import { UserStoryType, UserType } from "../../types";
 import axios from 'axios';
 import moment from 'moment'
 
-let url = "" //local ip address 
+import * as Config from '../../config';
+
+let url = Config.HOST //local ip address 
 
 export default class Feed extends Component {
 
