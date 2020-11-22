@@ -6,6 +6,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import Navigation from './navigation';
 import AdminNavigation from './admin-navigation';
+import RadioPlayer from './screens/RadioPlayer';
 
 /**
  * Class for routing between components/screens
@@ -19,6 +20,7 @@ export default class Routes extends Component {
                     <Scene key="RegisterScreen" component={RegisterScreen} title="RegisterScreen" />
                     <Scene key="HomeScreen" component={Navigation} title="HomeScreen" />
                     <Scene key="AdminScreen" component={AdminNavigation} title="AdminScreen" />
+                    <Scene key="RadioPlayer" component={RadioPlayer} title="RadioPlayer" />
                 </Stack>
             </Router>
         );

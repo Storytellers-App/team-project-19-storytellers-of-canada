@@ -26,6 +26,10 @@ export type AdminPanelParamList = {
     AdminPanelScreen: undefined;
 };
 
+export type RadioPlayerParamList = {
+  RadioPlayer: undefined;
+}
+
 export type UserType = {
   username: string,
   name: string,
