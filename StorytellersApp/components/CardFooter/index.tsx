@@ -19,21 +19,21 @@ import {
     Divider,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType } from '../../types';
+import { UserStoryType, ResponseType } from '../../types';
 import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { HOST } from '../../config';
 
 export type UserStoryProps = {
-    story: UserStoryType,
+    story: ResponseType,
 }
 let url = HOST
 
 const Footer = (props: UserStoryProps) => {
     const [user, setUser] = useState<string | null>(null);
     const [likesCount, setLikesCount] = useState(props.story.numLikes);
-    const [userLike, setUserLike] = useState(false); // Temporary. Should add persistent user likes
+    const [userLike, setUserLike] = useState(props.story.isLiked);
     useEffect(() => {
         const fetchUser = async () => {
             const currentUser = await AsyncStorage.getItem("username");
@@ -49,6 +49,7 @@ const Footer = (props: UserStoryProps) => {
             axios({
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
+                    type: props.story.type,
                     username: user
                 }
 
@@ -71,6 +72,7 @@ const Footer = (props: UserStoryProps) => {
             axios({
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
+                    type: props.story.type,
                     username: user
                 }
 
@@ -90,9 +92,9 @@ const Footer = (props: UserStoryProps) => {
 
 
     const onLike = async () => {
-        // if (!user) {
-        //     return;
-        // }
+        if (!user) {
+            return;
+        }
         if (!userLike) {
             await submitLike()
         } else {

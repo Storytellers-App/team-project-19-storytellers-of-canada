@@ -3,9 +3,10 @@ import { View, FlatList } from 'react-native';
 
 import userstories from '../../data/userstoriestest';
 import UserStory from '../UserStory';
-import { UserStoryType, UserType, StoryType, StorySaveType } from "../../types";
+import { UserStoryType, UserType, StoryType, StorySaveType, ResponseType, CommentType } from "../../types";
 import axios from 'axios';
 import moment from 'moment';
+import Comment from '../Comment';
 import {
     Text,
 } from 'react-native-paper';
@@ -13,16 +14,16 @@ import {
 
 import * as Config from '../../config';
 
-let url = Config.HOST //local ip address 
+let url = Config.HOST
 
 type Props = {
-    story: StoryType;
+    response: ResponseType;
 }
 
 export default class AdminFeed extends Component {
 
     state = {
-        posts: [] as StoryType[],
+        posts: [] as ResponseType[],
         page: 1,
         loading: true,
         sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -50,7 +51,7 @@ export default class AdminFeed extends Component {
                         posts:
                             page === 1
                                 ? Array.from(response.data.posts === undefined ? [] : response.data.posts)
-                                : [...this.state.posts, ...response.data.posts],
+                                : response.data.posts === undefined ? this.state.posts : [...this.state.posts, ...response.data.posts],
                     }
                     );
                 })
@@ -100,13 +101,20 @@ export default class AdminFeed extends Component {
         this.fetchStories();
     };
 
-    Story = ({ story }: Props) => {
-        if ((story as StorySaveType).author) {
+
+
+    Response = ({ response }: Props) => {
+        if ((response as StorySaveType).author) {
             return <Text>Testing stored story</Text>;
+        }
+        else if ((response as CommentType).comment) {
+            return (
+                <Comment comment={response as CommentType} admin={true}></Comment>
+            );
         }
         else {
             return (
-                <UserStory story={story as UserStoryType} admin={true}></UserStory>
+                <UserStory story={response as UserStoryType} admin={true}></UserStory>
             );
         }
     }
@@ -117,7 +125,7 @@ export default class AdminFeed extends Component {
 
             <FlatList
                 data={posts}
-                renderItem={({ item }) => <this.Story story={item} />}
+                renderItem={({ item }) => <this.Response response={item} />}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}
                 onRefresh={this.refresh}

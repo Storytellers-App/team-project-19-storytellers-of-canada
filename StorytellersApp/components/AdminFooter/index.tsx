@@ -19,21 +19,21 @@ import {
     Divider,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType } from '../../types';
+import { UserStoryType, ResponseType } from '../../types';
 import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import {HOST} from '../../config'
+import { HOST } from '../../config'
 export type UserStoryProps = {
-    story: UserStoryType,
+    story: ResponseType,
 }
-let url = HOST 
+let url = HOST
 
 const AdminFooter = (props: UserStoryProps) => {
-   
-    
-    const [approved, setApproved] = useState<boolean | null>(null); 
-   
+
+
+    const [approved, setApproved] = useState<boolean | null>(null);
+
 
 
     const approve = async () => {
@@ -42,12 +42,13 @@ const AdminFooter = (props: UserStoryProps) => {
             axios({
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
+                    approved: true,
                     type: props.story.type
                 }
 
             })
                 .then(response => {
-                   setApproved(true);
+                    setApproved(true);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -68,7 +69,7 @@ const AdminFooter = (props: UserStoryProps) => {
 
             })
                 .then(response => {
-                   setApproved(false);
+                    setApproved(false);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -84,7 +85,7 @@ const AdminFooter = (props: UserStoryProps) => {
                 <IconButton size={16} icon={approved ? "thumb-up" : "thumb-up-outline"} onPress={approve} color={'green'} />
             </View>
             <View style={styles.icon}>
-                <IconButton size={16} icon={approved === false ? "thumb-down" : "thumb-down-outline"} onPress={disapprove} color={'red'}/>
+                <IconButton size={16} icon={approved === false ? "thumb-down" : "thumb-down-outline"} onPress={disapprove} color={'red'} />
             </View>
 
         </View>
