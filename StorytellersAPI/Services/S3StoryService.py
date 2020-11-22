@@ -82,7 +82,9 @@ class S3StoryService:
             return None
 
         try:
-            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key}, HttpMethod="GET")
+            # URL expires in 200 years
+            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key},
+                                                  ExpiresIn=6307200000, HttpMethod="GET")
         except:
             return None
 
