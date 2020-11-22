@@ -43,19 +43,19 @@ type Props = {
 
 export default function StoryResponseScreen({ route, navigation }: Props) {
     const ref = React.useRef<ScrollView>(null);
-    const story = route.params.story;
+    const story = route.params.header;
     useScrollToTop(ref);
 
     const colorScheme = useColorScheme();
     return (
-        <View style={{flex: 1}}>
-        <Appbar.Header style={{backgroundColor: 'white'}}>
-        <Appbar.BackAction  onPress={() => navigation.goBack()}/>
-        <Appbar.Content title="Responses"/>
-        {/* <Appbar.Action icon="magnify"  />
+        <View style={{ flex: 1 }}>
+            <Appbar.Header style={{ backgroundColor: 'white' }}>
+                <Appbar.BackAction onPress={() => navigation.goBack()} />
+                <Appbar.Content title="Responses" />
+                {/* <Appbar.Action icon="magnify"  />
         <Appbar.Action icon="dots-vertical"  /> */}
-        </Appbar.Header>
-        <ResponseFeed story={route.params.story}></ResponseFeed>
+            </Appbar.Header>
+            <ResponseFeed response={route.params.header}></ResponseFeed>
         </View>
     );
 }

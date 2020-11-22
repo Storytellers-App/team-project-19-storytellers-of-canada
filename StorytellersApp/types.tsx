@@ -3,7 +3,7 @@ import { UserStoryProps } from "./components/UserStory";
 export type RootStackParamList = {
   Root: undefined;
   StoryResponse: {
-    story: StoryType;
+    header: ResponseType;
   };
   NotFound: undefined;
 };
@@ -12,6 +12,7 @@ export type BottomTabParamList = {
   Home: undefined;
   StoredStories: undefined;
   AdminPanelScreen: undefined;
+  RadioPlayer: undefined;
 };
 
 export type HomeNavigatorParamList = {
@@ -47,6 +48,7 @@ export type StorySaveType = {
   numLikes?: number,
   tags: string[],
   type: string,
+  isLiked?: boolean,
 }
 
 export type UserStoryType = {
@@ -62,9 +64,24 @@ export type UserStoryType = {
   approved: boolean,
   tags: string[],
   type: string,
+  isLiked?: boolean,
+};
+
+export type CommentType = {
+  id: number,
+  creationTime: string,
+  numLikes?: number,
+  numReplies?: number,
+  user: UserType,
+  parent?: UserStoryType,
+  approved: boolean,
+  type: string,
+  comment: string,
+  isLiked?: boolean,
 };
 
 export type StoryType = UserStoryType | StorySaveType;
 
+export type ResponseType = StoryType | CommentType;
 
 

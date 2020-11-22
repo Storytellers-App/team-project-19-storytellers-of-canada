@@ -5,7 +5,8 @@ import userstories from '../../data/userstoriestest';
 import UserStory from '../UserStory';
 import { UserStoryType, UserType } from "../../types";
 import axios from 'axios';
-import moment from 'moment'
+import moment from 'moment';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import * as Config from '../../config';
 
@@ -15,15 +16,18 @@ export default class Feed extends Component {
 
     state = {
         stories: [] as UserStoryType[],
+        user: null,
         page: 1,
         loading: true,
         sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
     };
 
+
     fetchStories = async () => {
         const { page } = this.state;
         const { stories } = this.state;
         const { sessionStart } = this.state;
+        const { user } = this.state;
         this.setState({
             loading: true
         });
@@ -37,16 +41,16 @@ export default class Feed extends Component {
                 params: {
                     time: sessionStart,
                     type: 'userstory',
+                    username: user,
                     page: page
                 }
             })
                 .then(response => {
-
                     this.setState({
                         stories:
                             page === 1
                                 ? Array.from(response.data.stories === undefined ? [] : response.data.stories)
-                                : [...this.state.stories, ...response.data.stories],
+                                : response.data.stories === undefined ? this.state.stories : [...this.state.stories, ...response.data.stories],
                     }
                     );
                 })
@@ -92,8 +96,16 @@ export default class Feed extends Component {
             }
         );
     };
+
+
+    getUserandFetch = async () => {
+        const currentUser = await AsyncStorage.getItem("username");
+        this.setState({ user: currentUser },
+            () => { this.fetchStories() })
+    };
+
     componentDidMount() {
-        this.fetchStories();
+        this.getUserandFetch()
     };
     render() {
         const { stories } = this.state;
@@ -106,7 +118,7 @@ export default class Feed extends Component {
                 refreshing={this.state.loading}
                 onRefresh={this.refresh}
                 onEndReached={this.loadMore}
-                onEndReachedThreshold={3}
+                onEndReachedThreshold={0.5}
             />
         )
     };

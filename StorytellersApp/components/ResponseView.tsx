@@ -10,12 +10,15 @@ import {
     Appbar,
 } from 'react-native-paper';
 import UserStory from './UserStory';
-import { UserStoryType, UserType, StoryType, RootStackParamList, StorySaveType } from "../types";
+import Comment from './Comment';
+import { UserStoryType, UserType, StoryType, ResponseType, RootStackParamList, StorySaveType, CommentType } from "../types";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment'
 import Colors from '../constants/Colors';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 import * as Config from '../config';
 
@@ -23,7 +26,7 @@ let url = Config.HOST //local ip address
 
 
 type Props = {
-    story: StoryType;
+    response: ResponseType;
 }
 
 export default class ResponseFeed extends Component<Props> {
@@ -31,20 +34,20 @@ export default class ResponseFeed extends Component<Props> {
     state = {
         responses: [] as StoryType[],
         page: 1,
+        user: null,
         loading: true,
         sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
     };
 
 
-    Story = ({ story }: Props) => {
-        if ((story as StorySaveType).author) {
+    Header = ({ response: header }: Props) => {
+        if ((header as StorySaveType).author) {
             return <Text>Testing stored story</Text>;
         }
-        else {
+        else if ((header as CommentType).comment) {
             return (
-                // Temporary styling to distinguish header story from replies
                 <View>
-                    <UserStory story={story as UserStoryType}></UserStory>
+                    <Comment comment={header as CommentType}></Comment>
                     <View
                         style={{
                             borderBottomColor: Colors.light.tint,
@@ -55,6 +58,36 @@ export default class ResponseFeed extends Component<Props> {
                 </View>
             );
         }
+        else {
+            // Temporary styling to distinguish header story from replies
+            return (<View>
+                <UserStory story={header as UserStoryType}></UserStory>
+                <View
+                    style={{
+                        borderBottomColor: Colors.light.tint,
+                        borderBottomWidth: 2,
+                        marginVertical: 10,
+                    }}
+                />
+            </View>
+            );
+        }
+    }
+
+    Response = ({ response }: Props) => {
+        if ((response as StorySaveType).author) {
+            return <Text>Testing stored story</Text>;
+        }
+        else if ((response as CommentType).comment) {
+            return (
+                <Comment comment={response as CommentType}></Comment>
+            );
+        }
+        else {
+            return (
+                <UserStory story={response as UserStoryType}></UserStory>
+            );
+        }
     }
 
 
@@ -63,6 +96,7 @@ export default class ResponseFeed extends Component<Props> {
         const { page } = this.state;
         const { responses } = this.state;
         const { sessionStart } = this.state;
+        const { user } = this.state;
         this.setState({
             loading: true
         });
@@ -74,17 +108,21 @@ export default class ResponseFeed extends Component<Props> {
 
             axios.get(url + 'stories/responses', {
                 params: {
-                    id: this.props.story.id,
+                    id: this.props.response.id,
                     time: sessionStart,
+                    username: user,
+                    type: this.props.response.type,
                     page: page
                 }
             })
                 .then(response => {
+                    console.log(response.data.responses)
+
                     this.setState({
                         responses:
                             page === 1
                                 ? Array.from(response.data.responses === undefined ? [] : response.data.responses)
-                                : [...this.state.responses, ...response.data.responses],
+                                : response.data.responses === undefined ? this.state.responses : [...this.state.responses, ...response.data.responses],
                     }
                     );
                 })
@@ -129,17 +167,25 @@ export default class ResponseFeed extends Component<Props> {
             }
         );
     };
-    componentDidMount() {
-        this.fetchStories();
+
+    getUserandFetch = async () => {
+        const currentUser = await AsyncStorage.getItem("username");
+        this.setState({ user: currentUser },
+            () => { this.fetchStories() })
     };
+
+    componentDidMount() {
+        this.getUserandFetch()
+    };
+
     render() {
         const { responses } = this.state;
         return (
 
             <FlatList
-                ListHeaderComponent={<this.Story story={this.props.story}></this.Story>}
+                ListHeaderComponent={<this.Header response={this.props.response}></this.Header>}
                 data={responses}
-                renderItem={({ item }) => <UserStory story={item as UserStoryType} />}
+                renderItem={({ item }) => <this.Response response={item} />}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}
                 onRefresh={this.refresh}
