@@ -32,9 +32,22 @@ import { memo } from 'react';
 import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
+    admin?: boolean,
 }
 import Footer from '../CardFooter';
+import AdminFooter from '../AdminFooter';
 
+type ControlProps = {
+    props: UserStoryProps,
+}
+const Controls = ({props} : ControlProps) => {
+    if(props.admin == true){
+        return <AdminFooter story={props.story}></AdminFooter>;
+    }
+    else{
+        return <Footer story={props.story} ></Footer>;
+    }
+}
 function UserStory(props: UserStoryProps) {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const storyDetails = (story: UserStoryType) => {
@@ -71,8 +84,7 @@ function UserStory(props: UserStoryProps) {
             </TouchableWithoutFeedback>
             <Tags tags={props.story.tags}></Tags>
             <Divider />
-
-            <Footer story={props.story} />
+            <Controls props={props}></Controls>
         </Card>
 
     );

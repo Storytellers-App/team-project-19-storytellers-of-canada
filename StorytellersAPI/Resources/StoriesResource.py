@@ -21,9 +21,10 @@ userstory_fields = {
     'description': fields.String,
     'recording': fields.String,
     'parent': fields.Integer,
-    'num_likes': fields.Integer,
-    'num_replies': fields.Integer,
+    'numLikes': fields.Integer,
+    'numReplies': fields.Integer,
     'tags': fields.List(fields.String),
+    'type': fields.String,
 }
 storysave_fields = {
     'id': fields.Integer,
@@ -32,9 +33,10 @@ storysave_fields = {
     'title': fields.String,
     'description': fields.String,
     'recording': fields.String,
-    'num_likes': fields.Integer,
-    'num_replies': fields.Integer,
+    'numLikes': fields.Integer,
+    'numReplies': fields.Integer,
     'tags': fields.List(fields.String),
+    'type': fields.String,
 }
 
 
@@ -48,6 +50,7 @@ class Stories(Resource):
         get_user_stories_args.add_argument("time",
                                            type=lambda x: datetime.strptime(x,
                                                                             '%Y-%m-%d %H:%M:%S'))
+
         args = get_user_stories_args.parse_args()
         time = None
         if 'time' in args and args['time'] is not None:
@@ -63,14 +66,16 @@ class Stories(Resource):
                                                 Story.parent,
                                                 Story.author,
                                                 Story.image,
-                                                Story.num_likes,
-                                                Story.num_replies
-                                                ).outerjoin(
+                                                Story.numLikes,
+                                                Story.numReplies,
+                                                Story.type,
+                                                Story.approvedTime).outerjoin(
                 User, User.username == Story.username).order_by(
                 Story.creationTime.desc(), Story.id.desc()).filter(
-                Story.creationTime < time).filter(
                 Story.type == args['type']).filter(
-                Story.parent.is_(None)).paginate(
+                Story.parent.is_(None)).filter(
+                Story.approved.is_(True)).filter(
+                Story.approvedTime < time).paginate(
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for story in stories:
@@ -86,8 +91,9 @@ class Stories(Resource):
                     'parent': story.parent,
                     'author': story.author,
                     'image': story.image,
-                    'num_likes': story.num_likes,
-                    'num_replies': story.num_replies,
+                    'numLikes': story.numLikes,
+                    'numReplies': story.numReplies,
+                    'type': story.type,
                     'tags': [tag.tag for tag in tags]
                 }
                 marshal_list.append(format_story)
@@ -128,12 +134,14 @@ class Responses(Resource):
                                                 Story.parent,
                                                 Story.author,
                                                 Story.image,
-                                                Story.num_likes,
-                                                Story.num_replies).outerjoin(
+                                                Story.numLikes,
+                                                Story.numReplies,
+                                                Story.approvedTime).outerjoin(
                 User, User.username == Story.username).order_by(
                 Story.creationTime.desc(), Story.id.desc()).filter(
-                Story.creationTime < time).filter(
-                Story.parent == args['id']).paginate(
+                Story.approvedTime < time).filter(
+                Story.parent == args['id']).filter(
+                Story.approved.is_(True)).paginate(
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for story in stories:
@@ -149,8 +157,8 @@ class Responses(Resource):
                     'parent': story.parent,
                     'author': story.author,
                     'image': story.image,
-                    'num_likes': story.num_likes,
-                    'num_replies': story.num_replies,
+                    'numLikes': story.numLikes,
+                    'numReplies': story.numReplies,
                     'tags': [tag.tag for tag in tags]
                 }
                 marshal_list.append(format_story)

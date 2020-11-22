@@ -39,9 +39,10 @@ export type StorySaveType = {
   description: string,
   author: string,
   recording: string,
-  num_replies?: number,
-  num_likes?: number,
-  tags: string[]
+  numReplies?: number,
+  numLikes?: number,
+  tags: string[],
+  type: string,
 }
 
 export type UserStoryType = {
@@ -50,12 +51,13 @@ export type UserStoryType = {
   title: string,
   description: string,
   recording: string,
-  num_likes?: number,
-  num_replies?: number,
+  numLikes?: number,
+  numReplies?: number,
   user: UserType,
   parent?: UserStoryType,
   approved: boolean,
-  tags: string[]
+  tags: string[],
+  type: string,
 };
 
 export type StoryType = UserStoryType | StorySaveType;

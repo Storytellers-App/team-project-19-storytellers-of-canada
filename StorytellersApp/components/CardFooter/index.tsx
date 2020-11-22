@@ -23,15 +23,16 @@ import { UserStoryType } from '../../types';
 import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import { HOST } from '../../config';
 
 export type UserStoryProps = {
     story: UserStoryType,
 }
-let url = "" //local ip address 
+let url = HOST
 
 const Footer = (props: UserStoryProps) => {
     const [user, setUser] = useState<string | null>(null);
-    const [likesCount, setLikesCount] = useState(props.story.num_likes);
+    const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [userLike, setUserLike] = useState(false); // Temporary. Should add persistent user likes
     useEffect(() => {
         const fetchUser = async () => {
@@ -112,11 +113,11 @@ const Footer = (props: UserStoryProps) => {
             </View>
             <View style={styles.icon}>
                 <IconButton size={16} icon="comment-outline" />
-                {!!props.story.num_replies && <Text style={{
+                {!!props.story.numReplies && <Text style={{
                     marginLeft: 5,
                     color: 'grey',
                     textAlign: 'center'
-                }}>{props.story.num_likes}</Text>}
+                }}>{props.story.numReplies}</Text>}
             </View>
             <IconButton style={styles.icon} size={16} icon="share-outline" />
 
