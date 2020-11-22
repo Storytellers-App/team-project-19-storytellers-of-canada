@@ -30,8 +30,9 @@ class Story(db.Model):
     # this will be a temporary solution to create likes
     # will need to add separate table later to store which user liked certain
     # posts as well
-    num_likes = db.Column(db.Integer)
-    num_replies = db.Column(db.Integer)
+    numLikes = db.Column(db.Integer)
+    numReplies = db.Column(db.Integer)
+    approvedTime = db.Column(db.DateTime, nullable=False)
 
 
 class Tag(db.Model):

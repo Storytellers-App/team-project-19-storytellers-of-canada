@@ -21,7 +21,7 @@ class AddLikes(Resource):
         story = Story.query.filter_by(id=args['id']).first()
         if not story:
             abort(HTTPStatus.NOT_FOUND, message='This story was not found')
-        story.num_likes += 1
+        story.numLikes += 1
         try:
             db.session.commit()
         except SQLAlchemyError:
@@ -38,7 +38,7 @@ class RemoveLikes(Resource):
         story = Story.query.filter_by(id=args['id']).first()
         if not story:
             return HTTPStatus.OK
-        story.num_likes -= 1
+        story.numLikes -= 1
         try:
             db.session.commit()
         except SQLAlchemyError:
