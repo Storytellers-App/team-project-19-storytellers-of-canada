@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
-import {Actions} from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
+
+import * as Config from '../config';
 
 /**
  * Class for the registration screen component
@@ -15,6 +17,7 @@ class RegisterScreen extends Component {
         super()
         this.state = { name: "", email: "", username: "", password: "" }
         this.register = this.register.bind(this)
+        this.host = Config.HOST
     }
 
     /**
@@ -33,7 +36,32 @@ class RegisterScreen extends Component {
                 "Missing Registration Information",
                 "Please make sure you have entered information in all fields before trying to register."
             );
-        }        
+        } else {
+            console.log(this.host + `register?username=${this.state.username}&password=${this.state.password}&name=${this.state.name}&email=${this.state.email}`)
+            fetch(this.host + `register?username=${this.state.username}&password=${this.state.password}&name=${this.state.name}&email=${this.state.email}`, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    return response.json()
+                })
+                .then(result => {
+                    if (result["success"]) {
+                        console.log("Successful response")
+                        // Going to the login screen
+                        this.goToLogin();
+                    } else {
+                        Alert.alert(
+                            "Invalid Registration Information"
+                        )
+                    }
+                })
+                .catch((error) => {
+                    Alert.alert(
+                        "Connection Error"
+                    )
+                    console.error(error);
+                });
+        }      
     }
 
     /**

@@ -4,6 +4,8 @@ import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage'
 
+import * as Config from '../config';
+
 /**
  * Class for the login screen component
  */
@@ -14,8 +16,9 @@ export default class LoginScreen extends Component {
      */
     constructor() {
         super()
-        this.state = { username: "", password: "", name: "", email: "", authToken: "" }
+        this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "" }
         this.login = this.login.bind(this)
+        this.host = Config.HOST
     }
 
     /**
@@ -33,47 +36,69 @@ export default class LoginScreen extends Component {
     }
 
     /**
+     * Redirect to the admin page
+     */
+    goToAdmin(){
+        Actions.AdminScreen();
+    }
+
+    /**
      * Set app-wide user information
      */
     setUserInfo = async () => {
-        await AsyncStorage.setItem("username", this.state.username);
-        await AsyncStorage.setItem("name", this.state.name);
-        await AsyncStorage.setItem("email", this.state.email);
-        await AsyncStorage.setItem("authToken", this.state.authToken);
+        await AsyncStorage.setItem("username", this.state.username)
+        await AsyncStorage.setItem("name", this.state.name)
+        await AsyncStorage.setItem("email", this.state.email)
+        await AsyncStorage.setItem("authToken", this.state.authToken)
+        await AsyncStorage.setItem("type", this.state.type)
     }
 
     /**
      * Login to the Storytellers app
      */
     login = async () => {
+        
         if (this.state.username === "" || this.state.password === "") {
             Alert.alert(
                 "Missing Login Information",
                 "Please make sure you have entered information in all fields before trying to login."
             );
         } else {
-            if (this.state.username === "test" && this.state.password === "test"){
-                this.goToHome();
-            }
             // Submitting a login request
-            /*fetch("https://csc301-assignment-2-67.herokuapp.com/menu")
+            fetch(this.host + `login?username=${this.state.username}&password=${this.state.password}`)
                 .then(response => {
                     return response.json()
                 })
                 .then(result => {
                     if (result["success"]) {
+                        console.log("Successful response")
                         // Setting app-wide info
                         this.state.authToken = result["authToken"]
                         this.state.name = result["name"]
                         this.state.email = result["email"]
+                        this.state.type = result["type"]
                         this.setUserInfo()
-                        // Going to the home screen
-                        this.goToHome();
+                        if (this.state.type === "ADMIN"){
+                            // Going to the admin screen
+                            this.goToAdmin();
+                        } else {
+                            // Going to the home screen
+                            this.goToHome();
+                        }
+                        
+                    } else {
+                        Alert.alert(
+                            "Invalid Login Information",
+                            "Please make sure the username and password you enter is valid."
+                        )
                     }
                 })
                 .catch((error) => {
+                    Alert.alert(
+                        "Connection Error"
+                    )
                     console.error(error);
-                });*/
+                });
         }
     }
 

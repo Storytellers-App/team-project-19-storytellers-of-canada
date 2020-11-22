@@ -17,7 +17,9 @@ import axios from 'axios';
 import moment from 'moment'
 import Colors from '../constants/Colors';
 
-let url = "" //local ip address 
+import * as Config from '../config';
+
+let url = Config.HOST //local ip address 
 
 
 type Props = {

@@ -46,4 +46,4 @@ api.add_resource(StoryFetch, '/story_fetch')
 if __name__ == '__main__':
     # host = '' # ip host address
     # app.run(host=host)
-    app.run()
+    app.run(host='0.0.0.0')
