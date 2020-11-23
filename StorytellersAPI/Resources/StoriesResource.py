@@ -109,7 +109,7 @@ class Stories(Resource):
             approvedTime=args.approved_time,
             numLikes=num_likes,
             numReplies=num_replies,
-            type=None
+            type=None,
         )
         if not ret:
             return abort(500, description="Error in add_story in S3StoriesResource.")
