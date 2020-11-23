@@ -1,7 +1,12 @@
+import { Audio } from "expo-av";
+
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
+  NewRecording: undefined;
+  NewStory: {recording: Audio.Recording | null, 'username': string};
 };
+
 
 export type BottomTabParamList = {
   Home: undefined;
@@ -32,6 +37,7 @@ export type UserStoryType = {
   numberOfReplies?: number,
   numberOfLikes?: number,
 };
+
 
 
 
