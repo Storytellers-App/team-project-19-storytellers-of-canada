@@ -30,7 +30,7 @@ class StoryRename(Resource):
         # check if key is valid
         if not self.s3_client.check_key(args.old_bucket, args.old_key):
             # key is invalid
-            return abort(404, description="Key {} not found.".format(args.key))
+            return abort(404, description="Key {} not found.".format(args.old_key))
 
         # check if old_bucket is valid:
         if not self.s3_client.check_bucket(args.old_bucket):
@@ -41,11 +41,17 @@ class StoryRename(Resource):
             # create new_bucket
             self.s3_client.create_bucket(args.new_bucket)
 
+        # check if new_key exists:
+        if self.s3_client.check_key(args.new_bucket, args.new_key):
+            # key is invalid
+            return abort(404, description="Key {} already exists.".format(args.new_key))
+
         copy_source = {
             'Bucket': args.old_bucket,
             'Key': args.old_key
         }
-        self.s3_client.s3.copy_object(Bucket=args.new_bucket, CopySource=copy_source, Key=args.new_key)
+        self.s3_client.s3.copy_object(Bucket=args.new_bucket, CopySource=copy_source, Key=args.new_key,
+                                      ACL='public-read')
         self.s3_client.s3.delete_object(Bucket=args.old_bucket, Key=args.old_key)
         # Status code 200 requires a body, but status code 204 does not
         return Response(status=204)
