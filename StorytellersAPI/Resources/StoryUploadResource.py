@@ -1,8 +1,7 @@
 # Upload stories
 # https://www.boynux.com/live-stream-music-from-s3
 # https://github.com/flask-restful/flask-restful/issues/485
-from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
-    marshal
+from flask_restful import Resource, reqparse, abort, fields, marshal_with, marshal
 from flask import jsonify
 from flask import Response
 from http import HTTPStatus
@@ -29,10 +28,17 @@ class StoryUpload(Resource):
         bucket: Bucket of file to be placed into
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('key', required=True, help="Key cannot be blank!")
-        parser.add_argument('bucket', required=True, help="Bucket name cannot be blank!")
-        parser.add_argument('file', required=True, type=werkzeug.datastructures.FileStorage, location='files',
-                            help="No file uploaded")
+        parser.add_argument("key", required=True, help="Key cannot be blank!")
+        parser.add_argument(
+            "bucket", required=True, help="Bucket name cannot be blank!"
+        )
+        parser.add_argument(
+            "file",
+            required=True,
+            type=werkzeug.datastructures.FileStorage,
+            location="files",
+            help="No file uploaded",
+        )
         args = parser.parse_args()
 
         # check if bucket exists
