@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
 from flask import jsonify
 from http import HTTPStatus
 from Services.LoginService import LoginService
+from models import User
 
 # Class for handling login requests
 class Login(Resource):
@@ -16,9 +17,9 @@ class Login(Resource):
         args = parser.parse_args()
         # Checking validity of credentials
         loginService = LoginService()
-        authToken = loginService.getAuthToken(args["username"], args["password"])
+        user = loginService.getUserInfo(args["username"], args["password"])
         # Returning if the authToken is unsuccessful
-        if authToken == -1:
+        if not user:
             return jsonify(success=False)
         # Returning the authToken is successful
-        return jsonify(success=True, authToken=authToken)
+        return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email, type=user.type)

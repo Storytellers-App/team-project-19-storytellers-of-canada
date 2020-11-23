@@ -3,54 +3,55 @@ import { View, FlatList } from 'react-native';
 
 import userstories from '../../data/userstoriestest';
 import UserStory from '../UserStory';
-import { UserStoryType, UserType } from "../../types";
+import { UserStoryType, UserType, StoryType, StorySaveType, ResponseType, CommentType } from "../../types";
 import axios from 'axios';
 import moment from 'moment';
-import AsyncStorage from '@react-native-community/async-storage';
+import Comment from '../Comment';
+import {
+    Text,
+} from 'react-native-paper';
+
 
 import * as Config from '../../config';
 
-let url = Config.HOST //local ip address 
+let url = Config.HOST
 
-export default class Feed extends Component {
+type Props = {
+    response: ResponseType;
+}
+
+export default class AdminFeed extends Component {
 
     state = {
-        stories: [] as UserStoryType[],
-        user: null,
+        posts: [] as ResponseType[],
         page: 1,
         loading: true,
         sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
     };
 
-
     fetchStories = async () => {
         const { page } = this.state;
-        const { stories } = this.state;
+        const { posts } = this.state;
         const { sessionStart } = this.state;
-        const { user } = this.state;
         this.setState({
             loading: true
         });
 
         try {
 
-            //get stories from backend
-            // let story_arr = userstories as UserStoryType[];
-
-            axios.get(url + 'stories', {
+            axios.get(url + 'admin', {
                 params: {
                     time: sessionStart,
-                    type: 'userstory',
-                    username: user,
                     page: page
                 }
             })
                 .then(response => {
+
                     this.setState({
-                        stories:
+                        posts:
                             page === 1
-                                ? Array.from(response.data.stories === undefined ? [] : response.data.stories)
-                                : response.data.stories === undefined ? this.state.stories : [...this.state.stories, ...response.data.stories],
+                                ? Array.from(response.data.posts === undefined ? [] : response.data.posts)
+                                : response.data.posts === undefined ? this.state.posts : [...this.state.posts, ...response.data.posts],
                     }
                     );
                 })
@@ -87,7 +88,7 @@ export default class Feed extends Component {
         this.setState(
             {
                 page: 1,
-                stories: [],
+                posts: [],
                 sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
             }
             ,
@@ -96,29 +97,40 @@ export default class Feed extends Component {
             }
         );
     };
-
-
-    getUserandFetch = async () => {
-        const currentUser = await AsyncStorage.getItem("username");
-        this.setState({ user: currentUser },
-            () => { this.fetchStories() })
-    };
-
     componentDidMount() {
-        this.getUserandFetch()
+        this.fetchStories();
     };
+
+
+
+    Response = ({ response }: Props) => {
+        if ((response as StorySaveType).author) {
+            return <Text>Testing stored story</Text>;
+        }
+        else if ((response as CommentType).comment) {
+            return (
+                <Comment comment={response as CommentType} admin={true}></Comment>
+            );
+        }
+        else {
+            return (
+                <UserStory story={response as UserStoryType} admin={true}></UserStory>
+            );
+        }
+    }
+
     render() {
-        const { stories } = this.state;
+        const { posts } = this.state;
         return (
 
             <FlatList
-                data={stories}
-                renderItem={({ item }) => <UserStory story={item} />}
+                data={posts}
+                renderItem={({ item }) => <this.Response response={item} />}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}
                 onRefresh={this.refresh}
                 onEndReached={this.loadMore}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={3}
             />
         )
     };

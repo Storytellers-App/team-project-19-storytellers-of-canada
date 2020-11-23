@@ -9,7 +9,7 @@ from Services.S3StoryService import S3StoryService
 import boto3
 
 
-class StoryFetchResource(Resource):
+class StoryFetch(Resource):
     def __init__(self):
         self.s3_client = S3StoryService()
 
@@ -32,4 +32,4 @@ class StoryFetchResource(Resource):
             # TODO: is this the correct way to handle errors in Resources?
             return abort(404, description="Key {} not found.".format(args.key))
 
-        return jsonify(url=args.url)
+        return jsonify(url=url)

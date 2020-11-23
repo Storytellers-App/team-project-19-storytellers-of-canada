@@ -7,10 +7,10 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
-import { BottomTabParamList, HomeNavigatorParamList, RadioPlayerParamList, TabTwoParamList } from '../types';
+import AdminPanelScreen from '../screens/AdminPanelScreen';
+import { BottomTabParamList, HomeNavigatorParamList, TabTwoParamList, AdminPanelParamList } from '../types';
 import ProfilePicture from '../components/ProfilePicture';
 import { ScreenStackHeaderLeftView } from 'react-native-screens';
-import RadioPlayer from '../screens/RadioPlayer';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -39,10 +39,10 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="RadioPlayer"
-        component={RadioNavigator}
+        name="AdminPanelScreen"
+        component={AdminPanelNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="md-construct" color={color} />,
         }}
       />
     </BottomTab.Navigator>
@@ -94,16 +94,16 @@ function TabTwoNavigator() {
   );
 }
 
-const RadioPlayerStack = createStackNavigator<RadioPlayerParamList>();
+const TabThreeStack = createStackNavigator<AdminPanelParamList>();
 
-function RadioNavigator() {
+function AdminPanelNavigator() {
   return (
-    <RadioPlayerStack.Navigator>
-      <RadioPlayerStack.Screen
-        name="RadioPlayer"
-        component={RadioPlayer}
-        options={{ headerTitle: 'Storytellers of Canada Radio' }}
+    <TabThreeStack.Navigator>
+      <TabThreeStack.Screen
+        name="AdminPanelScreen"
+        component={AdminPanelScreen}
+        options={{ headerTitle: 'Admin Panel' }}
       />
-    </RadioPlayerStack.Navigator>
-  )
+    </TabThreeStack.Navigator>
+  );
 }

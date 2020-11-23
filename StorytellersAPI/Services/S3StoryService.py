@@ -5,6 +5,9 @@ import boto3
 import botocore.exceptions
 from pathlib import Path
 from botocore.errorfactory import ClientError
+from botocore.client import Config
+from Services.instance.config import *
+import logging
 
 
 class S3StoryService:
@@ -13,16 +16,18 @@ class S3StoryService:
     """
 
     def __init__(self):
-        # mock bucket for now
-        self.s3 = boto3.client('s3', endpoint_url='http://192.168.2.31:4567',
-                               aws_access_key_id='123', aws_secret_access_key='abc')
+        # no more bucket mock
+        self.s3 = boto3.client('s3', region_name='nyc3',
+                               endpoint_url='https://nyc3.digitaloceanspaces.com',
+                               aws_access_key_id=spaces_key, aws_secret_access_key=spaces_secret,
+                               config=Config(signature_version='s3'))
 
         # List all buckets on your account.
         # response = client.list_buckets()
         # spaces = [space['Name'] for space in response['Buckets']]
         # print("Spaces List: %s" % spaces)
 
-        self.s3.create_bucket(Bucket='my_bucket')
+        # self.s3.create_bucket(Bucket='my_bucket')
         # for bucket in self.s3.buckets.all():
         #     print(bucket.name)
 
@@ -55,9 +60,13 @@ class S3StoryService:
         :return:
         """
         try:
+            # Bucket can only have letters, numbers, dots, and dashes
+            # Bucket = sccanada (name of space)
+            print("trying to create bucket {}".format(bucket_name))
             self.s3.create_bucket(Bucket=bucket_name)
             return True
         except:
+            logging.exception("message")
             return False
 
     def check_key(self, bucket_name, key_name):
@@ -81,8 +90,12 @@ class S3StoryService:
             return None
 
         try:
-            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key}, HttpMethod="GET")
+            # URL expires in 17 years
+            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key},
+                                                  ExpiresIn=539800000,
+                                                  HttpMethod="GET")
         except:
+            logging.exception("message")
             return None
 
     # https://stackoverflow.com/questions/26871884/how-can-i-easily-determine-if-a-boto-3-s3-bucket-resource-exists
@@ -98,8 +111,10 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_file(file_name, bucket_name, key)
+            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
             return True
         except:
+            logging.exception("message")
             return False
 
     def upload_fileobj(self, fileobj, bucket_name, key):
@@ -113,9 +128,13 @@ class S3StoryService:
         if not self.check_bucket(bucket_name):
             self.create_bucket(bucket_name)
         try:
+            print("try upload_fileobj")
             self.s3.upload_fileobj(fileobj, bucket_name, key)
+            print("try making public")
+            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
             return True
         except:
+            logging.exception("message")
             return False
 
 

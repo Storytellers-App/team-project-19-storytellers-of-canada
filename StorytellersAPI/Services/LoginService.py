@@ -7,11 +7,11 @@ from sqlalchemy.exc import *
 class LoginService:
 
     # Getting an auth token given a username and password
-    def getAuthToken(self, usernameInput, passwordInput):
+    def getUserInfo(self, usernameInput, passwordInput):
         try:      
             # Getting user's auth token information if it exists
             for user in db.session.query(User).filter_by(username=usernameInput, password=passwordInput):
-                return user.authToken
-            return -1
+                return user
+            return False
         except:
-            return -1
+            return False

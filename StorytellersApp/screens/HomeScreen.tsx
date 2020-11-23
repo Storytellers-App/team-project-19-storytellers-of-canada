@@ -41,7 +41,6 @@ export default function NewsFeed(props: Props) {
       <Feed></Feed>
       <NewRecordingButton />
     </View>
-
   );
 }
 
