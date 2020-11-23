@@ -1,8 +1,7 @@
 # Browse/read Stories
 # https://www.boynux.com/live-stream-music-from-s3
 # https://flask-restful.readthedocs.io/en/latest/reqparse.html
-from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
-    marshal
+from flask_restful import Resource, reqparse, abort, fields, marshal_with, marshal
 from flask import jsonify
 from http import HTTPStatus
 from Services.S3StoryService import S3StoryService
@@ -22,8 +21,10 @@ class StoryFetch(Resource):
         bucket: Name of the bucket in which file_name is in.
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('key', required=True, help="File name cannot be blank!")
-        parser.add_argument('bucket', required=True, help="Bucket name cannot be blank!")
+        parser.add_argument("key", required=True, help="File name cannot be blank!")
+        parser.add_argument(
+            "bucket", required=True, help="Bucket name cannot be blank!"
+        )
         args = parser.parse_args()
         if not self.s3_client.check_bucket(args.bucket):
             return abort(404, description="Bucket {} not found.".format(args.bucket))

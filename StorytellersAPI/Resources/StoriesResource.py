@@ -55,6 +55,9 @@ comment_fields = {
 
 
 class Stories(Resource):
+    def put(self):
+        args = reqparse.RequestParser()
+        args.add_argument()
     def get(self):
         get_user_stories_args = reqparse.RequestParser()
         get_user_stories_args.add_argument("type", type=str,
