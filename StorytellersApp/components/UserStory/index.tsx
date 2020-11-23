@@ -21,7 +21,6 @@ import {
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
 import ProfilePicture from '../ProfilePicture';
-import StoryPlayer from '../StoryPlayer';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
@@ -29,6 +28,7 @@ import { UserStoryType, RootStackParamList, ResponseType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { memo } from 'react';
+import AudioSlider from '../StoryPlayer/AudioSlider';
 import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
@@ -36,6 +36,7 @@ export type UserStoryProps = {
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
+
 
 type ControlProps = {
     props: UserStoryProps,
@@ -60,10 +61,12 @@ function UserStory(props: UserStoryProps) {
             <TouchableWithoutFeedback onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={42} />
-                        <View>
+                        <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />
+                        <View style={{flex: 1}}>
+                            
                             <Text style={styles.titleStyle}
                             >{props.story.title} </Text>
+                            
                             <View style={styles.userRow}>
                                 <Text style={styles.name}>{props.story.user.name}</Text>
                                 <Text style={styles.username}>{props.story.user.username}</Text>
@@ -74,11 +77,11 @@ function UserStory(props: UserStoryProps) {
 
                     </View>
                     <Card.Content style={styles.content}>
-                        <Text>
+                        <Text style={{marginBottom:15}}>
                             {props.story.description}
                         </Text>
-                        <StoryPlayer />
-
+                         {/*@ts-ignore*/}
+                         <AudioSlider audio={props.story.recording}></AudioSlider>
                     </Card.Content>
                 </View>
             </TouchableWithoutFeedback>
@@ -89,4 +92,5 @@ function UserStory(props: UserStoryProps) {
 
     );
 }
+
 export default memo(UserStory);

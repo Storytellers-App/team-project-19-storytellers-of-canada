@@ -8,6 +8,8 @@ from botocore.errorfactory import ClientError
 from botocore.client import Config
 from Services.instance.config import *
 import logging
+from models import Story
+from extensions import *
 
 
 class S3StoryService:
@@ -17,10 +19,15 @@ class S3StoryService:
 
     def __init__(self):
         # no more bucket mock
-        self.s3 = boto3.client('s3', region_name='nyc3',
-                               endpoint_url='https://nyc3.digitaloceanspaces.com',
-                               aws_access_key_id=spaces_key, aws_secret_access_key=spaces_secret,
-                               config=Config(signature_version='s3'))
+        self.s3 = boto3.client(
+            "s3",
+            region_name="nyc3",
+            endpoint_url="https://nyc3.digitaloceanspaces.com",
+            aws_access_key_id=spaces_key,
+            aws_secret_access_key=spaces_secret,
+            config=Config(signature_version="s3"),
+        )
+        self.db = db
 
         # List all buckets on your account.
         # response = client.list_buckets()
@@ -45,7 +52,7 @@ class S3StoryService:
         except botocore.exceptions.ClientError as e:
             # If a client error is thrown, then check that it was a 404 error.
             # If it was a 404 error, then the bucket does not exist.
-            error_code = int(e.response['Error']['Code'])
+            error_code = int(e.response["Error"]["Code"])
             if error_code == 403:
                 print("Private Bucket. Forbidden Access!")
                 return True
@@ -91,9 +98,12 @@ class S3StoryService:
 
         try:
             # URL expires in 17 years
-            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key},
-                                                  ExpiresIn=539800000,
-                                                  HttpMethod="GET")
+            return self.s3.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": bucket, "Key": key},
+                ExpiresIn=539800000,
+                HttpMethod="GET",
+            )
         except:
             logging.exception("message")
             return None
@@ -111,7 +121,7 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_file(file_name, bucket_name, key)
-            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
             return True
         except:
             logging.exception("message")
@@ -131,21 +141,85 @@ class S3StoryService:
             print("try upload_fileobj")
             self.s3.upload_fileobj(fileobj, bucket_name, key)
             print("try making public")
-            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
             return True
         except:
             logging.exception("message")
             return False
 
+    def add_story(
+        self,
+        username,
+        author,
+        creationTime,
+        title,
+        description,
+        recording,
+        parent,
+        parentType,
+        approved,
+        image,
+        type,
+        numLikes,
+        numReplies,
+        approvedTime,
+    ):
+        try:
+            # upload recording
+            file_title = title + ".mp3"
+            self.upload_fileobj(recording, "sccanada", file_title)
+            recording_url = self.get_url_from_key("sccanada", file_title)
+
+            # upload image
+            image_title = title + ".png"
+            self.upload_fileobj(image, "sccanada", image_title)
+            image_url = self.get_url_from_key("sccanada", image_title)
+
+            story = Story()
+            story.username = username
+            story.author = author
+            story.creationTime = creationTime
+            story.title = title
+            story.description = description
+            story.recording = recording_url
+            story.parent = parent
+            story.parentType = parentType
+            story.approved = approved
+            story.image = image_url
+            # TODO: how do we handle this?
+            # story.type = type
+            story.numLikes = numLikes
+            story.numReplies = numReplies
+            story.approvedTime = approvedTime
+            self.db.session.add(story)
+            self.db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
 
 if __name__ == "__main__":
     client = S3StoryService()
-    path = Path("../SongFiles/4.35-How Heart Came Into The World - Dan Yashinsky.mp3").resolve()
-    client.upload_file(str(path), "my_bucket", "How Heart Came Into The World - Dan Yashinsky.mp3")
+    path = Path(
+        "../SongFiles/4.35-How Heart Came Into The World - Dan Yashinsky.mp3"
+    ).resolve()
+    client.upload_file(
+        str(path), "my_bucket", "How Heart Came Into The World - Dan Yashinsky.mp3"
+    )
     session = boto3.Session()
-    s3 = session.client('s3', endpoint_url='http://192.168.2.31:4567', aws_access_key_id='123',
-                        aws_secret_access_key='abc')
-    url = s3.generate_presigned_url('get_object', Params={'Bucket': 'my_bucket',
-                                                          'Key': "How Heart Came Into The World - Dan Yashinsky.mp3"},
-                                    HttpMethod="GET")
+    s3 = session.client(
+        "s3",
+        endpoint_url="http://192.168.2.31:4567",
+        aws_access_key_id="123",
+        aws_secret_access_key="abc",
+    )
+    url = s3.generate_presigned_url(
+        "get_object",
+        Params={
+            "Bucket": "my_bucket",
+            "Key": "How Heart Came Into The World - Dan Yashinsky.mp3",
+        },
+        HttpMethod="GET",
+    )
     print(url)

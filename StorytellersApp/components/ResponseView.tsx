@@ -116,8 +116,7 @@ export default class ResponseFeed extends Component<Props> {
                 }
             })
                 .then(response => {
-                    console.log(response.data.responses)
-
+                   
                     this.setState({
                         responses:
                             page === 1

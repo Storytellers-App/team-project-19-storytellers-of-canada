@@ -54,9 +54,10 @@ class RemoveLikes(Resource):
         post.numLikes -= 1
         like = Like.query.filter_by(username=args['username'],
                                     postId=args['id'],
-                                    postType=args['type'])
-        db.session.delete(like)
+                                    postType=args['type']).first()
         try:
+            db.session.delete(like)
             db.session.commit()
         except SQLAlchemyError:
             abort(HTTPStatus.BAD_REQUEST, message='Could not remove like')
+        return HTTPStatus.OK

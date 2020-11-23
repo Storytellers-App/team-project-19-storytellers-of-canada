@@ -16,12 +16,14 @@ import StoryResponseScreen from '../screens/StoryResponseScreen';
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+// { colorScheme }: { colorScheme: ColorSchemeName }, admin : any
+export default function Navigation(props: any) {
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
+      theme={ DefaultTheme}>
+      <RootNavigator admin={props.admin}/>
     </NavigationContainer>
   );
 }
@@ -30,11 +32,12 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 // Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 
-function RootNavigator() {
+function RootNavigator({admin} : {admin: boolean}) {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
-
+      <Stack.Screen name="Root" >
+      {props => <BottomTabNavigator admin={admin}/>}
+      </Stack.Screen>
       <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
       <Stack.Screen name="NewStory" component={NewStoryScreen} />
       <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />

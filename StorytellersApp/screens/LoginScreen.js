@@ -31,8 +31,8 @@ export default class LoginScreen extends Component {
     /**
      * Redirect to the main page
      */
-    goToHome() {
-        Actions.HomeScreen();
+    goToHome(isAdmin) {
+        Actions.HomeScreen({admin: isAdmin});
     }
 
     /**
@@ -80,10 +80,10 @@ export default class LoginScreen extends Component {
                         this.setUserInfo()
                         if (this.state.type === "ADMIN"){
                             // Going to the admin screen
-                            this.goToAdmin();
+                            this.goToHome(true);
                         } else {
                             // Going to the home screen
-                            this.goToHome();
+                            this.goToHome(false);
                         }
                         
                     } else {
