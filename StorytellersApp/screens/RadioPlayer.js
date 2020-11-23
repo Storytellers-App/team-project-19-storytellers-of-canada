@@ -18,6 +18,16 @@ export default class RadioPlayer extends React.Component {
         this.updateNowPlaying();
     }
 
+    async componentDidMount() {
+        await Audio.setAudioModeAsync({
+            playsInSilentModeIOS: true,
+            allowsRecordingIOS: false,
+            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+            shouldDuckAndroid: false,
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+        })
+    }
+
     _onPlaybackStatusUpdate = playbackStatus => {
         if (!playbackStatus.isLoaded) {
             // Not loaded
