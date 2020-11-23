@@ -1,5 +1,4 @@
-
-import * as React from 'react';
+import React, { Component, useEffect, useState } from 'react'
 import {
   View,
   TextInput,
@@ -16,6 +15,7 @@ import {
   Subheading,
   IconButton,
   Divider,
+  Appbar,
 } from 'react-native-paper';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -23,6 +23,9 @@ import ProfilePicture from '../components/ProfilePicture';
 import UserStory from '../components/UserStory';
 import Feed from '../components/Feed';
 import NewRecordingButton from '../components/NewRecordingButton';
+import { UserType } from '../types';
+import AsyncStorage from '@react-native-community/async-storage';
+
 type Props = Partial<ScrollViewProps> & {
   date?: number;
 };
@@ -30,14 +33,38 @@ type Props = Partial<ScrollViewProps> & {
 
 export default function NewsFeed(props: Props) {
   const ref = React.useRef<ScrollView>(null);
-
+  const [user, setUser] = useState<UserType | null>(null);
   useScrollToTop(ref);
 
   const colorScheme = useColorScheme();
 
-  return (
+  const getUser = async () => {
+    const username = await AsyncStorage.getItem("username");
+    const name = await AsyncStorage.getItem("name");
+    const type = await AsyncStorage.getItem("image");
+    const image = await AsyncStorage.getItem("image");
+    let user = {
+      username: username,
+      name: name,
+      type: type,
+      image: image,
+    } as UserType;
+    setUser(user);
+  }
 
-    <View style={{flex:1}}>
+  useEffect(() => {
+    getUser();
+  }, [])
+  return (
+    <View style={{ flex: 1 }}>
+      <Appbar.Header style={{ backgroundColor: 'white' }}>
+        <View style={{ marginLeft: 7 }}>
+          <ProfilePicture image={user === null ? undefined : user.image === null ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user.name : user.image} size={45} />
+        </View>
+        <Appbar.Content title="Home" />
+        <Appbar.Action icon="magnify" />
+        {/* <Appbar.Action icon="dots-vertical"  />  */}
+      </Appbar.Header>
       <Feed></Feed>
       <NewRecordingButton />
     </View>

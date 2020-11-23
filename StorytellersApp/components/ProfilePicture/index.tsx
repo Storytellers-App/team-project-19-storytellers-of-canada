@@ -5,7 +5,7 @@ export type ProfilePictureProps = {
     size?: number,
 }
 
-const ProfilePicture = ({ image = 'https://picsum.photos/50', size =40 }: ProfilePictureProps) => (
+const ProfilePicture = ({ image, size =40 }: ProfilePictureProps) => (
     <Image
         source={{ uri: image }}
         style={{

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
@@ -7,21 +7,22 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
-import { BottomTabParamList, HomeNavigatorParamList, RadioPlayerParamList, TabTwoParamList } from '../types';
+import { BottomTabParamList, HomeNavigatorParamList, RadioPlayerParamList, TabTwoParamList, AdminPanelParamList } from '../types';
 import ProfilePicture from '../components/ProfilePicture';
 import { ScreenStackHeaderLeftView } from 'react-native-screens';
 import RadioPlayer from '../screens/RadioPlayer';
+import AdminPanelScreen from '../screens/AdminPanelScreen';
+
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function BottomTabNavigator() {
+export default function BottomTabNavigator({admin} : {admin: boolean}) {
   const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        activeTintColor: Colors[colorScheme].tint,
+        activeTintColor: Colors.light.tint,
         showLabel: false,
       }}>
       <BottomTab.Screen
@@ -35,7 +36,7 @@ export default function BottomTabNavigator() {
         name="StoredStories"
         component={TabTwoNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIconMat name="book-play" color={color} />,
         }}
       />
       <BottomTab.Screen
@@ -45,6 +46,13 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
         }}
       />
+       {admin == true ? <BottomTab.Screen
+        name="AdminPanelScreen"
+        component={AdminPanelNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="md-construct" color={color} />,
+        }}
+      /> : null}
     </BottomTab.Navigator>
   );
 }
@@ -53,6 +61,9 @@ export default function BottomTabNavigator() {
 // https://icons.expo.fyi/
 function TabBarIcon(props: { name: string; color: string }) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
+}
+function TabBarIconMat(props: { name: string; color: string }) {
+  return <MaterialCommunityIcons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
@@ -65,15 +76,8 @@ function HomeNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{
-          headerTitle: 'Home',
-          headerTitleAlign: "center",
-          headerLeftContainerStyle: {
-            marginLeft: 15,
-          },
-          headerLeft: () => (
-            <ProfilePicture />
-          )
+        options= {{
+          headerShown: false
         }}
       />
     </TabOneStack.Navigator>
@@ -106,4 +110,18 @@ function RadioNavigator() {
       />
     </RadioPlayerStack.Navigator>
   )
+}
+
+const TabThreeStack = createStackNavigator<AdminPanelParamList>();
+
+function AdminPanelNavigator() {
+  return (
+    <TabThreeStack.Navigator>
+      <TabThreeStack.Screen
+        name="AdminPanelScreen"
+        component={AdminPanelScreen}
+        options={{ headerTitle: 'Admin Panel' }}
+      />
+    </TabThreeStack.Navigator>
+  );
 }
