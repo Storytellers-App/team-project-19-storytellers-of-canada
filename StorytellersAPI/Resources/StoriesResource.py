@@ -1,6 +1,6 @@
 import sqlalchemy
 from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
-    marshal
+    marshal, inputs
 from http import HTTPStatus
 from extensions import db
 from models import Story, User, Tag, Comment, Like
@@ -8,6 +8,7 @@ from sqlalchemy.exc import *
 from sqlalchemy import func, union_all
 from datetime import datetime
 from common.Enums import StoryType
+import werkzeug.datastructures
 
 user_fields = {
     'username': fields.String,
@@ -57,7 +58,24 @@ comment_fields = {
 class Stories(Resource):
     def put(self):
         args = reqparse.RequestParser()
-        args.add_argument()
+        # generate new ID
+        args.add_argument('user', type=fields.Nested(user_fields))
+        args.add_argument('author', type=str)
+        # args.add_argument("creationTime", type=inputs.datetime_from_iso8601, required=True)
+        # generate new creation time
+        args.add_argument('title', type=str, required=True)
+        args.add_argument('description', type=str, required=True)
+        args.add_argument('recording', type=werkzeug.datastructures.FileStorage, location="files", required=True)
+        args.add_argument('parent', type=int)
+        # numLikes = 0
+        # numReplies = 0
+        """
+        tags must be in a list inside the JSON
+        if not there, tags will be initialized to blank array
+        """
+        args.add_argument('tags', type=list, location='json')
+        args.add_argument('type', type=str, required=True)
+        # isLiked = False
     def get(self):
         get_user_stories_args = reqparse.RequestParser()
         get_user_stories_args.add_argument("type", type=str,
