@@ -21,7 +21,6 @@ import {
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
 import ProfilePicture from '../ProfilePicture';
-import StoryPlayer from '../StoryPlayer';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
@@ -29,6 +28,7 @@ import { UserStoryType, RootStackParamList, ResponseType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { memo } from 'react';
+import AudioSlider from '../StoryPlayer/AudioSlider';
 import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
@@ -36,6 +36,7 @@ export type UserStoryProps = {
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
+
 
 type ControlProps = {
     props: UserStoryProps,
@@ -77,8 +78,8 @@ function UserStory(props: UserStoryProps) {
                         <Text>
                             {props.story.description}
                         </Text>
-                        <StoryPlayer />
-
+                         {/*@ts-ignore*/}
+                         <AudioSlider audio={props.story.recording}></AudioSlider>
                     </Card.Content>
                 </View>
             </TouchableWithoutFeedback>
@@ -89,4 +90,5 @@ function UserStory(props: UserStoryProps) {
 
     );
 }
+
 export default memo(UserStory);
