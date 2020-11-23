@@ -17,10 +17,14 @@ class S3StoryService:
 
     def __init__(self):
         # no more bucket mock
-        self.s3 = boto3.client('s3', region_name='nyc3',
-                               endpoint_url='https://nyc3.digitaloceanspaces.com',
-                               aws_access_key_id=spaces_key, aws_secret_access_key=spaces_secret,
-                               config=Config(signature_version='s3'))
+        self.s3 = boto3.client(
+            "s3",
+            region_name="nyc3",
+            endpoint_url="https://nyc3.digitaloceanspaces.com",
+            aws_access_key_id=spaces_key,
+            aws_secret_access_key=spaces_secret,
+            config=Config(signature_version="s3"),
+        )
 
         # List all buckets on your account.
         # response = client.list_buckets()
@@ -45,7 +49,7 @@ class S3StoryService:
         except botocore.exceptions.ClientError as e:
             # If a client error is thrown, then check that it was a 404 error.
             # If it was a 404 error, then the bucket does not exist.
-            error_code = int(e.response['Error']['Code'])
+            error_code = int(e.response["Error"]["Code"])
             if error_code == 403:
                 print("Private Bucket. Forbidden Access!")
                 return True
@@ -91,9 +95,12 @@ class S3StoryService:
 
         try:
             # URL expires in 17 years
-            return self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key},
-                                                  ExpiresIn=539800000,
-                                                  HttpMethod="GET")
+            return self.s3.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": bucket, "Key": key},
+                ExpiresIn=539800000,
+                HttpMethod="GET",
+            )
         except:
             logging.exception("message")
             return None
@@ -111,7 +118,7 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_file(file_name, bucket_name, key)
-            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
             return True
         except:
             logging.exception("message")
@@ -131,7 +138,7 @@ class S3StoryService:
             print("try upload_fileobj")
             self.s3.upload_fileobj(fileobj, bucket_name, key)
             print("try making public")
-            self.s3.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
             return True
         except:
             logging.exception("message")
@@ -140,12 +147,25 @@ class S3StoryService:
 
 if __name__ == "__main__":
     client = S3StoryService()
-    path = Path("../SongFiles/4.35-How Heart Came Into The World - Dan Yashinsky.mp3").resolve()
-    client.upload_file(str(path), "my_bucket", "How Heart Came Into The World - Dan Yashinsky.mp3")
+    path = Path(
+        "../SongFiles/4.35-How Heart Came Into The World - Dan Yashinsky.mp3"
+    ).resolve()
+    client.upload_file(
+        str(path), "my_bucket", "How Heart Came Into The World - Dan Yashinsky.mp3"
+    )
     session = boto3.Session()
-    s3 = session.client('s3', endpoint_url='http://192.168.2.31:4567', aws_access_key_id='123',
-                        aws_secret_access_key='abc')
-    url = s3.generate_presigned_url('get_object', Params={'Bucket': 'my_bucket',
-                                                          'Key': "How Heart Came Into The World - Dan Yashinsky.mp3"},
-                                    HttpMethod="GET")
+    s3 = session.client(
+        "s3",
+        endpoint_url="http://192.168.2.31:4567",
+        aws_access_key_id="123",
+        aws_secret_access_key="abc",
+    )
+    url = s3.generate_presigned_url(
+        "get_object",
+        Params={
+            "Bucket": "my_bucket",
+            "Key": "How Heart Came Into The World - Dan Yashinsky.mp3",
+        },
+        HttpMethod="GET",
+    )
     print(url)
