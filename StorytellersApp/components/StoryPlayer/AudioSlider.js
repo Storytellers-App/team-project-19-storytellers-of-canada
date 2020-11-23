@@ -1,3 +1,4 @@
+//Taken with little modifcation from https://github.com/olapiv/expo-audio-player
 import React, { PureComponent } from "react";
 import {
     TouchableOpacity,

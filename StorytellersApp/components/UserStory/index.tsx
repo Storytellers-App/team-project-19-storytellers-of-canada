@@ -61,10 +61,12 @@ function UserStory(props: UserStoryProps) {
             <TouchableWithoutFeedback onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={42} />
-                        <View>
+                        <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />
+                        <View style={{flex: 1}}>
+                            
                             <Text style={styles.titleStyle}
                             >{props.story.title} </Text>
+                            
                             <View style={styles.userRow}>
                                 <Text style={styles.name}>{props.story.user.name}</Text>
                                 <Text style={styles.username}>{props.story.user.username}</Text>
@@ -75,7 +77,7 @@ function UserStory(props: UserStoryProps) {
 
                     </View>
                     <Card.Content style={styles.content}>
-                        <Text>
+                        <Text style={{marginBottom:15}}>
                             {props.story.description}
                         </Text>
                          {/*@ts-ignore*/}

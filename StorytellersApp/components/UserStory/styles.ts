@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         fontWeight: 'bold',
         fontSize: 20,
+        flexWrap: 'wrap'
     },
 
     row: {
