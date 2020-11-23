@@ -45,12 +45,6 @@ export default class RadioPlayer extends React.Component {
                 // Change the stop button to a play button
 
             }
-            if (playbackStatus.isBuffering) {
-                // Add the spinning wheel of death
-                this.setState((state) => {
-                    return {audioState: 'audioBuffering'}
-                });
-            }
         }
     }
 
@@ -76,6 +70,8 @@ export default class RadioPlayer extends React.Component {
             
         } else if (this.state.audioState === 'audioBuffering') {
             // I think nothing should be done here...
+            this.state.sound.stopAsync();
+            this.setState({sound: "audioStopped"});
         }
         
     }
