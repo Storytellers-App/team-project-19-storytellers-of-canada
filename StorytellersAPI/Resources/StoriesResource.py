@@ -8,6 +8,7 @@ from flask_restful import (
     marshal,
     inputs,
 )
+from flask import Response
 from http import HTTPStatus
 from extensions import db
 from models import Story, User, Tag, Comment, Like
@@ -16,6 +17,7 @@ from sqlalchemy import func, union_all
 from datetime import datetime
 from common.Enums import StoryType
 import werkzeug.datastructures
+from Services.S3StoryService import *
 
 user_fields = {
     "username": fields.String,
@@ -63,31 +65,56 @@ comment_fields = {
 
 
 class Stories(Resource):
+    def __init__(self):
+        self.s3_service = S3StoryService()
+
     def put(self):
-        args = reqparse.RequestParser()
-        # generate new ID
-        args.add_argument("user", type=fields.Nested(user_fields))
-        args.add_argument("author", type=str)
-        # args.add_argument("creationTime", type=inputs.datetime_from_iso8601, required=True)
+        story_args = reqparse.RequestParser()
+        story_args.add_argument("username", type=str, default=None)
+        story_args.add_argument("author", type=str, default=None)
         # generate new creation time
-        args.add_argument("title", type=str, required=True)
-        args.add_argument("description", type=str, required=True)
-        args.add_argument(
+        creation_time = datetime.now()
+        story_args.add_argument("title", type=str, required=True)
+        story_args.add_argument("description", type=str, default=None)
+        story_args.add_argument(
             "recording",
             type=werkzeug.datastructures.FileStorage,
             location="files",
             required=True,
         )
-        args.add_argument("parent", type=int)
-        # numLikes = 0
-        # numReplies = 0
-        """
-        tags must be in a list inside the JSON
-        if not there, tags will be initialized to blank array
-        """
-        args.add_argument("tags", type=list, location="json")
-        args.add_argument("type", type=str, required=True)
-        # isLiked = False
+        story_args.add_argument("parent", type=int, default=None)
+        story_args.add_argument("parent_type", type=str, default=None)
+        story_args.add_argument("approved", type=bool, default=False)
+        story_args.add_argument(
+            "image",
+            type=werkzeug.datastructures.FileStorage,
+            location="files",
+            required=True,
+        )
+        num_likes = 0
+        num_replies = 0
+        story_args.add_argument("approved_time", type=inputs.datetime_from_iso8601)
+        args = story_args.parse_args()
+        ret = self.s3_service.add_story(
+            username=args.username,
+            author=args.author,
+            creationTime=creation_time,
+            title=args.title,
+            description=args.description,
+            recording=args.recording,
+            parent=args.parent,
+            parentType=args.parent_type,
+            approved=args.approved,
+            image=args.image,
+            approvedTime=args.approved_time,
+            numLikes=num_likes,
+            numReplies=num_replies,
+            type=None
+        )
+        if not ret:
+            return abort(500, description="Error in add_story in S3StoriesResource.")
+        else:
+            return Response(status=201)
 
     def get(self):
         get_user_stories_args = reqparse.RequestParser()
@@ -101,10 +128,10 @@ class Stories(Resource):
             "time", type=lambda x: datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
         )
 
-        args = get_user_stories_args.parse_args()
+        story_args = get_user_stories_args.parse_args()
         time = None
-        if "time" in args and args["time"] is not None:
-            time = args["time"]
+        if "time" in story_args and story_args["time"] is not None:
+            time = story_args["time"]
         if time is None:
             time = func.now()
         try:
@@ -127,21 +154,21 @@ class Stories(Resource):
                 )
                 .outerjoin(User, User.username == Story.username)
                 .order_by(Story.creationTime.desc(), Story.id.desc())
-                .filter(Story.type == args["type"])
+                .filter(Story.type == story_args["type"])
                 .filter(Story.parent.is_(None))
                 .filter(Story.approved.is_(True))
                 .filter(Story.approvedTime < time)
-                .paginate(args["page"], args["per_page"], False)
+                .paginate(story_args["page"], story_args["per_page"], False)
                 .items
             )
             marshal_list = []
             for story in stories:
                 tags = Tag.query.filter_by(storyid=story.id)
                 isLiked = False
-                if "username" in args and args["username"] is not None:
+                if "username" in story_args and story_args["username"] is not None:
                     isLiked = (
                         Like.query.filter_by(
-                            username=args["username"],
+                            username=story_args["username"],
                             postId=story.id,
                             postType=story.type,
                         ).count()
@@ -166,7 +193,7 @@ class Stories(Resource):
                 marshal_list.append(format_story)
         except SQLAlchemyError as e:
             abort(HTTPStatus.BAD_REQUEST, message=str(e.__dict__["orig"]))
-        if StoryType(args["type"]) == StoryType.USER:
+        if StoryType(story_args["type"]) == StoryType.USER:
             return (
                 marshal(marshal_list, userstory_fields, envelope="stories"),
                 HTTPStatus.OK,

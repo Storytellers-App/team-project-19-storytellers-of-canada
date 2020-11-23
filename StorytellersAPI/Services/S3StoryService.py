@@ -8,6 +8,8 @@ from botocore.errorfactory import ClientError
 from botocore.client import Config
 from Services.instance.config import *
 import logging
+from models import Story
+from extensions import *
 
 
 class S3StoryService:
@@ -25,6 +27,7 @@ class S3StoryService:
             aws_secret_access_key=spaces_secret,
             config=Config(signature_version="s3"),
         )
+        self.db = db
 
         # List all buckets on your account.
         # response = client.list_buckets()
@@ -142,6 +145,57 @@ class S3StoryService:
             return True
         except:
             logging.exception("message")
+            return False
+
+    def add_story(
+        self,
+        username,
+        author,
+        creationTime,
+        title,
+        description,
+        recording,
+        parent,
+        parentType,
+        approved,
+        image,
+        type,
+        numLikes,
+        numReplies,
+        approvedTime,
+    ):
+        try:
+            # upload recording
+            file_title = title + ".mp3"
+            self.upload_fileobj(recording, "sccanada", file_title)
+            recording_url = self.get_url_from_key("sccanada", file_title)
+
+            # upload image
+            image_title = title + ".png"
+            self.upload_fileobj(image, "sccanada", image_title)
+            image_url = self.get_url_from_key("sccanada", image_title)
+
+            story = Story()
+            story.username = username
+            story.author = author
+            story.creationTime = creationTime
+            story.title = title
+            story.description = description
+            story.recording = recording_url
+            story.parent = parent
+            story.parentType = parentType
+            story.approved = approved
+            story.image = image_url
+            # TODO: how do we handle this?
+            # story.type = type
+            story.numLikes = numLikes
+            story.numReplies = numReplies
+            story.approvedTime = approvedTime
+            self.db.session.add(story)
+            self.db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
             return False
 
 
