@@ -33,7 +33,7 @@ class Story(db.Model):
     # posts as well
     numLikes = db.Column(db.Integer)
     numReplies = db.Column(db.Integer)
-    approvedTime = db.Column(db.DateTime, nullable=False)
+    approvedTime = db.Column(db.DateTime)
 
 
 class Tag(db.Model):
