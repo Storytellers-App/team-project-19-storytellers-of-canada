@@ -10,16 +10,19 @@ import {Text, View} from '../../components/Themed';
 import { RootStackParamList } from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import NewStoryNavigationProp from '../../screens/NewStoryScreen';
+import AsyncStorage from '@react-native-community/async-storage';
 export type Props = {
-    recording: Audio.Recording | null;
+    recording: string | null;
 };
 
 const NewStoryButton = ({recording}:Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-    const onPress = () => {
-        navigation.navigate("NewStory", { 'recording': recording , 'username': 'fredddd'});    
+    const onPress = async () => {
+        const value = await AsyncStorage.getItem('username');
+        console.log(recording);
+        navigation.navigate("NewStory", { 'recording': recording , 'username': value});    
     }
     return (
         

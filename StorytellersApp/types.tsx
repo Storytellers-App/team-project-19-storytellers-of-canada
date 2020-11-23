@@ -9,7 +9,7 @@ export type RootStackParamList = {
   };
   NotFound: undefined;
   NewRecording: undefined;
-  NewStory: {recording: Audio.Recording | null, 'username': string};
+  NewStory: {recording: string | null, 'username': string};
 };
 
 

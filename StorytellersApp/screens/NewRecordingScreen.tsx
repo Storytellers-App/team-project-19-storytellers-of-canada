@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {StyleSheet} from 'react-native';
-import {Text, View} from '../components/Themed';
+import {Text, View} from 'react-native';
 import {EvilIcons, AntDesign} from "@expo/vector-icons"
 import Colors from '../constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -30,7 +30,7 @@ import NewRecordingButton from '../components/NewRecordingButton';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "white";
-const LIVE_COLOR = "#FF0000";
+const LIVE_COLOR = "red";
 const DISABLED_OPACITY = 0.2;
 const RATE_SCALE = 3.0;
 
@@ -561,7 +561,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                         Next
                     </Text>
                 </TouchableHighlight> */}   
-                <NewStoryButton recording={this.recording}/>             
+                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()}/>             
             </View>
 
             
