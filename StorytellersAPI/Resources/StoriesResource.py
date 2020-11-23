@@ -18,6 +18,7 @@ from datetime import datetime
 from common.Enums import StoryType
 import werkzeug.datastructures
 from Services.S3StoryService import *
+import sys
 
 user_fields = {
     "username": fields.String,
@@ -91,9 +92,16 @@ class Stories(Resource):
             location="files",
             required=True,
         )
+        story_args.add_argument(
+            "type",
+            type=str,
+            default=None
+        )
         num_likes = 0
         num_replies = 0
         story_args.add_argument("approved_time", type=inputs.datetime_from_iso8601)
+        # TODO: tags
+        story_args.add_argument("tags", type=str, action='append')
         args = story_args.parse_args()
         ret = self.s3_service.add_story(
             username=args.username,
@@ -109,7 +117,8 @@ class Stories(Resource):
             approvedTime=args.approved_time,
             numLikes=num_likes,
             numReplies=num_replies,
-            type=None,
+            type=args.type,
+            tags=args.tags,
         )
         if not ret:
             return abort(500, description="Error in add_story in S3StoriesResource.")
