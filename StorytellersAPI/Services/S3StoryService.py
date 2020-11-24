@@ -8,8 +8,9 @@ from botocore.errorfactory import ClientError
 from botocore.client import Config
 from Services.instance.config import *
 import logging
-from models import Story
+from models import Story, Tag
 from extensions import *
+import sys
 
 
 class S3StoryService:
@@ -163,6 +164,7 @@ class S3StoryService:
         numLikes,
         numReplies,
         approvedTime,
+        tags,
     ):
         try:
             # upload recording
@@ -186,16 +188,22 @@ class S3StoryService:
             story.parentType = parentType
             story.approved = approved
             story.image = image_url
-            # TODO: how do we handle this?
-            # story.type = type
+            story.type = type
             story.numLikes = numLikes
             story.numReplies = numReplies
             story.approvedTime = approvedTime
             self.db.session.add(story)
-            self.db.session.commit()
+            self.db.session.flush()
+            self.db.session.refresh(story)
+            for tag in tags:
+                story_tag = Tag()
+                story_tag.storyid = story.id
+                story_tag.tag = tag
+                self.db.session.add(story_tag)
+                self.db.session.commit()
             return True
-        except Exception as e:
-            print(e)
+        except:
+            logging.exception("message")
             return False
 
 
