@@ -59,7 +59,7 @@ let styles = StyleSheet.create({
     minHeight: 70,
   },
   storySaveTitle: {
-    color: Colors.light,
+    color: Colors.dark,
     fontSize: 30,
     fontWeight: '600',
     padding: 4,

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Text, View, Image } from "react-native";
 import styles from "./styles";
-import { getStoriesByCategory } from "../APICalls";
-import Story from "./Story";
+import { getStoriesByCategory, getAllStories } from "../APICalls";
+import SavedStory from './SavedStory';
 
 class StorySave extends Component {
   render() {
@@ -22,9 +22,8 @@ class StorySave extends Component {
             <Text style={styles.storySaveTitle}>Saved Story Collection</Text>
           </View>
         </View>
-
-        {getStoriesByCategory("dogs").map((i: any) => (
-          <Story key={"SavedStoryListItem:" + i} storyId={i} />
+        {getAllStories().stories.map((i: any) => (
+          <SavedStory key={"SavedStoryListItem:" + i.id} story={i} />
         ))}
       </View>
     );
