@@ -90,7 +90,7 @@ class Stories(Resource):
             "image",
             type=werkzeug.datastructures.FileStorage,
             location="files",
-            required=True,
+            default=None,
         )
         story_args.add_argument(
             "type",

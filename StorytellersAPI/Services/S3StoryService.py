@@ -172,10 +172,13 @@ class S3StoryService:
             self.upload_fileobj(recording, "sccanada", file_title)
             recording_url = self.get_url_from_key("sccanada", file_title)
 
-            # upload image
-            image_title = title + ".png"
-            self.upload_fileobj(image, "sccanada", image_title)
-            image_url = self.get_url_from_key("sccanada", image_title)
+            if image is not None:
+                # upload image
+                image_title = title + ".png"
+                self.upload_fileobj(image, "sccanada", image_title)
+                image_url = self.get_url_from_key("sccanada", image_title)
+            else:
+                image_url = None
 
             story = Story()
             story.username = username
