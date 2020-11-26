@@ -24,21 +24,21 @@ import ProfilePicture from "../ProfilePicture";
 import { Entypo } from "@expo/vector-icons";
 import styles from "./styles";
 import moment from "moment";
-import { UserStoryType, RootStackParamList, ResponseType } from "../../types";
+import { UserStoryType, StorySaveType, RootStackParamList, ResponseType } from "../../types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { memo } from "react";
 import AudioSlider from "../StoryPlayer/AudioSlider";
 import Tags from "../Tags";
-export type UserStoryProps = {
-  story: UserStoryType;
+export type StoredStoryProps = {
+  story: StorySaveType;
   admin?: boolean;
 };
 import Footer from "../CardFooter";
 import AdminFooter from "../AdminFooter";
 
 type ControlProps = {
-  props: UserStoryProps;
+  props: StoredStoryProps;
 };
 const Controls = ({ props }: ControlProps) => {
   if (props.admin == true) {
@@ -47,12 +47,13 @@ const Controls = ({ props }: ControlProps) => {
     return <Footer story={props.story}></Footer>;
   }
 };
-function SavedStory(props: UserStoryProps) {
+function SavedStory(props: StoredStoryProps) {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const responseScreen = (header: ResponseType) => {
     navigation.push("StoryResponse", { header: header });
   };
   const colorScheme = useColorScheme();
+
   return (
     <Card style={styles.card}>
       <TouchableWithoutFeedback
@@ -67,7 +68,7 @@ function SavedStory(props: UserStoryProps) {
               <Text style={styles.titleStyle}>{props.story.title} </Text>
 
               <View style={styles.userRow}>
-                <Text style={styles.name}>By: {props.story.user.name}</Text>
+                <Text style={styles.name}>By: {props.story.author}</Text>
                 <Text style={styles.createdAt}>
                   {moment(props.story.creationTime).fromNow()}
                 </Text>
@@ -76,12 +77,12 @@ function SavedStory(props: UserStoryProps) {
             
           </View>
           <Card.Content style={styles.content}>
-              <Image
+              {!!props.story.image && <Image
               style={styles.topImage}
               source={{
-                uri: props.story.image || null,
+                uri: props.story.image,
               }}
-            />
+            />}
             <Text style={{ marginBottom: 15 }}>{props.story.description}</Text>
             {/*@ts-ignore*/}
             <AudioSlider audio={props.story.recording}></AudioSlider>

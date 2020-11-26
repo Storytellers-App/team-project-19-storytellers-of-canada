@@ -11,6 +11,7 @@ import {
 } from 'react-native-paper';
 import UserStory from './UserStory';
 import Comment from './Comment';
+import SavedStory from './SavedStory';
 import { UserStoryType, UserType, StoryType, ResponseType, RootStackParamList, StorySaveType, CommentType } from "../types";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -42,7 +43,18 @@ export default class ResponseFeed extends Component<Props> {
 
     Header = ({ response: header }: Props) => {
         if ((header as StorySaveType).author) {
-            return <Text>Testing stored story</Text>;
+            return (
+                <View>
+                    <SavedStory story={header as StorySaveType}></SavedStory>
+                    <View
+                        style={{
+                            borderBottomColor: Colors.light.tint,
+                            borderBottomWidth: 2,
+                            marginVertical: 10,
+                        }}
+                    />
+                </View>
+            );
         }
         else if ((header as CommentType).comment) {
             return (
@@ -76,7 +88,7 @@ export default class ResponseFeed extends Component<Props> {
 
     Response = ({ response }: Props) => {
         if ((response as StorySaveType).author) {
-            return <Text>Testing stored story</Text>;
+            return <SavedStory story={response as StorySaveType}></SavedStory>;
         }
         else if ((response as CommentType).comment) {
             return (
@@ -116,7 +128,7 @@ export default class ResponseFeed extends Component<Props> {
                 }
             })
                 .then(response => {
-                   
+
                     this.setState({
                         responses:
                             page === 1

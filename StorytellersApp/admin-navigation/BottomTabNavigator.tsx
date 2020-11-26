@@ -6,7 +6,7 @@ import * as React from 'react';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import StorySaveScreen from '../screens/StorySaveScreen';
 import AdminPanelScreen from '../screens/AdminPanelScreen';
 import { BottomTabParamList, HomeNavigatorParamList, TabTwoParamList, AdminPanelParamList } from '../types';
 import ProfilePicture from '../components/ProfilePicture';
@@ -87,7 +87,7 @@ function TabTwoNavigator() {
     <TabTwoStack.Navigator>
       <TabTwoStack.Screen
         name="TabTwoScreen"
-        component={TabTwoScreen}
+        component={StorySaveScreen}
         options={{ headerTitle: 'Saved Stories' }}
       />
     </TabTwoStack.Navigator>
