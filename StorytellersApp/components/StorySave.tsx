@@ -44,7 +44,6 @@ export default class StorySave extends Component {
         }
       })
         .then(response => {
-          console.log(response.data.stories)
           this.setState({
             stories:
               page === 1

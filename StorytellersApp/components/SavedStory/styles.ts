@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     card: {
         marginVertical: 8,
         borderRadius: 0,
+        backgroundColor: 'white'
     },
     cover: {
         height: 160,
