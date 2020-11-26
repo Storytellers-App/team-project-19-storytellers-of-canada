@@ -199,11 +199,19 @@ class Admin(Resource):
         args = get_user_stories_args.parse_args()
 
         try:
-            if args['type'] == StoryType.USER.value or args['type'] == StoryType.SAVED.value:
+            if args['type'] == StoryType.USER.value or args[
+                'type'] == StoryType.SAVED.value:
                 post = Story.query.filter_by(id=args['id']).first()
             else:
                 post = Comment.query.filter_by(id=args['id']).first()
+            if not post:
+                abort(HTTPStatus.BAD_REQUEST, message='Could not find post')
+            parent = None
+            if post.parent is not None:
+                parent = Story.query.filter_by(id=post.parent).first()
             if args['approved']:
+                if parent is not None:
+                    parent.numReplies += 1
                 post.approved = args['approved']
                 post.approvedTime = func.now()
             else:

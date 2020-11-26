@@ -17,6 +17,9 @@ import {
     Subheading,
     IconButton,
     Divider,
+    Dialog,
+    Portal,
+    Button,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { UserStoryType, ResponseType } from '../../types';
@@ -24,6 +27,8 @@ import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { HOST } from '../../config';
+import { useNavigation } from '@react-navigation/native';
+
 
 export type UserStoryProps = {
     story: ResponseType,
@@ -34,6 +39,7 @@ const Footer = (props: UserStoryProps) => {
     const [user, setUser] = useState<string | null>(null);
     const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [userLike, setUserLike] = useState(props.story.isLiked);
+    const [replyVisible, setReplyVisible] = useState(false);
     useEffect(() => {
         const fetchUser = async () => {
             const currentUser = await AsyncStorage.getItem("username");
@@ -103,6 +109,27 @@ const Footer = (props: UserStoryProps) => {
 
     }
 
+    const navigation = useNavigation()
+
+    const audioReply = () => {
+        setReplyVisible(false);
+        navigation.navigate("NewRecording", { parent: props.story });
+    }
+
+    const commentReply = () => {
+        setReplyVisible(false);
+        navigation.navigate("NewComment", { parent: props.story, user: user })
+    }
+
+    const hideDialog = () => {
+        setReplyVisible(false);
+    }
+
+    const showDialog = () => {
+        setReplyVisible(true);
+    }
+
+
     return (
         <View style={styles.iconcontainer}>
             <View style={styles.icon}>
@@ -114,13 +141,34 @@ const Footer = (props: UserStoryProps) => {
                 }}>{likesCount}</Text>}
             </View>
             <View style={styles.icon}>
-                <IconButton size={16} icon="comment-outline" />
+                <IconButton size={16} icon="comment-outline" onPress={showDialog} />
                 {!!props.story.numReplies && <Text style={{
                     marginLeft: 5,
                     color: 'grey',
                     textAlign: 'center'
                 }}>{props.story.numReplies}</Text>}
             </View>
+            <Portal>
+                <Dialog visible={replyVisible} onDismiss={hideDialog} style={{backgroundColor: 'white'}}>
+                    <Dialog.Title style={{color: 'black'}}>Reply</Dialog.Title>
+                    <Dialog.Content>
+                        <View style={styles.replyMenu}>
+                            <TouchableOpacity onPress={commentReply}>
+                                <View style={styles.replyOption}>
+                                    <IconButton size={30} icon="comment-text" />
+                                    <Text>Comment</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={audioReply}>
+                                <View style={styles.replyOption}>
+                                    <IconButton size={30} icon="microphone" />
+                                    <Text>Audio</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </Dialog.Content>
+                </Dialog>
+            </Portal>
             <IconButton style={styles.icon} size={16} icon="share-outline" />
 
         </View>

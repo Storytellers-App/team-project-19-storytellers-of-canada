@@ -26,12 +26,10 @@ import NewRecordingButton from '../components/NewRecordingButton';
 import { UserType } from '../types';
 import AsyncStorage from '@react-native-community/async-storage';
 
-type Props = Partial<ScrollViewProps> & {
-  date?: number;
-};
 
 
-export default function NewsFeed(props: Props) {
+
+export default function HomeScreen() {
   const ref = React.useRef<ScrollView>(null);
   const [user, setUser] = useState<UserType | null>(null);
   useScrollToTop(ref);

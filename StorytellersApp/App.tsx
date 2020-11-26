@@ -6,6 +6,34 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import Routes from './Routes';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+
+
+
+declare global {
+  namespace ReactNativePaper {
+    interface ThemeColors {
+      primary: string;
+      accent: string;
+    }
+
+    interface Theme {
+      roundness: number;
+    }
+  }
+}
+
+const theme = {
+  ...DefaultTheme,
+  dark: false,
+  roundness: 2,
+  colors: {
+     ...DefaultTheme.colors,
+    primary: '#3498db',
+    accent: '#f1c40f',
+    
+  }
+};
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -15,10 +43,13 @@ export default function App() {
     return null;
   } else {
     return (
+       /*@ts-ignore*/
+      <PaperProvider theme={theme}>
         <SafeAreaProvider>
-            <Routes/>
-            <StatusBar />
-        </SafeAreaProvider>        
+          <Routes />
+          <StatusBar />
+        </SafeAreaProvider>
+      </PaperProvider>
     );
   }
 }

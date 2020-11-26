@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { MenuOption } from 'react-native-popup-menu';
 
 const styles = StyleSheet.create({
     input: {
@@ -46,10 +47,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
     },
+    replyOption: {
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
     userRow: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'flex-start',
+    },
+    replyMenu : {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-around"
     }
 });
 

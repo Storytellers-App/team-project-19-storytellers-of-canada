@@ -110,7 +110,6 @@ export default class Feed extends Component {
     render() {
         const { stories } = this.state;
         return (
-
             <FlatList
                 data={stories}
                 renderItem={({ item }) => <UserStory story={item} />}

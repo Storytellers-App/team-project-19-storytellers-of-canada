@@ -51,6 +51,7 @@ storysave_fields = {
     "tags": fields.List(fields.String),
     "type": fields.String,
     "isLiked": fields.Boolean,
+    "image": fields.String,
 }
 
 comment_fields = {
@@ -74,7 +75,7 @@ class Stories(Resource):
         story_args.add_argument("username", type=str, default=None)
         story_args.add_argument("author", type=str, default=None)
         # generate new creation time
-        creation_time = datetime.now()
+        creation_time = func.now()
         story_args.add_argument("title", type=str, required=True)
         story_args.add_argument("description", type=str, default=None)
         story_args.add_argument(
@@ -90,7 +91,7 @@ class Stories(Resource):
             "image",
             type=werkzeug.datastructures.FileStorage,
             location="files",
-            required=True,
+            default=None,
         )
         story_args.add_argument(
             "type",
@@ -103,6 +104,7 @@ class Stories(Resource):
         # TODO: tags
         story_args.add_argument("tags", type=str, action='append')
         args = story_args.parse_args()
+
         ret = self.s3_service.add_story(
             username=args.username,
             author=args.author,
@@ -123,7 +125,7 @@ class Stories(Resource):
         if not ret:
             return abort(500, description="Error in add_story in S3StoriesResource.")
         else:
-            return Response(status=201)
+            return HTTPStatus.CREATED
 
     def get(self):
         get_user_stories_args = reqparse.RequestParser()

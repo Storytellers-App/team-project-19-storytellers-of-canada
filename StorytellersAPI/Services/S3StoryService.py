@@ -122,7 +122,8 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_file(file_name, bucket_name, key)
-            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name,
+                                   Key=key)
             return True
         except:
             logging.exception("message")
@@ -142,29 +143,30 @@ class S3StoryService:
             print("try upload_fileobj")
             self.s3.upload_fileobj(fileobj, bucket_name, key)
             print("try making public")
-            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name,
+                                   Key=key)
             return True
         except:
             logging.exception("message")
             return False
 
     def add_story(
-        self,
-        username,
-        author,
-        creationTime,
-        title,
-        description,
-        recording,
-        parent,
-        parentType,
-        approved,
-        image,
-        type,
-        numLikes,
-        numReplies,
-        approvedTime,
-        tags,
+            self,
+            username,
+            author,
+            creationTime,
+            title,
+            description,
+            recording,
+            parent,
+            parentType,
+            approved,
+            image,
+            type,
+            numLikes,
+            numReplies,
+            approvedTime,
+            tags,
     ):
         try:
             # upload recording
@@ -172,10 +174,13 @@ class S3StoryService:
             self.upload_fileobj(recording, "sccanada", file_title)
             recording_url = self.get_url_from_key("sccanada", file_title)
 
-            # upload image
-            image_title = title + ".png"
-            self.upload_fileobj(image, "sccanada", image_title)
-            image_url = self.get_url_from_key("sccanada", image_title)
+            if image is not None:
+                # upload image
+                image_title = title + ".png"
+                self.upload_fileobj(image, "sccanada", image_title)
+                image_url = self.get_url_from_key("sccanada", image_title)
+            else:
+                image_url = None
 
             story = Story()
             story.username = username
@@ -195,12 +200,13 @@ class S3StoryService:
             self.db.session.add(story)
             self.db.session.flush()
             self.db.session.refresh(story)
-            for tag in tags:
-                story_tag = Tag()
-                story_tag.storyid = story.id
-                story_tag.tag = tag
-                self.db.session.add(story_tag)
-                self.db.session.commit()
+            if tags is not None:
+                for tag in tags:
+                    story_tag = Tag()
+                    story_tag.storyid = story.id
+                    story_tag.tag = tag
+                    self.db.session.add(story_tag)
+            self.db.session.commit()
             return True
         except:
             logging.exception("message")
@@ -213,7 +219,8 @@ if __name__ == "__main__":
         "../SongFiles/4.35-How Heart Came Into The World - Dan Yashinsky.mp3"
     ).resolve()
     client.upload_file(
-        str(path), "my_bucket", "How Heart Came Into The World - Dan Yashinsky.mp3"
+        str(path), "my_bucket",
+        "How Heart Came Into The World - Dan Yashinsky.mp3"
     )
     session = boto3.Session()
     s3 = session.client(
