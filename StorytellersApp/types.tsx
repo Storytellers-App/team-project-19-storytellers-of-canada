@@ -7,8 +7,12 @@ export type RootStackParamList = {
   StoryResponse: {
     header: ResponseType;
   };
+  NewComment : {
+    parent?: ResponseType,
+    user: string, //Ideally I want the whole user. Will change to pass this around screens directly from login
+  };
   NotFound: undefined;
-  NewRecording: undefined;
+  NewRecording: {parent?: ResponseType | null};
   NewStory: {recording: string | null, 'username': string};
 };
 

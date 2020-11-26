@@ -9,6 +9,7 @@ from Resources.RegisterResource import Register
 from Resources.StoriesResource import Stories, Responses
 from Resources.LikesResource import AddLikes, RemoveLikes
 from Resources.AdminResource import Admin
+from Resources.CommentResource import CommentRes
 
 from Resources.StoryDeleteResource import StoryDelete
 from Resources.StoryFetchResource import StoryFetch
@@ -30,6 +31,7 @@ api.add_resource(Responses, '/stories/responses')
 api.add_resource(AddLikes, '/stories/addlike')
 api.add_resource(RemoveLikes, '/stories/removelike')
 api.add_resource(Admin, '/admin')
+api.add_resource(CommentRes, '/comment')
 # DELETE /story_delete?key&bucket
 api.add_resource(StoryDelete, '/story_delete')
 
@@ -44,6 +46,6 @@ api.add_resource(StoryUpload, '/story_upload')
 api.add_resource(StoryFetch, '/story_fetch')
 
 if __name__ == '__main__':
-    # host = '' # ip host address
+    # host = ''  # ip host address
     # app.run(host=host)
     app.run(host='0.0.0.0')

@@ -12,7 +12,7 @@ import NewRecordingScreen from '../screens/NewRecordingScreen';
 import NewStoryScreen from '../screens/NewStoryScreen';
 
 import StoryResponseScreen from '../screens/StoryResponseScreen';
-
+import NewCommentScreen from '../screens/NewCommentScreen';
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -41,6 +41,7 @@ function RootNavigator({admin} : {admin: boolean}) {
       <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
       <Stack.Screen name="NewStory" component={NewStoryScreen} />
       <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />
+      <Stack.Screen name="NewComment" component={NewCommentScreen} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
   );
