@@ -75,14 +75,14 @@ export default function NewCommentScreen({ route, navigation }: Props) {
           <Text style={styles.buttonText}>Comment</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.newTweetContainer}>
+      <View style={styles.newCommentContainer}>
         <View style={styles.inputsContainer}>
           <TextInput
             value={comment}
             onChangeText={(value) => setComment(value)}
             multiline={true}
             numberOfLines={3}
-            style={styles.tweetInput}
+            style={styles.commentInput}
             placeholder={"Input your response"}
           />
         </View>
@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 15,
+    backgroundColor: 'white'
+   
   },
   button: {
     backgroundColor: Colors.light.tint,
@@ -115,17 +117,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16
   },
-  newTweetContainer: {
+  newCommentContainer: {
     flexDirection: 'row',
     padding: 15,
+    backgroundColor: 'white'
   },
   inputsContainer: {
     marginLeft: 10,
+    backgroundColor: 'white'
   },
-  tweetInput: {
+  commentInput: {
     height: 100,
     maxHeight: 300,
     fontSize: 20,
+    backgroundColor: 'white'
   },
   pickImage: {
     fontSize: 18,

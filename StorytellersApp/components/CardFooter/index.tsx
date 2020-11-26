@@ -149,8 +149,8 @@ const Footer = (props: UserStoryProps) => {
                 }}>{props.story.numReplies}</Text>}
             </View>
             <Portal>
-                <Dialog visible={replyVisible} onDismiss={hideDialog}>
-                    <Dialog.Title>Reply</Dialog.Title>
+                <Dialog visible={replyVisible} onDismiss={hideDialog} style={{backgroundColor: 'white'}}>
+                    <Dialog.Title style={{color: 'black'}}>Reply</Dialog.Title>
                     <Dialog.Content>
                         <View style={styles.replyMenu}>
                             <TouchableOpacity onPress={commentReply}>
