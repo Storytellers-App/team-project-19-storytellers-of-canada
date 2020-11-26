@@ -14,7 +14,7 @@ const NewRecordingButton = () => {
 
     const onPress = () => {
         console.log('open recording screen');
-        navigation.navigate("NewRecording");
+        navigation.navigate("NewRecording", {});
     }
     return (<TouchableOpacity style={styles.button}
         onPress={onPress}

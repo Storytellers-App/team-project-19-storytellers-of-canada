@@ -10,7 +10,6 @@ from datetime import datetime
 from common.Enums import StoryType
 
 
-# temporary easy way to register likes
 class AddLikes(Resource):
     def post(self):
         set_likes_args = reqparse.RequestParser()

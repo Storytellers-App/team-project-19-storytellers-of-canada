@@ -50,8 +50,8 @@ class Comment(db.Model):
     approved = db.Column(db.Boolean, nullable=False, default=False)
     type = db.Column(db.String(455), nullable=False,
                      default='comment')
-    numLikes = db.Column(db.Integer)
-    numReplies = db.Column(db.Integer)
+    numLikes = db.Column(db.Integer, default=0)
+    numReplies = db.Column(db.Integer, default=0)
     approvedTime = db.Column(db.DateTime)
 
 

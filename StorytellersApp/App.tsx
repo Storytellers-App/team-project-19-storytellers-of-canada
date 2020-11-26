@@ -6,7 +6,7 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import Routes from './Routes';
-
+import { Provider as PaperProvider } from 'react-native-paper';
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -15,10 +15,12 @@ export default function App() {
     return null;
   } else {
     return (
+      <PaperProvider>
         <SafeAreaProvider>
-            <Routes/>
-            <StatusBar />
-        </SafeAreaProvider>        
+          <Routes />
+          <StatusBar />
+        </SafeAreaProvider>
+      </PaperProvider>
     );
   }
 }
