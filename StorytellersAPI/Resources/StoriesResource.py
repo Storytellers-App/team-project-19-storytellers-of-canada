@@ -51,6 +51,7 @@ storysave_fields = {
     "tags": fields.List(fields.String),
     "type": fields.String,
     "isLiked": fields.Boolean,
+    "image": fields.String,
 }
 
 comment_fields = {
@@ -74,7 +75,7 @@ class Stories(Resource):
         story_args.add_argument("username", type=str, default=None)
         story_args.add_argument("author", type=str, default=None)
         # generate new creation time
-        creation_time = datetime.now()
+        creation_time = func.now()
         story_args.add_argument("title", type=str, required=True)
         story_args.add_argument("description", type=str, default=None)
         story_args.add_argument(

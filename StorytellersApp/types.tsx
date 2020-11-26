@@ -57,6 +57,7 @@ export type StorySaveType = {
   numLikes?: number,
   tags: string[],
   type: string,
+  image?: string,
   isLiked?: boolean,
 }
 

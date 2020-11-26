@@ -1,8 +1,8 @@
 import React, { Component, useEffect, useState } from 'react'
 import { View, FlatList } from 'react-native';
 
-import userstories from '../../data/userstoriestest';
 import UserStory from '../UserStory';
+import SavedStory from '../SavedStory';
 import { UserStoryType, UserType, StoryType, StorySaveType, ResponseType, CommentType } from "../../types";
 import axios from 'axios';
 import moment from 'moment';
@@ -105,7 +105,7 @@ export default class AdminFeed extends Component {
 
     Response = ({ response }: Props) => {
         if ((response as StorySaveType).author) {
-            return <Text>Testing stored story</Text>;
+            return <SavedStory story={response as StorySaveType} admin={true}></SavedStory>;
         }
         else if ((response as CommentType).comment) {
             return (
