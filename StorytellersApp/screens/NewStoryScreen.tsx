@@ -50,7 +50,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     const handleSubmit = async () => {
         // let blob = await fetch(recording).then(r => r.blob());
         // console.log("the blobbbbbbbbbbbbbbbbbbbbbb");
-        
+        // console.log(JSON.stringify(blob));
         // const formData = new FormData();
         // formData.append('username', username);
         // formData.append('title', title);
