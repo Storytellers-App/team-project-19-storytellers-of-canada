@@ -396,70 +396,6 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
   
       return (
         <View style={styles.container}>
-
-          <View
-            style={[
-              styles.halfScreenContainer,
-              {
-                opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
-              },
-            ]}
-          >
-            <View />
-            <View>
-                <Text style={
-                    [
-                        styles.text,
-                        {
-                            color: 'black'
-                        }
-                    ]
-                }>
-                    Record Your Story
-                </Text>
-            </View>
-            <View style={styles.recordingContainer}>
-              <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onRecordPressed}
-                disabled={this.state.isLoading}
-              >
-                {/* <Image style={styles.image} source={Icons.RECORD_BUTTON.module} /> */}
-                {this.state.isRecording ? <FontAwesome name="stop" size={34} color="red" /> : <MaterialCommunityIcons name="record-circle" size={34} color="red" style={styles.image}/>}
-                
-              </TouchableHighlight>
-              <Text
-                  style={[styles.liveText, ]}
-                >
-                  {this.state.isRecording ? "Stop" : "Record"}
-                </Text>
-              <View style={styles.recordingDataContainer}>
-                <View />
-                <View style={styles.recordingDataRowContainer}>
-                  {/* <Image
-                    style={[
-                      styles.image,
-                      { opacity: this.state.isRecording ? 1.0 : 0.0 },
-                    ]}
-                    source={Icons.RECORDING.module}
-                  /> */}
-                  <Text
-                    style={[
-                      styles.recordingTimestamp,
-                      
-                    ]}
-                  >
-                    {this._getRecordingTimestamp()}
-                  </Text>
-                </View>
-                <View />
-              </View>
-              <View />
-            </View>
-            <View />
-          </View>
           <View
             style={[
               styles.halfScreenContainer,
@@ -475,8 +411,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             <View style={styles.playbackContainer}>
               <Slider
                 style={styles.playbackSlider}
-                trackImage={Icons.TRACK_1.module}
-                thumbImage={Icons.THUMB_1.module}
+                // trackImage={Icons.TRACK_1.module}
+                // thumbImage={Icons.THUMB_1.module}
                 value={this._getSeekSliderPosition()}
                 onValueChange={this._onSeekSliderValueChange}
                 onSlidingComplete={this._onSeekSliderSlidingComplete}
@@ -493,7 +429,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             </View>
             <View
               style={[styles.buttonsContainerBase, styles.buttonsContainerTopRow]}
-            >
+                >
               <View style={styles.volumeContainer}>
                 <TouchableHighlight
                   underlayColor={BACKGROUND_COLOR}
@@ -509,12 +445,12 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                         : Icons.UNMUTED_BUTTON.module
                     }
                   /> */}
-                  <Octicons name={this.state.muted ? "mute" : "unmute"} size={34} color="black" />
+                  <Octicons name={this.state.muted ? "mute" : "unmute"} size={34} color="black"/>
                 </TouchableHighlight>
                 <Slider
                   style={styles.volumeSlider}
-                  trackImage={Icons.TRACK_1.module}
-                  thumbImage={Icons.THUMB_2.module}
+                  // trackImage={Icons.TRACK_1.module}
+                  // thumbImage={Icons.THUMB_2.module}
                   value={1}
                   onValueChange={this._onVolumeSliderValueChange}
                   disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
@@ -593,6 +529,52 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             </View> */}
             <View />
           </View>
+
+          <View
+            style={[
+              styles.halfScreenContainerBottom,
+              {
+                opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
+              },
+            ]}
+          >
+            
+            {/* <View style={styles.recordingContainer}> */}
+            <View style={styles.bottom}>
+            <View style={styles.recordingStatus}>
+                  <Text
+                    style={[
+                      styles.recordingTimestamp,
+                    ]}
+                  >
+                    {this._getRecordingTimestamp()}
+                  </Text>
+                </View>
+              <View style={styles.recordButton}>
+              <TouchableHighlight
+                underlayColor={BACKGROUND_COLOR}
+                style={styles.wrapper}
+                onPress={this._onRecordPressed}
+                disabled={this.state.isLoading}
+              >
+                {/* <Image style={styles.image} source={Icons.RECORD_BUTTON.module} /> */}
+                {this.state.isRecording ? <FontAwesome name="stop" size={64} color="red" /> : <MaterialCommunityIcons name="record-circle" size={64} color="red" style={styles.image}/>}
+                
+              </TouchableHighlight>
+              </View>
+            </View>
+              {/* <Text
+                  style={[styles.liveText, ]}
+                >
+                  {this.state.isRecording ? "Stop" : "Record"}
+                </Text> */}
+              {/* <View style={styles.recordingDataContainer}> */}
+                <View />
+              {/* </View> */}
+              <View />
+            {/* </View> */}
+            <View />
+          </View>
         </View>
       );
     }
@@ -602,6 +584,10 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     emptyContainer: {
       alignSelf: "stretch",
       backgroundColor: BACKGROUND_COLOR,
+    },
+    bottom: {
+      flexDirection: 'column',
+      alignItems: 'center',
     },
     container: {
       flex: 1,
@@ -615,11 +601,23 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     },
     wrapper: {},
     halfScreenContainer: {
+      flex: 3,
+      flexDirection: "column",
+      justifyContent: "space-around",
+      alignItems: "center",
+      alignSelf: "stretch",
+      paddingTop: 10,
+
+    },
+    halfScreenContainerBottom: {
       flex: 1,
       flexDirection: "column",
       justifyContent: "space-between",
       alignItems: "center",
       alignSelf: "stretch",
+      //marginBottom: 50,
+      paddingBottom: 100,
+
     },
     recordingContainer: {
       flex: 1,
@@ -629,6 +627,12 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       alignSelf: "stretch",
       minHeight: Icons.RECORD_BUTTON.height,
       maxHeight: Icons.RECORD_BUTTON.height,
+    },
+    recordButton: {
+      flexDirection: 'row',
+      flex: 1,
+      marginTop: 10,
+     
     },
     recordingDataContainer: {
       flex: 1,
@@ -648,6 +652,11 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       minHeight: Icons.RECORDING.height,
       maxHeight: Icons.RECORDING.height,
     },
+    recordingStatus: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+    },
     playbackContainer: {
       flex: 1,
       flexDirection: "column",
@@ -665,7 +674,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       color: LIVE_COLOR,
     },
     recordingTimestamp: {
-      paddingLeft: 20,
+      color: 'green',
     },
     playbackTimestamp: {
       textAlign: "right",
@@ -673,7 +682,6 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       paddingRight: 20,
     },
     image: {
-      backgroundColor: BACKGROUND_COLOR,
     },
     textButton: {
       backgroundColor: BACKGROUND_COLOR,
@@ -683,7 +691,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       flex: 1,
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
+      justifyContent: "space-around",
       marginHorizontal: 15,
     },
     buttonsContainerTopRow: {
@@ -709,6 +717,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     },
     volumeSlider: {
       width: DEVICE_WIDTH / 2.0 - Icons.MUTED_BUTTON.width,
+      marginHorizontal: 0,
     },
     buttonsContainerBottomRow: {
       maxHeight: Icons.THUMB_1.height,
