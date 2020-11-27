@@ -100,7 +100,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
        
       };
       this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
-  
+      this.recordingSettings.ios.extension = '.mp3';
+      this.recordingSettings.android.extension = '.mp3';
       // UNCOMMENT THIS TO TEST maxFileSize:
       /* this.recordingSettings = {
         ...this.recordingSettings,
