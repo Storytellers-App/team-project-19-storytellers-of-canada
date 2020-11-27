@@ -48,6 +48,7 @@ A tab at the bottom of the screen brings you to another feed, filled with curate
 - We have not deployed this app yet, but will after our final version is polished
 
 #### <ins>For TAs / Testing:</ins>
+Note: We currently recommend testing the application using Android, as due to Apple’s security policies there may be issues using the application on physical iPhone hardware.
 
 **On Android:**
 
@@ -100,7 +101,7 @@ Our frontend is a react native application integrated with the Expo framework.
 
 To begin the setup, follow the instructions provided by React for setting up a development environment.
 
-Following the Expo CLI Quickstart will give you the bare minimum setup to run Expo using a physical device as a testing environment. If you wish to set up an Android or IOS emulator to run your application instead, refer to the React Native CLI Quickstart guide.
+Following the Expo CLI Quickstart will give you the bare minimum setup to run Expo using a physical device as a testing environment. If you wish to set up an Android or iOS emulator to run your application instead, refer to the React Native CLI Quickstart guide.
 
 [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/docs/environment-setup)
 
