@@ -50,47 +50,33 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         if (recording === null){
             return;
         }
-        let blob = await fetch(recording).then(r => r.blob());
         const formData = new FormData();
+        let uri =  recording
         formData.append('username', username);
         formData.append('title', title);
         formData.append('description', description);
-        formData.append('tags', JSON.stringify(tags.tagsArray));
-        formData.append('recording', blob);
+        tags.tagsArray.forEach(element => {
+            formData.append('tags', element);
+        });
+        /*@ts-ignore*/
+        formData.append('recording', {uri: uri, 
+            name: uri,
+             type: 'audio/mpeg'});
         formData.append('type', 'userstory');
         const xhr = new XMLHttpRequest();
-        xhr.open('PUT', host + 'stories'); // the address really doesnt matter the error occures before the network request is even made.
+        xhr.open('PUT', host + 'stories'); 
         xhr.send(formData);
         xhr.onreadystatechange = e => {
           if (xhr.readyState !== 4) {
             return;
           }
           if (xhr.status === 200) {
-            console.log('success', xhr.responseText);
+            navigation.navigate('HomeScreen')
+            Alert.alert("Your submission is under review!")
           } else {
-            console.log('error', xhr.responseText); // Always get here..
+            console.log('error', xhr.responseText);
           }
         };
-    
-        // fetch(host + 'stories', {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //         // 'Content-Type': 'application/x-www-form-urlencoded',
-        //       },
-        //     method: 'PUT',
-        //     body: formData
-        // }).then(response => response.json())
-        // .then((responseData) => {
-        //     console.log(responseData);
-        //     navigation.navigate('HomeScreen')
-        //     //Alert.alert("Your submission is under review!")
-        // })
-        // .catch((error) => {
-        //     Alert.alert("Sorry something went wrong")
-        //     console.error(error);
-        // });
-        // Alert.alert("Your submission is under review!");
-        
     }
 
 
