@@ -8,13 +8,16 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 
-const NewRecordingButton = () => {
+const NewRecordingButton = ({user}: {user?: string}) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = () => {
         console.log('open recording screen');
-        navigation.navigate("NewRecording", {});
+        if (user === undefined){
+            return;
+        }
+        navigation.navigate("NewRecording", {username: user});  
     }
     return (<TouchableOpacity style={styles.button}
         onPress={onPress}

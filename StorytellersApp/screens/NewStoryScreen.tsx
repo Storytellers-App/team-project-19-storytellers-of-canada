@@ -25,16 +25,15 @@ type Props = {
 
 export default function NewStoryScreen({ route, navigation }: Props) {
     const host = Config.HOST;
-    const { recording, username } = route.params;
- 
-
+    const { parent, recording, username } = route.params;
+   
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState({
         tag: '',
         tagsArray: [],
     });
-
+    
     const [currentTag, setCurrentTag] = useState("");
 
     const handleOnChangeTitle = (text: string) => {
@@ -54,6 +53,10 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         let uri =  recording
         formData.append('username', username);
         formData.append('title', title);
+        if (parent != null && parent != undefined){
+            formData.append('parent', parent.id.toString());
+            formData.append('parent_type', parent.type);
+        }
         formData.append('description', description);
         tags.tagsArray.forEach(element => {
             formData.append('tags', element);
@@ -78,7 +81,6 @@ export default function NewStoryScreen({ route, navigation }: Props) {
           }
         };
     }
-
 
     return (
 

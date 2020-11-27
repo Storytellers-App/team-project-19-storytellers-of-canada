@@ -7,22 +7,22 @@ import Colors from '../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import {Text, View} from '../../components/Themed';
-import { RootStackParamList } from '../../types';
+import { RootStackParamList, ResponseType} from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import NewStoryNavigationProp from '../../screens/NewStoryScreen';
 import AsyncStorage from '@react-native-community/async-storage';
 export type Props = {
     recording: string | null;
+    username: string;
+    parent?: ResponseType;
 };
 
-const NewStoryButton = ({recording}:Props) => {
+const NewStoryButton = ({recording, username, parent}:Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
-        const value = await AsyncStorage.getItem('username');
-        console.log(recording);
-        navigation.navigate("NewStory", { 'recording': recording , 'username': value});    
+        navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent});    
     }
     return (
         

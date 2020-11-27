@@ -27,16 +27,25 @@ import * as Icons from "../components/Icons";
 import { yellow100 } from 'react-native-paper/lib/typescript/src/styles/colors';
 import NewStoryButton from '../components/NewStoryButton';
 import NewRecordingButton from '../components/NewRecordingButton';
-
+import {ResponseType as ResponseStory, RootStackParamList} from '../types'; 
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "white";
 const LIVE_COLOR = "red";
 const DISABLED_OPACITY = 0.2;
 const RATE_SCALE = 3.0;
 
-type Props = {
 
-};
+type NewRecordingRouteProp = RouteProp<RootStackParamList, 'NewRecording'>;
+type NewRecordingNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'NewRecording'
+>;
+type Props = {
+  route: NewRecordingRouteProp;
+  navigation: NewRecordingNavigationProp;
+}
 
 type State = {
   haveRecordingPermissions: boolean;
@@ -63,13 +72,16 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     private isSeeking: boolean;
     private shouldPlayAtEndOfSeek: boolean;
     private readonly recordingSettings: Audio.RecordingOptions;
-  
+    private username: string;
+    private parentStory: ResponseStory | undefined;
     constructor(props: Props) {
       super(props);
       this.recording = null;
       this.sound = null;
       this.isSeeking = false;
       this.shouldPlayAtEndOfSeek = false;
+      this.username = props.route.params.username;
+      this.parentStory = props.route.params.parent;
       this.state = {
         haveRecordingPermissions: false,
         isLoading: false,
@@ -85,6 +97,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         shouldCorrectPitch: true,
         volume: 1.0,
         rate: 1.0,
+       
       };
       this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY;
   
@@ -363,13 +376,14 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       return `${this._getMMSSFromMillis(0)}`;
     }
 
-    private handleNext() {
-        const username = 'test'
-        const navigation = useNavigation();
-        navigation.navigate("NewStory", {username: username, recording: this.recording});
-        console.warn('Next Up')
+    // private handleNext() {
+    //     const navigation = useNavigation();
+    //     console.log( this.route.params.parent);
+    //     console.log( this.route.params.username);
+    //     navigation.navigate("NewStory", {parent: this.route.params.parent, username: this.route.params.username, recording: this.recording});
+    //     console.warn('Next Up')
         
-    }
+    // }
   
     render() {
       if (!this.state.fontLoaded) {
@@ -497,7 +511,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                         Next
                     </Text>
                 </TouchableHighlight> */}   
-                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()}/>             
+                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory}/>             
             </View>
 
             

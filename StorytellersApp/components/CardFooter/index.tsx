@@ -113,7 +113,7 @@ const Footer = (props: UserStoryProps) => {
 
     const audioReply = () => {
         setReplyVisible(false);
-        navigation.navigate("NewRecording", { parent: props.story });
+        navigation.navigate("NewRecording", { parent: props.story, username: user });
     }
 
     const commentReply = () => {
