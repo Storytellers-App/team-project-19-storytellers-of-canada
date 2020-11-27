@@ -40,13 +40,14 @@ A tab at the bottom of the screen brings you to another feed, filled with curate
 
 ## Instructions
 ### Step One: Getting the app on your phone
-**For end users:**
+
+#### <ins>For end users:</ins>
 
 - Download the app from the App Store (iOS) or Play Store (Android)
 
 - We have not deployed this app yet, but will after our final version is polished
 
-For TAs / Testing:
+#### <ins>For TAs / Testing:</ins>
 
 **On Android:**
 
@@ -128,4 +129,4 @@ Two factors led to this decision:
     
 This license does not have much effect on our development as all it does is allow other people to use it, while shielding us from any legal liability. As we retain all rights to the code, if we wanted to in the future, we could use it
 
-If we were to make the Github repository public, that anyone could take our code, modify it, and potentially publish it to the Google play or App Store.
+If we were to make the Github repository public, then anyone could take our code, modify it, and potentially publish it to the Google play or App Store.
