@@ -123,6 +123,7 @@ export default class LoginScreen extends Component {
                     <Input
                         style={styles.input}
                         placeholder="Username"
+                        autoCapitalize = 'none'
                         onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
