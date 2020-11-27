@@ -366,7 +366,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     private handleNext() {
         const username = 'test'
         const navigation = useNavigation();
-        navigation.navigate("NewStory", {username: 'got it bitch', recording: "heres the rec"});
+        navigation.navigate("NewStory", {username: username, recording: this.recording});
         console.warn('Next Up')
         
     }

@@ -10,7 +10,7 @@ import Colors from '../constants/Colors';
 import TagInput from 'react-native-tags-input';
 import { Feather } from '@expo/vector-icons';
 import * as Config from '../config';
-
+import axios from 'axios';
 
 type NewStoryRouteProp = RouteProp<RootStackParamList, 'NewStory'>;
 
@@ -26,8 +26,7 @@ type Props = {
 export default function NewStoryScreen({ route, navigation }: Props) {
     const host = Config.HOST;
     const { recording, username } = route.params;
-    console.log("TIS TIME TO SEE URI");
-    console.log(recording);
+ 
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -48,15 +47,31 @@ export default function NewStoryScreen({ route, navigation }: Props) {
 
     
     const handleSubmit = async () => {
-        // let blob = await fetch(recording).then(r => r.blob());
-        // console.log("the blobbbbbbbbbbbbbbbbbbbbbb");
-        // console.log(JSON.stringify(blob));
-        // const formData = new FormData();
-        // formData.append('username', username);
-        // formData.append('title', title);
-        // formData.append('description', description);
-        // formData.append('tags', JSON.stringify(tags.tagsArray));
-        // formData.append('recording', blob , 'recording');
+        if (recording === null){
+            return;
+        }
+        let blob = await fetch(recording).then(r => r.blob());
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('tags', JSON.stringify(tags.tagsArray));
+        formData.append('recording', blob);
+        formData.append('type', 'userstory');
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', host + 'stories'); // the address really doesnt matter the error occures before the network request is even made.
+        xhr.send(formData);
+        xhr.onreadystatechange = e => {
+          if (xhr.readyState !== 4) {
+            return;
+          }
+          if (xhr.status === 200) {
+            console.log('success', xhr.responseText);
+          } else {
+            console.log('error', xhr.responseText); // Always get here..
+          }
+        };
+    
         // fetch(host + 'stories', {
         //     headers: {
         //         'Content-Type': 'multipart/form-data'
@@ -74,7 +89,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         //     Alert.alert("Sorry something went wrong")
         //     console.error(error);
         // });
-        Alert.alert("Your submission is under review!");
+        // Alert.alert("Your submission is under review!");
         
     }
 
