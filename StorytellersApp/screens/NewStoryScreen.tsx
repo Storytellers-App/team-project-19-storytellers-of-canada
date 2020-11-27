@@ -111,6 +111,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                     }}
                     placeholder="Tags..."
                     tagStyle={styles.tag}
+                    keysForTag={'done'}
                     tagTextStyle={styles.tagText}
                     deleteElement={<Feather name="x" size={16} color="white" />}
                 />
