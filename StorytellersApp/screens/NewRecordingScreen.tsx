@@ -99,7 +99,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         rate: 1.0,
        
       };
-      this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY;
+      this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
   
       // UNCOMMENT THIS TO TEST maxFileSize:
       /* this.recordingSettings = {
