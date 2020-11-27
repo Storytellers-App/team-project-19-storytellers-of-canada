@@ -64,7 +64,7 @@ export default function HomeScreen() {
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
       <Feed></Feed>
-      <NewRecordingButton />
+      <NewRecordingButton user={user?.username}/>
     </View>
   );
 }
