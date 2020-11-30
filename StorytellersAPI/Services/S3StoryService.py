@@ -10,7 +10,13 @@ from Services.instance.config import *
 import logging
 from models import Story, Tag
 from extensions import *
+import os
 import sys
+from pydub import AudioSegment
+import pathlib
+
+# TODO: linux may not like this
+FILE_PATH = pathlib.Path(__file__).parent.absolute().__str__() + "\\Temp\\"
 
 
 class S3StoryService:
@@ -122,8 +128,7 @@ class S3StoryService:
             self.create_bucket(bucket_name)
         try:
             self.s3.upload_file(file_name, bucket_name, key)
-            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name,
-                                   Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
             return True
         except:
             logging.exception("message")
@@ -143,37 +148,116 @@ class S3StoryService:
             print("try upload_fileobj")
             self.s3.upload_fileobj(fileobj, bucket_name, key)
             print("try making public")
-            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name,
-                                   Key=key)
+            self.s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=key)
             return True
         except:
             logging.exception("message")
             return False
 
+    def log_file(self):
+        print(FILE_PATH)
+
+    def encode_audio(self, file_name, extension, bucket_name):
+        """
+        Given a file with <file_name>.<extension> placed in FILE_PATH, encode it to mp3 and
+        return the URL fetched from the s3 server, then delete the non-transcoded audio.
+        :param bucket_name: name of the bucket in which to upload the story
+        :param file_name: File name of story
+        :param extension: Extension of story (3gp, flac, caf, etc)
+        :return: URL of the encoded mp3 story.
+        """
+        print(FILE_PATH)
+
+        # get file names
+        old_path = FILE_PATH + file_name + "." + extension
+        new_path = FILE_PATH + file_name + ".mp3"
+
+        # open old file
+        audio_file = AudioSegment.from_file(old_path, extension)
+
+        # encode to mp3
+        audio_file.export(new_path, format="mp3", bitrate="128k")
+        self.upload_file(new_path, bucket_name, file_name + ".mp3")
+
+        # remove files
+        if os.path.exists(old_path):
+            os.remove(old_path)
+        if os.path.exists(new_path):
+            os.remove(new_path)
+        return self.get_url_from_key(bucket_name, file_name + ".mp3")
+
+    def delete_file(self, bucket, key):
+        if self.check_key(bucket, key):
+            self.s3.delete_object(Bucket=bucket, Key=key)
+
+    def download_temp(self, bucket, key):
+        """
+        Saves file to temp dir
+        :param key: key of object to get
+        :param bucket: bucket of object to get
+        :return:
+        """
+        if self.check_key(bucket, key):
+            self.s3.download_file(bucket, key, FILE_PATH + key)
+
     def add_story(
-            self,
-            username,
-            author,
-            creationTime,
-            title,
-            description,
-            recording,
-            parent,
-            parentType,
-            approved,
-            image,
-            type,
-            numLikes,
-            numReplies,
-            approvedTime,
-            tags,
+        self,
+        username,
+        author,
+        creationTime,
+        title,
+        description,
+        recording,
+        extension,
+        parent,
+        parentType,
+        approved,
+        image,
+        type,
+        numLikes,
+        numReplies,
+        approvedTime,
+        tags,
     ):
         try:
             # upload recording
-            file_title = title + ".mp3"
+            file_title = title + "." + extension
             self.upload_fileobj(recording, "sccanada", file_title)
             recording_url = self.get_url_from_key("sccanada", file_title)
+            print("Backup URL for {}: {}".format(file_title, recording_url))
 
+            # it will still upload the file (for backup purposes) but there will
+            # be an error raised
+            # this doesn't work, we will fetch from s3 instead
+            # which should be free since it's in the same datacenter
+            # try:
+            #     # write file to disk
+            #     recording.save(FILE_PATH + file_title)
+            #     recording.close()
+            #
+            #     # then pass file name + extension to encode_audio
+            #     recording_url = self.encode_audio(title, extension, "sccanada")
+            # except:
+            #     logging.exception("message")
+
+            # backup url
+            old_url = recording_url
+
+            try:
+                # download file to temp
+                self.download_temp("sccanada", file_title)
+                # then encode
+                recording_url = self.encode_audio(title, extension, "sccanada")
+                # then delete original
+                self.delete_file("sccanada", file_title)
+            except:
+                # restore url
+                recording_url = old_url
+                # delete file to save storage
+                self.delete_file("sccanada", title + extension)
+                logging.exception("message")
+
+            # add it to the story
             if image is not None:
                 # upload image
                 image_title = title + ".png"
@@ -219,8 +303,7 @@ if __name__ == "__main__":
         "../SongFiles/4.35-How Heart Came Into The World - Dan Yashinsky.mp3"
     ).resolve()
     client.upload_file(
-        str(path), "my_bucket",
-        "How Heart Came Into The World - Dan Yashinsky.mp3"
+        str(path), "my_bucket", "How Heart Came Into The World - Dan Yashinsky.mp3"
     )
     session = boto3.Session()
     s3 = session.client(
