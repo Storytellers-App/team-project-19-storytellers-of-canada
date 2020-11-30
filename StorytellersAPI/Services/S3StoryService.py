@@ -16,7 +16,7 @@ from pydub import AudioSegment
 import pathlib
 
 # TODO: linux may not like this
-FILE_PATH = pathlib.Path(__file__).parent.absolute().__str__() + "\\Temp\\"
+FILE_PATH = pathlib.Path(__file__).parent.absolute().__str__() + "/Temp/"
 
 
 class S3StoryService:
