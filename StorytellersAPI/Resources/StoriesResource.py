@@ -76,13 +76,14 @@ class Stories(Resource):
         story_args.add_argument("author", type=str, default=None)
         # generate new creation time
         creation_time = func.now()
-        story_args.add_argument("title", type=str, required=True)
+        story_args.add_argument("title", type=str, required=True, help="Title not specified!")
         story_args.add_argument("description", type=str, default=None)
         story_args.add_argument(
             "recording",
             type=werkzeug.datastructures.FileStorage,
             location="files",
             required=True,
+            help="File not specified!"
         )
         story_args.add_argument("parent", type=int, default=None)
         story_args.add_argument("parent_type", type=str, default=None)
@@ -101,8 +102,10 @@ class Stories(Resource):
         num_likes = 0
         num_replies = 0
         story_args.add_argument("approved_time", type=inputs.datetime_from_iso8601)
-        # TODO: tags
         story_args.add_argument("tags", type=str, action='append')
+        # TODO: need extension which we can get from the blob/file
+        # format: characters only no dot eg. "caf", "3gp"
+        story_args.add_argument("extension", type=str, required=True)
         args = story_args.parse_args()
 
         ret = self.s3_service.add_story(
@@ -112,6 +115,7 @@ class Stories(Resource):
             title=args.title,
             description=args.description,
             recording=args.recording,
+            extension=args.extension,
             parent=args.parent,
             parentType=args.parent_type,
             approved=args.approved,
