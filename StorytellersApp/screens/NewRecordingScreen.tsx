@@ -99,7 +99,27 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         rate: 1.0,
        
       };
-      this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
+      // this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
+      this.recordingSettings = {
+        android: {
+            extension: '.mp3',
+            outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+            audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_DEFAULT,
+            sampleRate: 44100,
+            numberOfChannels: 2,
+            bitRate: 128000,
+        },
+        ios: {
+            extension: 'mp3',
+            audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
+            sampleRate: 44100,
+            numberOfChannels: 2,
+            bitRate: 128000,
+            linearPCMBitDepth: 16,
+            linearPCMIsBigEndian: false,
+            linearPCMIsFloat: false,
+        },
+    };
   
       // UNCOMMENT THIS TO TEST maxFileSize:
       /* this.recordingSettings = {
