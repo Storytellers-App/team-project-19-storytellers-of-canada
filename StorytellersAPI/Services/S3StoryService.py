@@ -228,22 +228,22 @@ class S3StoryService:
 
             # commenting this out for the sake of memory usage
 
-            # backup url
-            old_url = recording_url
-
-            try:
-                # download file to temp
-                self.download_temp("sccanada", file_title)
-                # then encode
-                recording_url = self.encode_audio(title, extension, "sccanada")
-                # then delete original
-                self.delete_file("sccanada", file_title)
-            except:
-                # restore url
-                recording_url = old_url
-                # delete file to save storage
-                self.delete_file("sccanada", title + extension)
-                logging.exception("message")
+            # # backup url
+            # old_url = recording_url
+            #
+            # try:
+            #     # download file to temp
+            #     self.download_temp("sccanada", file_title)
+            #     # then encode
+            #     recording_url = self.encode_audio(title, extension, "sccanada")
+            #     # then delete original
+            #     self.delete_file("sccanada", file_title)
+            # except:
+            #     # restore url
+            #     recording_url = old_url
+            #     # delete file to save storage
+            #     self.delete_file("sccanada", title + extension)
+            #     logging.exception("message")
 
             # add it to the story
             if image is not None:
