@@ -15,6 +15,7 @@ import DigitalTimeString from './DigitalTimeString';
 const TRACK_SIZE = 4;
 const THUMB_SIZE = 20;
 
+let soundObject2 = new Audio.Sound()
 
 export default class AudioSlider extends PureComponent {
 
@@ -76,7 +77,8 @@ export default class AudioSlider extends PureComponent {
     };
 
     mapAudioToCurrentTime = async () => {
-        await this.soundObject.setPositionAsync(this.state.currentTime);
+        // await this.soundObject.setPositionAsync(this.state.currentTime);
+        soundObject2.setPositionAsync(this.state.currentTime);
     }
 
     onPressPlayPause = async () => {
@@ -88,19 +90,22 @@ export default class AudioSlider extends PureComponent {
     }
 
     play = async () => {
-        await this.soundObject.playAsync();
+        // await this.soundObject.playAsync();
+        await soundObjec2t.playAsync();
         this.setState({ playing: true }) // This is for the play-button to go to play
         this.startMovingDot();
     }
 
     pause = async () => {
-        await this.soundObject.pauseAsync();
+        // await this.soundObject.pauseAsync();
+        await soundObject2.pauseAsync();
         this.setState({ playing: false }) // This is for the play-button to go to pause
         Animated.timing(this.state.dotOffset).stop(); // Will also call animationPausedOrStopped()
     }
 
     startMovingDot = async () => {
-        const status = await this.soundObject.getStatusAsync();
+        // const status = await this.soundObject.getStatusAsync();
+        const status = await soundObject2.getStatusAsync();
         const durationLeft = status["durationMillis"] - status["positionMillis"];
 
         Animated.timing(this.state.dotOffset, {
@@ -118,10 +123,12 @@ export default class AudioSlider extends PureComponent {
         // Animation-duration is over (reset Animation and Audio):
         await sleep(200);  // In case animation has finished, but audio has not
         this.setState({ playing: false });
-        await this.soundObject.pauseAsync();
+        // await this.soundObject.pauseAsync();
+        soundObject2.pauseAsync();
         await this.state.dotOffset.setValue({ x:0, y:0 });
         // this.state.dotOffset.setValue(0);
-        await this.soundObject.setPositionAsync(0);
+        // await this.soundObject.setPositionAsync(0);
+        await soundObject2.setPositionAsync(0);
     }
 
     measureTrack = (event) => {
@@ -131,8 +138,10 @@ export default class AudioSlider extends PureComponent {
     async componentDidMount() {
         this.soundObject = new Audio.Sound();
 		try{
-			await this.soundObject.loadAsync({uri: this.props.audio});
-			const status = await this.soundObject.getStatusAsync();
+            // await this.soundObject.loadAsync({uri: this.props.audio});
+            await soundObject2.loadAsync({uri: this.props.audio});
+            // const status = await this.soundObject.getStatusAsync();
+            const status = await soundObject2.getStatusAsync();
         	this.setState({ duration: status["durationMillis"] });
 
         // This requires measureTrack to have been called.
@@ -152,7 +161,8 @@ export default class AudioSlider extends PureComponent {
     }
 
     async componentWillUnmount() {
-        await this.soundObject.unloadAsync();
+        // await this.soundObject.unloadAsync();
+        await soundObject2.unloadAsync();
         this.state.dotOffset.removeAllListeners();
     }
 
