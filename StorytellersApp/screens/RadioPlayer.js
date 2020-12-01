@@ -19,13 +19,21 @@ export default class RadioPlayer extends React.Component {
     }
 
     async componentDidMount() {
+        // await Audio.setAudioModeAsync({
+        //     playsInSilentModeIOS: true,
+        //     allowsRecordingIOS: false,
+        //     interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+        //     shouldDuckAndroid: false,
+        //     interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+        // })
         await Audio.setAudioModeAsync({
-            playsInSilentModeIOS: true,
             allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
             interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-            shouldDuckAndroid: false,
+            shouldDuckAndroid: true,
             interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-        })
+            playThroughEarpieceAndroid: false,
+          });
     }
 
     _onPlaybackStatusUpdate = playbackStatus => {
