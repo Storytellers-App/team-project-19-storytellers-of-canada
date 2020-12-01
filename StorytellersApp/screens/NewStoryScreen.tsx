@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, TouchableHighlight, ScrollView, Alert } from 'react-native';
+import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform } from 'react-native';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RootStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -53,7 +53,11 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         let uri =  recording
         formData.append('username', username);
         // file type: setting mp3 
-        formData.append('extension', 'mp3');
+        if (Platform.OS === 'ios'){
+            formData.append('extension', 'm4a');
+        } else {
+            formData.append('extension', 'mp3');
+        }
         formData.append('title', title);
         if (parent != null && parent != undefined){
             formData.append('parent', parent.id.toString());
