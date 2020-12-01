@@ -52,6 +52,8 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         const formData = new FormData();
         let uri =  recording
         formData.append('username', username);
+        // file type: setting mp3 
+        formData.append('extension', 'mp3');
         formData.append('title', title);
         if (parent != null && parent != undefined){
             formData.append('parent', parent.id.toString());

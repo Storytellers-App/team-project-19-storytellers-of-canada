@@ -110,7 +110,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             bitRate: 128000,
         },
         ios: {
-            extension: 'mp3',
+            extension: '.mp3',
             audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
             sampleRate: 44100,
             numberOfChannels: 2,
