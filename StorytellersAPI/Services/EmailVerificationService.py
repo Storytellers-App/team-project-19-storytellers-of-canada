@@ -13,8 +13,19 @@ class EmailVerificationService:
     def validate(self, emailInput, validationTokenInput):
         try:
             code = VerificationCode.query.filter_by(email=emailInput).first()
+            # TODO: Remove the token from the database
 
-            return code.code == validationTokenInput
+            valid = code.code == validationTokenInput
+
+            if valid:
+                # Delete the code
+                try:
+                    VerificationCode.query.filter_by(email=emailInput).delete()
+                    db.session.commit()
+                except Exception as e:
+                    print(e)
+
+            return valid
         except Exception as e:
             print(e)
             return False
