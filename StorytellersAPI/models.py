@@ -13,6 +13,12 @@ class User(db.Model):
                      default=UserType.MEMBER.value)
 
 
+class VerificationCode(db.Model):
+    __tablename__ = 'VerificationCodes'
+    email = db.Column(db.String(255), primary_key=True, nullable=False)
+    code = db.Column(db.String(255), primary_key=False, nullable=False)
+
+
 class Story(db.Model):
     __tablename__ = 'Stories'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
