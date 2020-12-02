@@ -10,12 +10,12 @@ class EmailVerification(Resource):
     def post(self):
         # Parsing the registration parameters
         parser = reqparse.RequestParser()
-        parser.add_argument("email")
-        parser.add_argument("verification_token")
+        parser.add_argument("email", location='headers')
+        parser.add_argument("token", location='headers')
         args = parser.parse_args()
 
         # Checking validity of credentials
         validate_service = EmailVerificationService()
         success = validate_service.validate(args["email"],
-                                            args["verification_token"])
+                                            args["token"])
         return jsonify(success=success)
