@@ -1,1 +1,1 @@
-export const HOST = ""
+export const HOST = "http://0.0.0.0:5000/"
