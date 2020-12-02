@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-na
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage'
+import base64 from 'react-native-base64'
 
 import * as Config from '../config';
 
@@ -65,7 +66,11 @@ export default class LoginScreen extends Component {
             );
         } else {
             // Submitting a login request
-            fetch(this.host + `login?username=${this.state.username}&password=${this.state.password}`)
+            fetch(this.host + 'login', {
+                    headers: new Headers({
+                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
+                    })
+                })
                 .then(response => {
                     return response.json()
                 })
