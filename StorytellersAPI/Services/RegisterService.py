@@ -36,9 +36,14 @@ class RegisterService:
         
         Storytellers of Canada
         """
-        verification_code = VerificationCode(email=email, code=str(code))
-        db.session.add(verification_code)
-        db.session.commit()
+        print("Validation code is" + str(code))
+        try:
+            verification_code = VerificationCode(email=email, code=str(code))
+            db.session.add(verification_code)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+
 
 
 
