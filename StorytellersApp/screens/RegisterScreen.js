@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import base64 from 'react-native-base64'
 
 import * as Config from '../config';
 
@@ -38,9 +39,12 @@ class RegisterScreen extends Component {
                 "Please make sure you have entered information in all fields before trying to register."
             );
         } else {
-            console.log(this.host + `register?username=${this.state.username}&password=${this.state.password}&name=${this.state.name}&email=${this.state.email}`)
-            fetch(this.host + `register?username=${this.state.username}&password=${this.state.password}&name=${this.state.name}&email=${this.state.email}`, {
-                    method: 'POST'
+            console.log(this.host + `register?name=${this.state.name}&email=${this.state.email}`)
+            fetch(this.host + `register?name=${this.state.name}&email=${this.state.email}`, {
+                    method: 'POST',
+                    headers: new Headers({
+                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
+                    })
                 })
                 .then(response => {
                     return response.json()
@@ -48,6 +52,10 @@ class RegisterScreen extends Component {
                 .then(result => {
                     if (result["success"]) {
                         console.log("Successful response")
+                        Alert.alert(
+                            "Successfully registered!",
+                            "You will now be redirected to the login page"
+                        )
                         // Going to the login screen
                         this.goToLogin();
                     } else {

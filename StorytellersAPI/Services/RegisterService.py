@@ -5,17 +5,22 @@ from models import User, VerificationCode
 from sqlalchemy.exc import *
 # import stmplib
 from random import randint
+from uuid import uuid4
+
 
 # Class for handling registration
 class RegisterService:
 
     def register(self, nameInput, emailInput, usernameInput, passwordInput):
         try:
-            user = User(username=usernameInput,
-                password=passwordInput,
-                name=nameInput,
-                email=emailInput,
-                authToken=usernameInput + "AUTH")
+            # Generating a new auth token
+            newAuth = uuid4()
+            user = User(username=usernameInput, 
+                password=passwordInput, 
+                name=nameInput, 
+                email=emailInput, 
+                authToken=str(newAuth))
+
             # Adding this new user to the DB
             db.session.add(user)
             db.session.commit()

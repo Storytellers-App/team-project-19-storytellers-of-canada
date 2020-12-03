@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {Text, View} from 'react-native';
 import {EvilIcons, AntDesign} from "@expo/vector-icons"
 import Colors from '../constants/Colors';
@@ -30,6 +30,8 @@ import NewRecordingButton from '../components/NewRecordingButton';
 import {ResponseType as ResponseStory, RootStackParamList} from '../types'; 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar';
+import { RECORDING_OPTION_IOS_AUDIO_QUALITY_LOW } from 'expo-av/build/Audio';
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "white";
 const LIVE_COLOR = "red";
@@ -99,7 +101,42 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         rate: 1.0,
        
       };
-      this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
+
+      // this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
+      // outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+      // audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_DEFAULT,
+      // ADTS is more for streaming
+      this.recordingSettings = {
+        android: {
+            extension: '.aac',
+            outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_AAC_ADTS,
+            audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+            sampleRate: 44100,
+            numberOfChannels: 2,
+            bitRate: 128000,
+        },
+        // ios: {
+        //     extension: '.mp3',
+        //     audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
+        //     sampleRate: 44100,
+        //     numberOfChannels: 2,
+        //     bitRate: 128000,
+        //     linearPCMBitDepth: 16,
+        //     linearPCMIsBigEndian: false,
+        //     linearPCMIsFloat: false,
+        // },
+        ios: {
+          extension: '.m4a',
+          outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_APPLELOSSLESS,
+          audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MIN,
+          sampleRate: 44100,
+          numberOfChannels: 2,
+          bitRate: 128000,
+          linearPCMBitDepth: 16,
+          linearPCMIsBigEndian: false,
+          linearPCMIsFloat: false,
+        }
+    };
   
       // UNCOMMENT THIS TO TEST maxFileSize:
       /* this.recordingSettings = {
