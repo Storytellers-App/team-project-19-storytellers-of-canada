@@ -10,6 +10,7 @@ from Resources.StoriesResource import Stories, Responses
 from Resources.LikesResource import AddLikes, RemoveLikes
 from Resources.AdminResource import Admin
 from Resources.CommentResource import CommentRes
+from Resources.EmailVerificationResource import EmailVerification
 
 from Resources.StoryDeleteResource import StoryDelete
 from Resources.StoryFetchResource import StoryFetch
@@ -32,6 +33,7 @@ api.add_resource(AddLikes, '/stories/addlike')
 api.add_resource(RemoveLikes, '/stories/removelike')
 api.add_resource(Admin, '/admin')
 api.add_resource(CommentRes, '/comment')
+api.add_resource(EmailVerification, '/emailVerification')
 # DELETE /story_delete?key&bucket
 api.add_resource(StoryDelete, '/story_delete')
 

@@ -1,9 +1,12 @@
 from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
     marshal
 from extensions import db
-from models import User
+from models import User, VerificationCode
 from sqlalchemy.exc import *
+# import stmplib
+from random import randint
 from uuid import uuid4
+
 
 # Class for handling registration
 class RegisterService:
@@ -17,10 +20,37 @@ class RegisterService:
                 name=nameInput, 
                 email=emailInput, 
                 authToken=str(newAuth))
+
             # Adding this new user to the DB
             db.session.add(user)
             db.session.commit()
+            self.validate_email(emailInput, nameInput)
             return True
         except Exception as e:
             print(e)
             return False
+
+    def validate_email(self, email, name):
+        # TODO: Switch this back once we have a domain name
+        # code = randint(100000, 999999)
+        code = 999999
+        message = "Dear, " + name + "\nWelcome to storytellers of Canada." + """
+        We are very happy that you could join us.
+        
+        Please enter this one time code to validate your email.
+        """ + str(code) + """
+        Thanks,
+        
+        Storytellers of Canada
+        """
+        print("Validation code is" + str(code))
+        try:
+            verification_code = VerificationCode(email=email, code=str(code))
+            db.session.add(verification_code)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+
+
+
+
