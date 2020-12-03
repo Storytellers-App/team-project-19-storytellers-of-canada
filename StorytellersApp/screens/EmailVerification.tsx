@@ -5,7 +5,8 @@ import {
   TextInput,
   Image,
   StyleSheet,
-  Button
+  Button,
+  Alert
 } from 'react-native';
 
 import Colors from '../constants/Colors';
@@ -13,19 +14,44 @@ import useColorScheme from '../hooks/useColorScheme';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import axios from 'axios';
+import { HOST } from '../config';
 
+let url = HOST
 
+type Props = {
+    email: String;
+    code: String;
+}
 
-export default function EmailVerification() {
+export default function EmailVerification({email, code}: Props) {
 
     const resendEmail = async () => {
         console.log("Send the email");
-
-        Actions.
+        console.log(email)
+        console.log(code)
     }
 
     const verifyCode = async () => {
         console.log("verify the code");
+        try {
+            axios({
+                method: 'post', url: url + 'emailVerification', headers: {
+                    email: email,
+                    token: code
+                }
+            })
+            .then(response => {
+                console.log(response.data);
+                if (response.data.success === true) {
+                    Actions.LoginScreen();
+                } else {
+                    Alert.alert("Incorrect code, please try again");
+                }
+            })
+        } catch (e) {
+            Alert.alert("There was a problem reaching the server. Please try again");
+        }
     }
 
     return (
@@ -38,6 +64,7 @@ export default function EmailVerification() {
                 <Input
                     style={styles.input}
                     placeholder="Verification Code"
+                    onChangeText={(value) => code = value}
                 />
                 <Button
                     onPress={verifyCode}
