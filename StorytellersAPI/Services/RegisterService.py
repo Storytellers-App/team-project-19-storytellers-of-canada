@@ -26,7 +26,9 @@ class RegisterService:
             return False
 
     def validate_email(self, email, name):
-        code = randint(100000, 999999)
+        # TODO: Switch this back once we have a domain name
+        # code = randint(100000, 999999)
+        code = 999999
         message = "Dear, " + name + "\nWelcome to storytellers of Canada." + """
         We are very happy that you could join us.
         
