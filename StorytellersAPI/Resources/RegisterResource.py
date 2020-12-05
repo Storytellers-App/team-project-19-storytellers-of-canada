@@ -22,10 +22,9 @@ class Register(Resource):
         username = decoded[0:decoded.find(":")]
         password = decoded[decoded.find(":")+1:]
         # Hashing the auth info
-        usernameHash = blake2b(str(username).encode('utf-8')).hexdigest()
         passwordHash = blake2b(str(password).encode('utf-8')).hexdigest()
         args = parser.parse_args()
         # Checking validity of credentials
         registerService = RegisterService()
-        success = registerService.register(args["name"], args["email"], usernameHash, passwordHash)
+        success = registerService.register(args["name"], args["email"], username, passwordHash)
         return jsonify(success=success)

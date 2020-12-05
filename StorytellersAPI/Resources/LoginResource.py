@@ -18,11 +18,10 @@ class Login(Resource):
         username = decoded[0:decoded.find(":")]
         password = decoded[decoded.find(":")+1:]
         # Hashing the auth info
-        usernameHash = blake2b(str(username).encode('utf-8')).hexdigest()
         passwordHash = blake2b(str(password).encode('utf-8')).hexdigest()
         # Checking validity of credentials
         loginService = LoginService()
-        user = loginService.getUserInfo(usernameHash, passwordHash)
+        user = loginService.getUserInfo(username, passwordHash)
         # Returning if the authToken is unsuccessful
         if not user:
             return jsonify(success=False)
