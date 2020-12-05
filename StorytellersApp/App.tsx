@@ -47,7 +47,7 @@ export default function App() {
       <PaperProvider theme={theme}>
         <SafeAreaProvider>
           <Routes />
-          <StatusBar />
+          <StatusBar style='dark'/>
         </SafeAreaProvider>
       </PaperProvider>
     );

@@ -28,17 +28,17 @@ import { UserType } from '../types';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { SearchBar } from 'react-native-elements';
 
 
 
 
 export default function HomeScreen() {
-  const ref = React.useRef<ScrollView>(null);
+  const ref = React.useRef<TextInput>(null);
   const [user, setUser] = useState<UserType | null>(null);
   const [searchText, setSearchText] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  useScrollToTop(ref);
-
+  const [focus, setFocus] = React.useState(false);
   const colorScheme = useColorScheme();
 
   const getUser = async () => {
@@ -56,22 +56,23 @@ export default function HomeScreen() {
   }
 
   const onChangeSearch = (query: string) => {
-    console.log("change string");
     setSearchText(query);
-    if (query == '') {
-      setSearchQuery(query);
-    }
   }
 
   const onSubmit = () => {
-    console.log("submit");
     setSearchQuery(searchText);
-    console.log(searchText);
   }
+
+  useEffect(() => {
+    if (searchText == '' && !ref.current?.isFocused()) {
+      setSearchQuery(searchText);
+    }
+  }, [searchText, focus])
 
   useEffect(() => {
     getUser();
   }, [])
+
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header style={{ backgroundColor: 'white' }}>
@@ -81,11 +82,14 @@ export default function HomeScreen() {
         {/* <Appbar.Content title="Home" /> */}
         <View style={{ flex: 1, marginLeft: 10 }}>
           <Searchbar
+            ref={ref}
             style={{ elevation: 0 }}
             placeholder="Search"
+            onFocus={() => setFocus(true)}
             onChangeText={onChangeSearch}
             value={searchText}
             onSubmitEditing={onSubmit}
+            onEndEditing={() => setFocus(false)}
           />
         </View>
         {/* <Appbar.Action icon="dots-vertical"  />  */}

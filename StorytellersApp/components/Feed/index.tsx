@@ -51,8 +51,7 @@ export default class Feed extends Component<Props, State> {
 
             //get stories from backend
             // let story_arr = userstories as UserStoryType[];
-            console.log("get");
-            console.log(this.search);
+           
             axios.get(url + 'stories', {
                 params: {
                     time: sessionStart,
