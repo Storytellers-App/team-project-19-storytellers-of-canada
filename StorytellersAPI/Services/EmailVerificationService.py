@@ -17,7 +17,7 @@ class EmailVerificationService:
 
     def validate(self, emailInput, validationTokenInput):
         """
-        Check to see that the token is correct given an email
+        Validates a token against an email
         """
         try:
             code = VerificationCode.query.filter_by(email=emailInput).first()
@@ -28,24 +28,38 @@ class EmailVerificationService:
                 try:
                     VerificationCode.query.filter_by(email=emailInput).delete()
                     db.session.commit()
+                    return valid
                 except Exception as e:
                     print(e)
                     return False
 
-                # Update the user object
-                try:
-                    user_service = GetUserService()
-                    temp_user = user_service.getUserWithEmail(code.email)
-                    temp_user.isActive = True
-                    db.session.commit()
-                except Exception as e:
-                    print(e)
-                    return False
-
-            return valid
         except Exception as e:
             print(e)
             return False
+
+    def activate_user(self, email, token):
+        """
+        Activates a user
+        """
+        valid = self.validate(email, token)
+        if not valid:
+            return False
+        # Update the user object
+        try:
+            user_service = GetUserService()
+            temp_user = user_service.getUserWithEmail(email)
+            temp_user.isActive = True
+            db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def validateWithEmail(self, email, token):
+        """
+        Validates a user when given an email
+        """
+        self.activate_user(email, token)
 
     def validateWithoutEmail(self, username, token):
         """
@@ -57,7 +71,7 @@ class EmailVerificationService:
             if user is None:
                 return False
             email = user.email
-            return self.validate(email, token)
+            return self.activate_user(email, token)
         except Exception as e:
             print(e)
             return False

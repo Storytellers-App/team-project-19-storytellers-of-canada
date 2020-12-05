@@ -16,6 +16,6 @@ class EmailVerification(Resource):
 
         # Checking validity of credentials
         validate_service = EmailVerificationService()
-        success = validate_service.validate(args["email"],
-                                            args["token"])
+        success = validate_service.validateWithEmail(args["email"],
+                                                     args["token"])
         return jsonify(success=success)
