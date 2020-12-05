@@ -52,10 +52,6 @@ class RegisterScreen extends Component {
                 .then(result => {
                     if (result["success"]) {
                         console.log("Successful response")
-                        Alert.alert(
-                            "Successfully registered!",
-                            "You will now be redirected to the login page"
-                        )
                         // Going to the login screen
                         this.goToLogin();
                     } else {
