@@ -15,6 +15,7 @@ import {
   Subheading,
   IconButton,
   Divider,
+  Searchbar,
   Appbar,
 } from 'react-native-paper';
 import Colors from '../constants/Colors';
@@ -25,6 +26,8 @@ import Feed from '../components/Feed';
 import NewRecordingButton from '../components/NewRecordingButton';
 import { UserType } from '../types';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 
@@ -32,6 +35,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default function HomeScreen() {
   const ref = React.useRef<ScrollView>(null);
   const [user, setUser] = useState<UserType | null>(null);
+  const [searchText, setSearchText] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState('');
   useScrollToTop(ref);
 
   const colorScheme = useColorScheme();
@@ -50,6 +55,20 @@ export default function HomeScreen() {
     setUser(user);
   }
 
+  const onChangeSearch = (query: string) => {
+    console.log("change string");
+    setSearchText(query);
+    if (query == '') {
+      setSearchQuery(query);
+    }
+  }
+
+  const onSubmit = () => {
+    console.log("submit");
+    setSearchQuery(searchText);
+    console.log(searchText);
+  }
+
   useEffect(() => {
     getUser();
   }, [])
@@ -59,12 +78,20 @@ export default function HomeScreen() {
         <View style={{ marginLeft: 7 }}>
           <ProfilePicture image={user === null ? undefined : user.image === null ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user.name : user.image} size={45} />
         </View>
-        <Appbar.Content title="Home" />
-        <Appbar.Action icon="magnify" />
+        {/* <Appbar.Content title="Home" /> */}
+        <View style={{ flex: 1, marginLeft: 10 }}>
+          <Searchbar
+            style={{ elevation: 0 }}
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchText}
+            onSubmitEditing={onSubmit}
+          />
+        </View>
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <Feed></Feed>
-      <NewRecordingButton user={user?.username}/>
+      <Feed key={searchQuery} search={searchQuery}></Feed>
+      <NewRecordingButton user={user?.username} />
     </View>
   );
 }
