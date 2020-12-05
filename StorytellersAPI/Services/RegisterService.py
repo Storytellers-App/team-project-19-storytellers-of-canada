@@ -63,12 +63,12 @@ Storytellers of Canada
             message.attach(MIMEText(email_message, 'plain'))
 
             # Create SMTP session for sending the mail
-            # session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
-            # session.starttls()  # enable security
-            # session.login(sender_email, 'PureStandardProducts1')
-            # text = message.as_string()
-            # session.sendmail(sender_email, email, text)
-            # session.quit()
+            session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+            session.starttls()  # enable security
+            session.login(sender_email, 'PureStandardProducts1')
+            text = message.as_string()
+            session.sendmail(sender_email, email, text)
+            session.quit()
         except Exception as e:
             print(e)
 
