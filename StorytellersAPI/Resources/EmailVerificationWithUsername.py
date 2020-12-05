@@ -5,17 +5,18 @@ from http import HTTPStatus
 from Services.EmailVerificationService import *
 
 
-class EmailVerification(Resource):
+class EmailVerificationWithUsername(Resource):
 
     def post(self):
         # Parsing the registration parameters
+        print("With username")
         parser = reqparse.RequestParser()
-        parser.add_argument("email", location='headers')
+        parser.add_argument("username", location='headers')
         parser.add_argument("token", location='headers')
         args = parser.parse_args()
-        print("With email")
+
         # Checking validity of credentials
         validate_service = EmailVerificationService()
-        success = validate_service.validate(args["email"],
-                                            args["token"])
+        success = validate_service.validateWithoutEmail(args["username"],
+                                                        args["token"])
         return jsonify(success=success)

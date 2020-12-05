@@ -22,7 +22,8 @@ class RegisterService:
                 password=passwordInput,
                 name=nameInput,
                 email=emailInput,
-                authToken=str(newAuth))
+                authToken=str(newAuth),
+                isActive=False)
 
             # Adding this new user to the DB
             db.session.add(user)
@@ -35,8 +36,8 @@ class RegisterService:
 
     def validate_email(self, email, name):
         # TODO: Switch this back once we have a domain name
-        code = randint(100000, 999999)
-        # code = 999999
+        # code = randint(100000, 999999)
+        code = 999999
         email_message = "Dear " + name + ",\nWelcome to storytellers of Canada." + """
 We are very happy that you could join us.
         
@@ -62,12 +63,12 @@ Storytellers of Canada
             message.attach(MIMEText(email_message, 'plain'))
 
             # Create SMTP session for sending the mail
-            session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
-            session.starttls()  # enable security
-            session.login(sender_email, 'PureStandardProducts1')
-            text = message.as_string()
-            session.sendmail(sender_email, email, text)
-            session.quit()
+            # session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+            # session.starttls()  # enable security
+            # session.login(sender_email, 'PureStandardProducts1')
+            # text = message.as_string()
+            # session.sendmail(sender_email, email, text)
+            # session.quit()
         except Exception as e:
             print(e)
 

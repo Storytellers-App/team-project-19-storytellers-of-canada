@@ -13,7 +13,7 @@ class Login(Resource):
     # GET /login?username&password
     def get(self):
         # Decoding the auth header
-        authInfo = request.headers.get('Authorization')       
+        authInfo = request.headers.get('Authorization')
         decoded = str(base64.b64decode(authInfo), 'utf-8')
         username = decoded[0:decoded.find(":")]
         password = decoded[decoded.find(":")+1:]
@@ -25,5 +25,10 @@ class Login(Resource):
         # Returning if the authToken is unsuccessful
         if not user:
             return jsonify(success=False)
+
+        # Check to see if the user is active
+        if not user.isActive:
+            return jsonify(success=False, active=False)
+
         # Returning the authToken is successful
         return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email, type=user.type)

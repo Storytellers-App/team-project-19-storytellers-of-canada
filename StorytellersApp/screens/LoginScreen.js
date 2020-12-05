@@ -44,6 +44,12 @@ export default class LoginScreen extends Component {
     }
 
     /**
+     * Redirect to the email verification page
+     */
+    goToEmailVerification() {
+        Actions.EmailVerification({email: "", code: "", username: this.state.username});
+    }
+    /**
      * Set app-wide user information
      */
     setUserInfo = async () => {
@@ -92,10 +98,15 @@ export default class LoginScreen extends Component {
                         }
                         
                     } else {
-                        Alert.alert(
-                            "Invalid Login Information",
-                            "Please make sure the username and password you enter is valid."
-                        )
+                        if (!result["active"]) {
+                            this.goToEmailVerification();
+                        } else {
+                            Alert.alert(
+                                "Invalid Login Information",
+                                "Please make sure the username and password you enter is valid."
+                            )
+                        }
+                        
                     }
                 })
                 .catch((error) => {
