@@ -23,7 +23,7 @@ class RegisterService:
                 name=nameInput,
                 email=emailInput,
                 authToken=str(newAuth),
-                isActive=False)
+                isActive=True)
 
             # Adding this new user to the DB
             db.session.add(user)
