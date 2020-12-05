@@ -11,6 +11,7 @@ class User(db.Model):
     authToken = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(255), nullable=False,
                      default=UserType.MEMBER.value)
+    isActive = db.Column(db.Boolean, nullable=False)
 
 
 class VerificationCode(db.Model):

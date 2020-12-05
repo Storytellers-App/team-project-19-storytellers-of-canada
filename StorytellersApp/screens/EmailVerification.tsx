@@ -22,23 +22,33 @@ let url = HOST
 type Props = {
     email: String;
     code: String;
+    username: String;
 }
 
-export default function EmailVerification({email, code}: Props) {
+export default function EmailVerification({email, code, username}: Props) {
 
     const resendEmail = async () => {
         console.log("Send the email");
         console.log(email)
         console.log(code)
+        console.log(username)
+        console.log(email === "")
     }
 
     const verifyCode = async () => {
         console.log("verify the code");
+        var endpoint_url = url + 'emailVerification';
+        console.log(email === "");
+        if (email === "") {
+            endpoint_url = endpoint_url + '/noUsername';
+            console.log(endpoint_url);
+        }
         try {
             axios({
-                method: 'post', url: url + 'emailVerification', headers: {
+                method: 'post', url: endpoint_url, headers: {
                     email: email,
-                    token: code
+                    token: code,
+                    username: username
                 }
             })
             .then(response => {

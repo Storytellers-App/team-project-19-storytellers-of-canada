@@ -26,7 +26,7 @@ class RegisterScreen extends Component {
      */
     goToLogin(){
         // Actions.LoginScreen();
-        Actions.EmailVerification({email: this.state.email, code: ""});
+        Actions.EmailVerification({email: this.state.email, code: "", username: ""});
     }
 
     /**
