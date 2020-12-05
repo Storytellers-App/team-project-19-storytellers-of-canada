@@ -3,6 +3,7 @@ from flask_restful import Api
 from Resources.TestResource import Hello
 from config import Config
 from extensions import db
+import logging
 
 from Resources.LoginResource import Login
 from Resources.RegisterResource import Register
@@ -22,6 +23,11 @@ app = Flask(__name__)
 app.config.from_object(Config)
 api = Api(app)
 db.init_app(app)
+
+# gunicorn logging
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers.extend(gunicorn_error_logger.handlers)
+app.logger.setLevel(logging.DEBUG)
 
 # GET /login?username&password
 api.add_resource(Login, '/login')
