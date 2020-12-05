@@ -13,8 +13,6 @@ class EmailVerificationService:
     def validate(self, emailInput, validationTokenInput):
         try:
             code = VerificationCode.query.filter_by(email=emailInput).first()
-            print("About to access code")
-            print(code)
             valid = code.code == validationTokenInput
 
             if valid:
@@ -44,9 +42,6 @@ class EmailVerificationService:
         try:
             user = self.getUserWithUsername(username)
             email = user.email
-            print("Validate without email")
-            print(user)
-            print(user.email)
             return self.validate(email, token)
         except Exception as e:
             print(e)

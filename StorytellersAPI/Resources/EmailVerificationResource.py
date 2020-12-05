@@ -13,7 +13,7 @@ class EmailVerification(Resource):
         parser.add_argument("email", location='headers')
         parser.add_argument("token", location='headers')
         args = parser.parse_args()
-        print("With email")
+
         # Checking validity of credentials
         validate_service = EmailVerificationService()
         success = validate_service.validate(args["email"],

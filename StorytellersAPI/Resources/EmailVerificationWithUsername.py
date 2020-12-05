@@ -9,7 +9,6 @@ class EmailVerificationWithUsername(Resource):
 
     def post(self):
         # Parsing the registration parameters
-        print("With username")
         parser = reqparse.RequestParser()
         parser.add_argument("username", location='headers')
         parser.add_argument("token", location='headers')
