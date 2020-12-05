@@ -76,7 +76,8 @@ class Stories(Resource):
         story_args.add_argument("author", type=str, default=None)
         # generate new creation time
         creation_time = func.now()
-        story_args.add_argument("title", type=str, required=True, help="Title not specified!")
+        story_args.add_argument("title", type=str, required=True,
+                                help="Title not specified!")
         story_args.add_argument("description", type=str, default=None)
         story_args.add_argument(
             "recording",
@@ -101,7 +102,8 @@ class Stories(Resource):
         )
         num_likes = 0
         num_replies = 0
-        story_args.add_argument("approved_time", type=inputs.datetime_from_iso8601)
+        story_args.add_argument("approved_time",
+                                type=inputs.datetime_from_iso8601)
         story_args.add_argument("tags", type=str, action='append')
         # TODO: need extension which we can get from the blob/file
         # format: characters only no dot eg. "caf", "3gp"
@@ -127,7 +129,8 @@ class Stories(Resource):
             tags=args.tags,
         )
         if not ret:
-            return abort(500, description="Error in add_story in S3StoriesResource.")
+            return abort(500,
+                         description="Error in add_story in S3StoriesResource.")
         else:
             return HTTPStatus.CREATED
 
@@ -142,6 +145,7 @@ class Stories(Resource):
         get_user_stories_args.add_argument(
             "time", type=lambda x: datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
         )
+        get_user_stories_args.add_argument("filter", type=str, default=None)
 
         story_args = get_user_stories_args.parse_args()
         time = None
@@ -150,44 +154,70 @@ class Stories(Resource):
         if time is None:
             time = func.now()
         try:
-            stories = (
-                Story.query.with_entities(
-                    Story.id,
-                    Story.username,
-                    User.name,
-                    Story.creationTime,
-                    Story.title,
-                    Story.description,
-                    Story.recording,
-                    Story.parent,
-                    Story.author,
-                    Story.image,
-                    Story.numLikes,
-                    Story.numReplies,
-                    Story.type,
-                    Story.approvedTime,
-                )
-                .outerjoin(User, User.username == Story.username)
-                .order_by(Story.creationTime.desc(), Story.id.desc())
-                .filter(Story.type == story_args["type"])
-                .filter(Story.parent.is_(None))
-                .filter(Story.approved.is_(True))
-                .filter(Story.approvedTime < time)
-                .paginate(story_args["page"], story_args["per_page"], False)
-                .items
-            )
+            query = Story.query.with_entities(
+                Story.id,
+                Story.username,
+                User.name,
+                Story.creationTime,
+                Story.title,
+                Story.description,
+                Story.recording,
+                Story.parent,
+                Story.author,
+                Story.image,
+                Story.numLikes,
+                Story.numReplies,
+                Story.type,
+                Story.approvedTime,
+            ).outerjoin(User, User.username == Story.username).order_by(
+                Story.creationTime.desc(), Story.id.desc()).filter(
+                Story.type == story_args["type"]).filter(
+                Story.parent.is_(None)).filter(Story.approved.is_(True)).filter(
+                Story.approvedTime < time)
+
+            if story_args['filter'] is not None:
+                search = "%{}%".format(story_args['filter'])
+                matched_stories = query.filter(
+                    Story.username.like(search) | Story.title.like(
+                        search) | Story.description.like(
+                        search) | Story.author.like(search) | User.name.like(
+                        search))
+                matched_tags = Tag.query.with_entities(
+                    Tag.storyid).filter(Tag.tag.like(search)).subquery()
+                joined = query.with_entities(Story.id,
+                                             Story.username,
+                                             User.name,
+                                             Story.creationTime,
+                                             Story.title,
+                                             Story.description,
+                                             Story.recording,
+                                             Story.parent,
+                                             Story.author,
+                                             Story.image,
+                                             Story.numLikes,
+                                             Story.numReplies,
+                                             Story.type,
+                                             Story.approvedTime, ).join(
+                    matched_tags, Story.id == matched_tags.c.storyid)
+                query = matched_stories.union(joined)
+                pass
+
+            stories = query.paginate(story_args["page"], story_args["per_page"],
+                                     False).items
+
             marshal_list = []
             for story in stories:
                 tags = Tag.query.filter_by(storyid=story.id)
                 isLiked = False
-                if "username" in story_args and story_args["username"] is not None:
+                if "username" in story_args and story_args[
+                    "username"] is not None:
                     isLiked = (
-                        Like.query.filter_by(
-                            username=story_args["username"],
-                            postId=story.id,
-                            postType=story.type,
-                        ).count()
-                        > 0
+                            Like.query.filter_by(
+                                username=story_args["username"],
+                                postId=story.id,
+                                postType=story.type,
+                            ).count()
+                            > 0
                     )
                 format_story = {
                     "id": story.id,
@@ -224,7 +254,8 @@ class Responses(Resource):
     def get(self):
         get_responses_args = reqparse.RequestParser()
         get_responses_args.add_argument("id", type=int)
-        get_responses_args.add_argument("type", type=str, default=StoryType.USER.value)
+        get_responses_args.add_argument("type", type=str,
+                                        default=StoryType.USER.value)
         get_responses_args.add_argument("username", type=str)
         get_responses_args.add_argument("page", type=int, default=1)
         get_responses_args.add_argument("per_page", type=int, default=7)
@@ -279,7 +310,7 @@ class Responses(Resource):
 
             responses = (
                 db.session.query(both)
-                .with_entities(
+                    .with_entities(
                     both.c.id,
                     both.c.username,
                     User.name,
@@ -297,36 +328,37 @@ class Responses(Resource):
                     both.c.numReplies,
                     both.c.approvedTime,
                 )
-                .outerjoin(User, User.username == both.c.username)
-                .order_by(both.c.creationTime.desc(), both.c.id.desc())
-                .filter(both.c.approved.is_(True))
-                .filter(both.c.approvedTime < time)
-                .filter(both.c.parentType == args["type"])
-                .filter(both.c.parent == args["id"])
-                .paginate(args["page"], args["per_page"], False)
-                .items
+                    .outerjoin(User, User.username == both.c.username)
+                    .order_by(both.c.creationTime.desc(), both.c.id.desc())
+                    .filter(both.c.approved.is_(True))
+                    .filter(both.c.approvedTime < time)
+                    .filter(both.c.parentType == args["type"])
+                    .filter(both.c.parent == args["id"])
+                    .paginate(args["page"], args["per_page"], False)
+                    .items
             )
             marshal_list = []
             for response in responses:
                 tags = []
                 if (
-                    response.type == StoryType.USER.value
-                    or response.type == StoryType.SAVED.value
+                        response.type == StoryType.USER.value
+                        or response.type == StoryType.SAVED.value
                 ):
                     tags = Tag.query.filter_by(storyid=response.id)
                 isLiked = False
                 if "username" in args and args["username"] is not None:
                     isLiked = (
-                        Like.query.filter_by(
-                            username=args["username"],
-                            postId=response.id,
-                            postType=response.type,
-                        ).count()
-                        > 0
+                            Like.query.filter_by(
+                                username=args["username"],
+                                postId=response.id,
+                                postType=response.type,
+                            ).count()
+                            > 0
                     )
                 format_response = {
                     "id": response.id,
-                    "user": {"username": response.username, "name": response.name},
+                    "user": {"username": response.username,
+                             "name": response.name},
                     "creationTime": response.creationTime,
                     "title": response.title,
                     "description": response.description,
@@ -342,11 +374,14 @@ class Responses(Resource):
                     "tags": [tag.tag for tag in tags],
                 }
                 if response.type == StoryType.USER.value:
-                    marshal_list.append(marshal(format_response, userstory_fields))
+                    marshal_list.append(
+                        marshal(format_response, userstory_fields))
                 elif response.type == StoryType.SAVED.value:
-                    marshal_list.append(marshal(format_response, storysave_fields))
+                    marshal_list.append(
+                        marshal(format_response, storysave_fields))
                 else:
-                    marshal_list.append(marshal(format_response, comment_fields))
+                    marshal_list.append(
+                        marshal(format_response, comment_fields))
         except SQLAlchemyError as e:
             abort(HTTPStatus.BAD_REQUEST, message=str(e.__dict__["orig"]))
         responses = {"responses": marshal_list}
