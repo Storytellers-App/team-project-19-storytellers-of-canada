@@ -16,8 +16,11 @@ class ResetForgotPasswordResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("email", location='headers')
         parser.add_argument("password", location='headers')
+        parser.add_argument("token", location='headers')
+        args = parser.parse_args()
         update_password_service = UpdatePasswordService()
         success = update_password_service.\
-            updatePasswordWithEmail(parser['email'],
-                                    parser['password'])
+            updatePasswordWithEmail(args['email'],
+                                    args['password'],
+                                    args['token'])
         return jsonify(success=success)
