@@ -98,13 +98,21 @@ export default class LoginScreen extends Component {
                         }
                         
                     } else {
-                        if (!result["active"]) {
-                            this.goToEmailVerification();
-                        } else {
+                        console.log(result);
+                        console.log(result["active"]);
+                        console.log(!result["active"]);
+                        console.log(result["active"] === undefined); 
+                        if (result["active"] === undefined) {
+                            // Invalid login information
                             Alert.alert(
                                 "Invalid Login Information",
                                 "Please make sure the username and password you enter is valid."
                             )
+                        } else {
+                            // active is defined, check to see if inactive
+                            if (!result["active"]) {
+                                this.goToEmailVerification();
+                            }
                         }
                         
                     }
