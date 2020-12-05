@@ -8,6 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import ssl
+from Services.GetUserService import GetUserService
 
 # Class for handling registration
 
@@ -33,7 +34,8 @@ class EmailVerificationService:
 
                 # Update the user object
                 try:
-                    temp_user = self.getUser(code.email)
+                    user_service = GetUserService()
+                    temp_user = user_service.getUserWithEmail(code.email)
                     temp_user.isActive = True
                     db.session.commit()
                 except Exception as e:
@@ -50,36 +52,16 @@ class EmailVerificationService:
         Check to see that the token is correct given a username and no email
         """
         try:
-            user = self.getUserWithUsername(username)
+            user_service = GetUserService()
+            user = user_service.getUserWithUsername(username)
+            if user is None:
+                return False
             email = user.email
             return self.validate(email, token)
         except Exception as e:
             print(e)
             return False
 
-    def getUser(self, email):
-        """
-        Get a user object with their email
-        """
-        try:
-            # Getting user's auth token information if it exists
-            for user in db.session.query(User).filter_by(email=email):
-                return user
-            return False
-        except:
-            return False
-
-    def getUserWithUsername(self, username):
-        """
-        Get a user object with the username
-        """
-        try:
-            # Getting user's auth token information if it exists
-            for user in db.session.query(User).filter_by(username=username):
-                return user
-            return False
-        except:
-            return False
 
     def validate_new_email(self, email, name):
         """
@@ -105,8 +87,9 @@ Storytellers of Canada
         Send a password reset email to the user
         """
         # Check to see if its a valid email
-        user = self.getUser(email)
-        if not user:
+        user_service = GetUserService()
+        user = user_service.getUserWithEmail(email)
+        if user is None:
             return False
 
         # User is valid, generate the email then send it
