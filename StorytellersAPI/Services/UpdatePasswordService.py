@@ -4,11 +4,12 @@ from models import User
 from sqlalchemy.exc import *
 from hashlib import blake2b
 from Services.GetUserService import GetUserService
+from Services.EmailVerificationService import EmailVerificationService
 
 
 class UpdatePasswordService:
 
-    def updatePassword(self, user, password):
+    def _updatePassword(self, user, password):
         """
         Update the password for user
         """
@@ -27,9 +28,9 @@ class UpdatePasswordService:
             # User does not exist
             return False
 
-        return self.updatePassword(user, password)
+        return self._updatePassword(user, password)
 
-    def updatePasswordWithEmail(self, email, password):
+    def updatePasswordWithEmail(self, email, password, token):
         """
         Update the password given an email
         """
@@ -39,4 +40,10 @@ class UpdatePasswordService:
             # User does not exist
             return False
 
-        return self.updatePassword(user, password)
+        validation_service = EmailVerificationService()
+        valid = validation_service.validate(email, token)
+
+        if valid:
+            return self._updatePassword(user, password)
+        else:
+            return False
