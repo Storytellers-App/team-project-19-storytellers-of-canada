@@ -33,7 +33,7 @@ export default class RadioPlayer extends React.Component {
             shouldDuckAndroid: true,
             interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
             playThroughEarpieceAndroid: false,
-          });
+        });
     }
 
     _onPlaybackStatusUpdate = playbackStatus => {
@@ -42,22 +42,22 @@ export default class RadioPlayer extends React.Component {
             if (playbackStatus.error) {
                 // Update the state
                 this.setState((state) => {
-                    return {audioState: 'errorLoading'}
+                    return { audioState: 'errorLoading' }
                 });
                 // TODO: Show an error because it isn't loading
             }
         } else {
-            if (playbackStatus.isPlaying) {                
+            if (playbackStatus.isPlaying) {
                 // Update the state
                 this.setState((state) => {
-                    return {audioState: 'audioPlaying'}
+                    return { audioState: 'audioPlaying' }
                 });
 
                 // Change the play button to a stop button
             } else {
                 // Update the state
                 this.setState((state) => {
-                    return {audioState: 'audioStopped'}
+                    return { audioState: 'audioStopped' }
                 });
 
                 // Change the stop button to a play button
@@ -67,8 +67,8 @@ export default class RadioPlayer extends React.Component {
     }
 
     toggleAudio = async () => {
-        if (this.state.audioState === 'notLoaded' || this.state.audioState === 'errorLoading' || 
-        this.state.audioState === 'audioStopped') {
+        if (this.state.audioState === 'notLoaded' || this.state.audioState === 'errorLoading' ||
+            this.state.audioState === 'audioStopped') {
             this.state.sound.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
             this.state.sound.loadAsync(
                 { uri: 'https://streams.radio.co/s8d7990b82/listen' },
@@ -85,13 +85,12 @@ export default class RadioPlayer extends React.Component {
             this.state.sound = new Audio.Sound();
         } else if (this.state.audioState === 'audioStopped') {
             // It's a play button, maybe just clicking play works...
-            
+
         } else if (this.state.audioState === 'audioBuffering') {
             // I think nothing should be done here...
             this.state.sound.stopAsync();
-            this.setState({sound: "audioStopped"});
+            this.setState({ sound: "audioStopped" });
         }
-        
     }
 
     pName = () => {
@@ -100,11 +99,16 @@ export default class RadioPlayer extends React.Component {
     }
 
     updateNowPlaying = async () => {
-        fetch("https://public.radio.co/api/v2/s8d7990b82/track/current")
+        fetch("https://public.radio.co/api/v2/s8d7990b82/track/current", {
+            headers: new Headers({
+                'pragma': 'no-cache',
+                'cache-control': 'no-cache'
+            })
+        })
             .then(response => response.json())
             .then((responseData) => {
-                this.setState((state) => {
-                    return {nowPlaying: responseData.data.title}
+                this.setState({
+                    nowPlaying: responseData.data.title
                 })
             })
             .catch((error) => {
@@ -113,26 +117,26 @@ export default class RadioPlayer extends React.Component {
     }
 
     render() {
-        return(
-            <View style={styles.container}> 
-            <Image
-                style={styles.logo}
-                source={require('../assets/images/SCCC_logo.png')}
-            />
-            <Text style={styles.nowPlayingText} numberOfLines={2}>
-                {this.state.nowPlaying}
-            </Text>
-            <Text style={styles.liveText}>Live</Text>
-            <TouchableWithoutFeedback onPress={this.toggleAudio}> 
-                 <Image 
-                    style={styles.playButton}
-                    source={
-                        this.state.audioState === 'audioPlaying' || this.state.audioState === 'audioBuffering' ?
-                        require('../assets/images/Stop.png') :
-                        require('../assets/images/Play.png')
-                    }
-                 />
-            </TouchableWithoutFeedback>
+        return (
+            <View style={styles.container}>
+                <Image
+                    style={styles.logo}
+                    source={require('../assets/images/SCCC_logo.png')}
+                />
+                <Text style={styles.nowPlayingText} numberOfLines={2}>
+                    {this.state.nowPlaying}
+                </Text>
+                <Text style={styles.liveText}>Live</Text>
+                <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                    <Image
+                        style={styles.playButton}
+                        source={
+                            this.state.audioState === 'audioPlaying' || this.state.audioState === 'audioBuffering' ?
+                                require('../assets/images/Stop.png') :
+                                require('../assets/images/Play.png')
+                        }
+                    />
+                </TouchableWithoutFeedback>
             </View>
         )
     }
@@ -140,10 +144,10 @@ export default class RadioPlayer extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     logo: {
         width: 300,
@@ -158,6 +162,7 @@ const styles = StyleSheet.create({
     },
     nowPlayingText: {
         fontSize: 20,
+        marginHorizontal: 3,
         fontWeight: 'normal',
         marginBottom: 0,
         textAlign: 'center'
@@ -168,5 +173,4 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         color: 'red'
     }
-  });
-  
+});
