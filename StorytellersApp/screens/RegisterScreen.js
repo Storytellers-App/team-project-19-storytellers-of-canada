@@ -29,6 +29,11 @@ class RegisterScreen extends Component {
         Actions.EmailVerification({email: this.state.email, code: "", username: ""});
     }
 
+    validateEmail(email) {
+        const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regexp.test(email);
+    }
+
     /**
      * Register a Storytellers account
      */
@@ -39,33 +44,41 @@ class RegisterScreen extends Component {
                 "Please make sure you have entered information in all fields before trying to register."
             );
         } else {
-            console.log(this.host + `register?name=${this.state.name}&email=${this.state.email}`)
-            fetch(this.host + `register?name=${this.state.name}&email=${this.state.email}`, {
-                    method: 'POST',
-                    headers: new Headers({
-                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
+            // Validating email
+            if (!this.validateEmail(this.state.email)){
+                Alert.alert(
+                    "Invalid Email",
+                    "Please make sure you have entered a valid email before trying to register."
+                );
+            } else {
+                console.log(this.host + `register?name=${this.state.name}&email=${this.state.email}`)
+                fetch(this.host + `register?name=${this.state.name}&email=${this.state.email}`, {
+                        method: 'POST',
+                        headers: new Headers({
+                            'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
+                        })
                     })
-                })
-                .then(response => {
-                    return response.json()
-                })
-                .then(result => {
-                    if (result["success"]) {
-                        console.log("Successful response")
-                        // Going to the login screen
-                        this.goToLogin();
-                    } else {
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(result => {
+                        if (result["success"]) {
+                            console.log("Successful response")
+                            // Going to the login screen
+                            this.goToLogin();
+                        } else {
+                            Alert.alert(
+                                "Invalid Registration Information"
+                            )
+                        }
+                    })
+                    .catch((error) => {
                         Alert.alert(
-                            "Invalid Registration Information"
+                            "Connection Error"
                         )
-                    }
-                })
-                .catch((error) => {
-                    Alert.alert(
-                        "Connection Error"
-                    )
-                    console.error(error);
-                });
+                        console.error(error);
+                    });
+            }           
         }      
     }
 
