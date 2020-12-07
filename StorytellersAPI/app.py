@@ -18,6 +18,8 @@ from Resources.StoryFetchResource import StoryFetch
 from Resources.StoryRenameResource import StoryRename
 from Resources.StoryUploadResource import StoryUpload
 from Resources.EmailVerificationWithUsername import EmailVerificationWithUsername
+from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
+from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -42,6 +44,8 @@ api.add_resource(Admin, '/admin')
 api.add_resource(CommentRes, '/comment')
 api.add_resource(EmailVerification, '/emailVerification')
 api.add_resource(EmailVerificationWithUsername, '/emailVerification/noUsername')
+api.add_resource(SendForgotPasswordEmailResource, '/sendForgotPasswordEmail')
+api.add_resource(ResetForgotPasswordResource, '/resetForgotPassword')
 # DELETE /story_delete?key&bucket
 api.add_resource(StoryDelete, '/story_delete')
 
