@@ -8,6 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import ssl
+from random import randint
 from Services.GetUserService import GetUserService
 
 # Class for handling registration
@@ -82,8 +83,7 @@ class EmailVerificationService:
         Send an email to the user to validate their email
         """
         # TODO: Switch this back once we have a domain name
-        # code = randint(100000, 999999)
-        code = 999999
+        code = randint(100000, 999999)
         email_message = "Dear " + name + ",\nWelcome to storytellers of Canada." + """
 We are very happy that you could join us.
 
@@ -107,8 +107,7 @@ Storytellers of Canada
             return False
 
         # User is valid, generate the email then send it
-        # code = randint(100000, 999999)
-        code = 999999
+        code = randint(100000, 999999)
         email_message = "Hello " + ",\nYou recently requested to reset your password" + """
 If this wasn't you, please do nothing at this time
 
@@ -139,11 +138,11 @@ Storytellers of Canada
             message.attach(MIMEText(email_message, 'plain'))
 
             # Create SMTP session for sending the mail
-            # session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
-            # session.starttls()  # enable security
-            # session.login(sender_email, 'PureStandardProducts1')
-            # text = message.as_string()
-            # session.sendmail(sender_email, email, text)
-            # session.quit()
+            session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+            session.starttls()  # enable security
+            session.login(sender_email, 'PureStandardProducts1')
+            text = message.as_string()
+            session.sendmail(sender_email, reciever, text)
+            session.quit()
         except Exception as e:
             print(e)

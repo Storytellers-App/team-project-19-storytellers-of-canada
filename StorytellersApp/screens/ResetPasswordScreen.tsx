@@ -21,44 +21,51 @@ let url = HOST
 
 type Props = {
     email: String;
+    verificationCode: String;
     password: String;
     confirmPassword: String;
 }
 
-export default function ResetPasswordScreen({email, password, confirmPassword}: Props) {
+export default function ResetPasswordScreen({email, verificationCode, password, confirmPassword}: Props) {
 
 
     const verifyCode = async () => {
         console.log("verify the code");
-        var endpoint_url = url + 'resetForgotPassword';
-        try {
-            axios({
-                method: 'post', url: endpoint_url, headers: {
-                    email: email
-                }
-            })
-            .then(response => {
-                if (response.data.success === true) {
-                    Actions.ResetPasswordScreen();
-                } else {
-                    Alert.alert("There was a problem with the server, please try again");
-                }
-            })
-        } catch (e) {
-            Alert.alert("There was a problem reaching the server. Please try again");
+        if (password === confirmPassword) {
+            var endpoint_url = url + 'resetForgotPassword';
+            try {
+                axios({
+                    method: 'post', url: endpoint_url, headers: {
+                        email: email,
+                        password: password,
+                        token: verificationCode
+                    }
+                })
+                .then(response => {
+                    if (response.data.success === true) {
+                        Actions.LoginScreen();
+                    } else {
+                        Alert.alert("There was a problem with the server, please try again");
+                    }
+                })
+            } catch (e) {
+                Alert.alert("There was a problem reaching the server. Please try again");
+            }
+        } else {
+            Alert.alert("The passwords don't match");
         }
     }
 
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.title}>Please enter your email</Text>
+                <Text style={styles.title}>A code was sent to your email. Please enter it below, then enter your new password</Text>
             </View>
             <View>
                 <Input
                     style={styles.input}
                     placeholder="Verification Code"
-                    onChangeText={(value) => email = value}
+                    onChangeText={(value) => verificationCode = value}
                 />
                 <Input
                     style={styles.input}

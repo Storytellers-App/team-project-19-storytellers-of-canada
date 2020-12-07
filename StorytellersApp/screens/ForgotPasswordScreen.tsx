@@ -27,25 +27,24 @@ export default function ForgotPasswordScreen({email}: Props) {
 
 
     const resetPassword = async () => {
-        Actions.ResetPasswordScreen();
-        // console.log("verify the code");
-        // var endpoint_url = url + '/sendForgotPasswordEmail';
-        // try {
-        //     axios({
-        //         method: 'post', url: endpoint_url, headers: {
-        //             email: email
-        //         }
-        //     })
-        //     .then(response => {
-        //         if (response.data.success === true) {
-        //             Actions.ResetPasswordScreen();
-        //         } else {
-        //             Alert.alert("There was a problem with the server, please try again");
-        //         }
-        //     })
-        // } catch (e) {
-        //     Alert.alert("There was a problem reaching the server. Please try again");
-        // }
+        console.log("verify the code");
+        var endpoint_url = url + 'sendForgotPasswordEmail';
+        try {
+            axios({
+                method: 'post', url: endpoint_url, headers: {
+                    email: email
+                }
+            })
+            .then(response => {
+                if (response.data.success === true) {
+                    Actions.ResetPasswordScreen({email: email});
+                } else {
+                    Alert.alert("There was a problem with the server, please try again");
+                }
+            })
+        } catch (e) {
+            Alert.alert("There was a problem reaching the server. Please try again");
+        }
     }
 
     return (
