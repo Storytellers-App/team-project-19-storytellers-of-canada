@@ -130,9 +130,10 @@ export default class RadioPlayer extends React.Component {
                 {this.state.helpOpen && (
                   <Portal>
                     <View style={styles.faded}>
-                      <Text style={styles.message}>
-                        This is the SC-Radio-CC Screen
-                      </Text>
+                      <View style={styles.message}>
+                        <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
+                        <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
+                      </View>
                     </View>
                     <TouchableOpacity
                       style={{ height: "100%" }}
@@ -210,6 +211,17 @@ const styles = StyleSheet.create({
         padding: '2%',
         backgroundColor: 'white',
         textAlign: "center"
+    },
+    messageText: {
+        textAlign: "left",
+        fontSize: 14,
+        margin: 12,
+    },
+    messageTextLoud: {
+        textAlign: "center",
+        fontWeight: "bold",
+        padding: 3,
+        fontSize: 16,
     },
   });
   
