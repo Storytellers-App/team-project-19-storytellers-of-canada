@@ -118,7 +118,7 @@ export default function HomeScreen() {
             <View style={styles.faded}>
               <View style={styles.message}>
                 <Text style={styles.messageTextLoud}>This is the Home Screen</Text>
-                <Text style={styles.messageText}>All of the stories made by users will appear here. You can scroll through them, or click on any story to view it's comments.</Text>
+                <Text style={styles.messageText}>All of the stories made by users will appear here. You can scroll through them, or click on any story to view its comments.</Text>
                 <Text style={styles.messageText}>If you want to "like" a story, tap the heart. If you want to comment on a story, tap the speech bubble.</Text>
               </View>
               <View style={styles.message2}>
