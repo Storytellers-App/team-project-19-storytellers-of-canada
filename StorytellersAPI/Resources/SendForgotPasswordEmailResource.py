@@ -5,17 +5,15 @@ from http import HTTPStatus
 from Services.EmailVerificationService import *
 
 
-class EmailVerification(Resource):
+class SendForgotPasswordEmailResource(Resource):
 
     def post(self):
         # Parsing the registration parameters
         parser = reqparse.RequestParser()
         parser.add_argument("email", location='headers')
-        parser.add_argument("token", location='headers')
         args = parser.parse_args()
 
         # Checking validity of credentials
-        validate_service = EmailVerificationService()
-        success = validate_service.validateWithEmail(args["email"],
-                                                     args["token"])
+        email_service = EmailVerificationService()
+        success = email_service.send_password_reset_email(args['email'])
         return jsonify(success=success)

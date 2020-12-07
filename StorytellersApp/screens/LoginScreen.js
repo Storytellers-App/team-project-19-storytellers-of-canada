@@ -49,6 +49,13 @@ export default class LoginScreen extends Component {
     goToEmailVerification() {
         Actions.EmailVerification({email: "", code: "", username: this.state.username});
     }
+
+    /**
+     * Reset password
+     */
+    goToForgotPassword() {
+        Actions.ForgotPasswordScreen();
+    }
     /**
      * Set app-wide user information
      */
@@ -170,6 +177,11 @@ export default class LoginScreen extends Component {
                         title="Register a New Account"
                         type="outline"
                     />
+                </View>
+                <View style={styles.guestButtonText}>
+                    <TouchableOpacity onPress={this.goToForgotPassword}>
+                        <Text style={styles.buttonText}>Forgot password</Text>
+                    </TouchableOpacity>
                 </View>
                 {/* Option to enter the app as a guest */}
                 <View style={styles.guestButtonText}>
