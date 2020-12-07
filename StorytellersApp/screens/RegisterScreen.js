@@ -112,6 +112,7 @@ class RegisterScreen extends Component {
                         secureTextEntry={true}
                         style={styles.input}
                         placeholder="Password"
+                        autoCapitalize = 'none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
                 </View>

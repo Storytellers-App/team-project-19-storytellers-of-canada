@@ -161,6 +161,7 @@ export default class LoginScreen extends Component {
                         style={styles.input}
                         secureTextEntry={true}
                         placeholder="Password"
+                        autoCapitalize = 'none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
                 </View>
