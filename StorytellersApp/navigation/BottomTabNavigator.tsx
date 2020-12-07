@@ -108,7 +108,7 @@ function RadioNavigator() {
       <RadioPlayerStack.Screen
         name="RadioPlayer"
         component={RadioPlayer}
-        options={{ headerTitle: 'Storytellers of Canada Radio' }}
+        options={{ headerShown: false }}
       />
     </RadioPlayerStack.Navigator>
   )

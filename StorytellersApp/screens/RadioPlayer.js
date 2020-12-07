@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox, TouchableOpacity } from 'react-native';
+import { Appbar, Button, Portal } from 'react-native-paper';
+import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { Audio } from 'expo-av';
 import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
@@ -113,28 +114,56 @@ export default class RadioPlayer extends React.Component {
     }
 
     render() {
-        return(
-            <View style={styles.container}> 
-            <Image
+        return (
+          <View style={{ flex: 1 }}>
+            <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display:'flex' }}>
+                <Text style={{fontSize: 20}}>SC-Radio-CC</Text>
+                <Button
+                  style={{marginLeft: "auto"}}
+                  onPress={() => {
+                    this.setState({ helpOpen: !this.state.helpOpen });
+                  }}
+                >
+                  HELP
+                </Button>
+                </Appbar.Header>
+                {this.state.helpOpen && (
+                  <Portal>
+                    <View style={styles.faded}>
+                      <Text style={styles.message}>
+                        This is the SC-Radio-CC Screen
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{ height: "100%" }}
+                      onPress={() => this.setState({ helpOpen: false })}
+                    />
+                  </Portal>
+                )}
+            
+            <View style={styles.container}>
+              <Image
                 style={styles.logo}
-                source={require('../assets/images/SCCC_logo.png')}
-            />
-            <Text style={styles.nowPlayingText} numberOfLines={2}>
+                source={require("../assets/images/SCCC_logo.png")}
+              />
+              <Text style={styles.nowPlayingText} numberOfLines={2}>
                 {this.state.nowPlaying}
-            </Text>
-            <Text style={styles.liveText}>Live</Text>
-            <TouchableWithoutFeedback onPress={this.toggleAudio}> 
-                 <Image 
-                    style={styles.playButton}
-                    source={
-                        this.state.audioState === 'audioPlaying' || this.state.audioState === 'audioBuffering' ?
-                        require('../assets/images/Stop.png') :
-                        require('../assets/images/Play.png')
-                    }
-                 />
-            </TouchableWithoutFeedback>
+              </Text>
+              <Text style={styles.liveText}>Live</Text>
+              <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                <Image
+                  style={styles.playButton}
+                  source={
+                    this.state.audioState === "audioPlaying" ||
+                    this.state.audioState === "audioBuffering"
+                      ? require("../assets/images/Stop.png")
+                      : require("../assets/images/Play.png")
+                  }
+                />
+              </TouchableWithoutFeedback>
             </View>
-        )
+          </View>
+        );
     }
 }
 
@@ -167,6 +196,20 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginBottom: 30,
         color: 'red'
-    }
+    },
+    faded: {
+      backgroundColor: '#00000099',
+      position: 'absolute',
+      zIndex: 0,
+      height: '100%',
+      width: '100%',
+    },
+    message: {
+        top: '15%',
+        margin: '6%',
+        padding: '2%',
+        backgroundColor: 'white',
+        textAlign: "center"
+    },
   });
   
