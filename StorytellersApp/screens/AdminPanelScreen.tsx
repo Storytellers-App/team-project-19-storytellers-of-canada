@@ -24,7 +24,11 @@ export default function AdminPanelScreen() {
       {helpOpen && (
         <Portal>
           <View style={styles.faded}>
-            <Text style={styles.message}>This is the Admin Panel Screen</Text>
+            <View style={styles.message}>
+              <Text style={styles.messageTextLoud}>This is the Admin Panel</Text>
+              <Text style={styles.messageText}>Here you can approve or reject stories that are awaiting approval.</Text>
+              <Text style={styles.messageText}>Tap the green thumbs up to approve a story, or tap the red thumbs down to reject a story.</Text>
+            </View>
           </View>
           <TouchableOpacity
             style={{ height: "100%" }}
@@ -41,17 +45,28 @@ export default function AdminPanelScreen() {
 
 const styles = StyleSheet.create({
   faded: {
-    backgroundColor: '#00000099',
-    position: 'absolute',
+    backgroundColor: "#00000099",
+    position: "absolute",
     zIndex: 0,
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   message: {
-      top: '15%',
-      margin: '6%',
-      padding: '2%',
-      backgroundColor: 'white',
-      textAlign: "center"
+    top: "15%",
+    margin: "6%",
+    padding: "2%",
+    backgroundColor: "white",
+    textAlign: "center",
+  },
+  messageText: {
+    textAlign: "left",
+    fontSize: 14,
+    margin: 12,
+  },
+  messageTextLoud: {
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: 3,
+    fontSize: 16,
   },
 });
