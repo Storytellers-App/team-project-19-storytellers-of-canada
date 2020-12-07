@@ -92,7 +92,9 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={StorySaveScreen}
-        options={{ headerTitle: 'Saved Stories' }}
+        options= {{
+          headerShown: false
+        }}
       />
     </TabTwoStack.Navigator>
   );

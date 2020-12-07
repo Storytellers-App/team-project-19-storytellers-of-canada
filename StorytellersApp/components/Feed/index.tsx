@@ -11,23 +11,38 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as Config from '../../config';
 
 let url = Config.HOST //local ip address 
+type Props = {
+    key: string;
+    search: string;
+}
+type State = {
+    stories: UserStoryType[],
+    user: string | null,
+    page: number,
+    loading: boolean,
+    sessionStart: string
+};
 
-export default class Feed extends Component {
-
-    state = {
-        stories: [] as UserStoryType[],
-        user: null,
-        page: 1,
-        loading: true,
-        sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+export default class Feed extends Component<Props, State> {
+    private search: string;
+    constructor(props: Props) {
+        super(props);
+        this.search = props.search;
+        this.state = {
+            stories: [] as UserStoryType[],
+            user: null,
+            page: 1,
+            loading: true,
+            sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+        };
     };
-
 
     fetchStories = async () => {
         const { page } = this.state;
         const { stories } = this.state;
         const { sessionStart } = this.state;
         const { user } = this.state;
+
         this.setState({
             loading: true
         });
@@ -36,11 +51,12 @@ export default class Feed extends Component {
 
             //get stories from backend
             // let story_arr = userstories as UserStoryType[];
-
+           
             axios.get(url + 'stories', {
                 params: {
                     time: sessionStart,
                     type: 'userstory',
+                    filter: this.search == '' || this.search == null || this.search == undefined ? null : this.search,
                     username: user,
                     page: page
                 }

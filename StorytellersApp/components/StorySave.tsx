@@ -11,15 +11,30 @@ import * as Config from '../config';
 import { Header } from 'react-native/Libraries/NewAppScreen';
 
 let url = Config.HOST
+type Props = {
+  key: string;
+  search: string;
+}
+type State = {
+  stories: StorySaveType[],
+  user: string | null,
+  page: number,
+  loading: boolean,
+  sessionStart: string
+};
+export default class StorySave extends Component<Props, State> {
 
-export default class StorySave extends Component {
-
-  state = {
-    stories: [] as StorySaveType[],
-    user: null,
-    page: 1,
-    loading: true,
-    sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+  private search: string;
+  constructor(props: Props) {
+      super(props);
+      this.search = props.search;
+      this.state = {
+          stories: [] as StorySaveType[],
+          user: null,
+          page: 1,
+          loading: true,
+          sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+      };
   };
 
 
@@ -39,6 +54,7 @@ export default class StorySave extends Component {
         params: {
           time: sessionStart,
           type: 'storysave',
+          filter: this.search == '' || this.search == null || this.search == undefined ? null : this.search,
           username: user,
           page: page
         }
@@ -107,7 +123,7 @@ export default class StorySave extends Component {
         />
       </View>
       <View style={{ flex: 0.6 }}>
-        <Text style={styles.storySaveTitle}>Saved Story Collection</Text>
+        <Text style={styles.storySaveTitle}>StorySave Collection</Text>
       </View>
     </View>
     );
