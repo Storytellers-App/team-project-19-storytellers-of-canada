@@ -122,7 +122,7 @@ function AdminPanelNavigator() {
       <TabThreeStack.Screen
         name="AdminPanelScreen"
         component={AdminPanelScreen}
-        options={{ headerTitle: 'Admin Panel' }}
+        options={{ headerShown: false }}
       />
     </TabThreeStack.Navigator>
   );
