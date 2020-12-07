@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox, TouchableOpacity } from 'react-native';
+import { Appbar, Button, Portal } from 'react-native-paper';
+import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { Audio } from 'expo-av';
 import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
@@ -118,6 +119,34 @@ export default class RadioPlayer extends React.Component {
 
     render() {
         return (
+
+          <View style={{ flex: 1 }}>
+            <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display:'flex' }}>
+                <Text style={{fontSize: 20}}>SC-Radio-CC</Text>
+                <Button
+                  style={{marginLeft: "auto"}}
+                  onPress={() => {
+                    this.setState({ helpOpen: !this.state.helpOpen });
+                  }}
+                >
+                  HELP
+                </Button>
+                </Appbar.Header>
+                {this.state.helpOpen && (
+                  <Portal>
+                    <View style={styles.faded}>
+                      <View style={styles.message}>
+                        <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
+                        <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      style={{ height: "100%" }}
+                      onPress={() => this.setState({ helpOpen: false })}
+                    />
+                  </Portal>
+                )}
+
             <View style={styles.container}>
                 <Image
                     style={styles.logo}
@@ -138,7 +167,8 @@ export default class RadioPlayer extends React.Component {
                     />
                 </TouchableWithoutFeedback>
             </View>
-        )
+          </View>
+        );
     }
 }
 
@@ -172,5 +202,31 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginBottom: 30,
         color: 'red'
-    }
-});
+    },
+    faded: {
+      backgroundColor: '#00000099',
+      position: 'absolute',
+      zIndex: 0,
+      height: '100%',
+      width: '100%',
+    },
+    message: {
+        top: '15%',
+        margin: '6%',
+        padding: '2%',
+        backgroundColor: 'white',
+        textAlign: "center"
+    },
+    messageText: {
+        textAlign: "left",
+        fontSize: 14,
+        margin: 12,
+    },
+    messageTextLoud: {
+        textAlign: "center",
+        fontWeight: "bold",
+        padding: 3,
+        fontSize: 16,
+    },
+  });
+

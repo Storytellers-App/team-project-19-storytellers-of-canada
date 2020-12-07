@@ -108,7 +108,7 @@ function RadioNavigator() {
       <RadioPlayerStack.Screen
         name="RadioPlayer"
         component={RadioPlayer}
-        options={{ headerTitle: 'Storytellers of Canada Radio' }}
+        options={{ headerShown: false }}
       />
     </RadioPlayerStack.Navigator>
   )
@@ -122,7 +122,7 @@ function AdminPanelNavigator() {
       <TabThreeStack.Screen
         name="AdminPanelScreen"
         component={AdminPanelScreen}
-        options={{ headerTitle: 'Admin Panel' }}
+        options={{ headerShown: false }}
       />
     </TabThreeStack.Navigator>
   );
