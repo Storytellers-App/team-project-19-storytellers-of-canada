@@ -116,7 +116,14 @@ export default function HomeScreen() {
         {helpOpen && (
           <Portal>
             <View style={styles.faded}>
-              <Text style={styles.message}>This is the Home Screen</Text>
+              <View style={styles.message}>
+                <Text style={styles.messageTextLoud}>This is the Home Screen</Text>
+                <Text style={styles.messageText}>All of the stories made by users will appear here. You can scroll through them, or click on any story to view it's comments.</Text>
+                <Text style={styles.messageText}>If you want to "like" a story, tap the heart. If you want to comment on a story, tap the speech bubble.</Text>
+              </View>
+              <View style={styles.message2}>
+              <Text style={styles.messageText}>Tap the blue microphone button to record your own story!</Text>
+              </View>
             </View>
             <TouchableOpacity
               style={{ height: "100%" }}
@@ -135,7 +142,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   input: {
     padding: 16,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     margin: 0,
   },
   card: {
@@ -156,24 +163,43 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   icon: {
     flex: 1,
   },
   faded: {
-    backgroundColor: '#00000099',
-    position: 'absolute',
+    backgroundColor: "#00000099",
+    position: "absolute",
     zIndex: 0,
-    height: '100%',
-    width: '100%',
-},
-message: {
-    top: '15%',
-    margin: '6%',
-    padding: '2%',
-    backgroundColor: 'white',
-    textAlign: "center"
-},
+    height: "100%",
+    width: "100%",
+  },
+  message: {
+    top: "15%",
+    margin: "6%",
+    padding: "2%",
+    backgroundColor: "white",
+    textAlign: "center",
+  },
+  message2: {
+    top: "30%",
+    margin: "15%",
+    marginRight: "35%",
+    padding: "0%",
+    backgroundColor: "white",
+    textAlign: "center",
+  },
+  messageText: {
+    textAlign: "left",
+    fontSize: 14,
+    margin: 12,
+  },
+  messageTextLoud: {
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: 3,
+    fontSize: 16,
+  },
 });
