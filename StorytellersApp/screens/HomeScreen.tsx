@@ -17,6 +17,8 @@ import {
   Divider,
   Searchbar,
   Appbar,
+  Button,
+  Portal,
 } from 'react-native-paper';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -29,6 +31,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SearchBar } from 'react-native-elements';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
@@ -39,6 +42,7 @@ export default function HomeScreen() {
   const [searchText, setSearchText] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [focus, setFocus] = React.useState(false);
+  const [helpOpen, setHelpOpen] = React.useState(false);
   const colorScheme = useColorScheme();
 
   const getUser = async () => {
@@ -75,9 +79,19 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar.Header style={{ backgroundColor: 'white' }}>
+      <Appbar.Header style={{ backgroundColor: "white" }}>
         <View style={{ marginLeft: 7 }}>
-          <ProfilePicture image={user === null ? undefined : user.image === null ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user.name : user.image} size={45} />
+          <ProfilePicture
+            image={
+              user === null
+                ? undefined
+                : user.image === null
+                ? "https://ui-avatars.com/api/?background=006699&color=fff&name=" +
+                  user.name
+                : user.image
+            }
+            size={45}
+          />
         </View>
         {/* <Appbar.Content title="Home" /> */}
         <View style={{ flex: 1, marginLeft: 10 }}>
@@ -92,6 +106,24 @@ export default function HomeScreen() {
             onEndEditing={() => setFocus(false)}
           />
         </View>
+        <Button
+          onPress={() => {
+            setHelpOpen(!helpOpen);
+          }}
+        >
+          HELP
+        </Button>
+        {helpOpen && (
+          <Portal>
+            <View style={styles.faded}>
+              <Text style={styles.message}>This is the Home Screen</Text>
+            </View>
+            <TouchableOpacity
+              style={{ height: "100%" }}
+              onPress={() => setHelpOpen(false)}
+            />
+          </Portal>
+        )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
       <Feed key={searchQuery} search={searchQuery}></Feed>
@@ -130,4 +162,18 @@ const styles = StyleSheet.create({
   icon: {
     flex: 1,
   },
+  faded: {
+    backgroundColor: '#00000099',
+    position: 'absolute',
+    zIndex: 0,
+    height: '100%',
+    width: '100%',
+},
+message: {
+    top: '15%',
+    margin: '6%',
+    padding: '2%',
+    backgroundColor: 'white',
+    textAlign: "center"
+},
 });
