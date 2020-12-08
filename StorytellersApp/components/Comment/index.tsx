@@ -21,7 +21,6 @@ import {
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
 import ProfilePicture from '../ProfilePicture';
-import StoryPlayer from '../StoryPlayer';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
@@ -33,6 +32,7 @@ import Tags from '../Tags';
 export type CommentProps = {
     comment: CommentType,
     admin?: boolean,
+    disableResponse?: boolean,
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
@@ -57,7 +57,7 @@ function Comment(props: CommentProps) {
     return (
 
         <Card style={styles.card}>
-            <TouchableWithoutFeedback onPress={() => { responseScreen(props.comment) }}>
+            <TouchableWithoutFeedback disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.comment) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
                         <ProfilePicture image={props.comment.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.comment.user.name : props.comment.user.image} size={42} />

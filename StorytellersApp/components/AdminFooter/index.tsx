@@ -37,12 +37,12 @@ const AdminFooter = (props: UserStoryProps) => {
 
 
     const approve = async () => {
-
         try {
             axios({
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
                     approved: true,
+                    parent_type: props.story.parentType === undefined ? null : props.story.parentType,
                     type: props.story.type
                 }
 
@@ -64,6 +64,7 @@ const AdminFooter = (props: UserStoryProps) => {
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
                     approved: false,
+                    parent_type: props.story.parent === undefined ? null : props.story.parent.type,
                     type: props.story.type
                 }
 

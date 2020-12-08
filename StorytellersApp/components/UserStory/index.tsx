@@ -33,6 +33,7 @@ import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
     admin?: boolean,
+     disableResponse?: boolean;
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
@@ -58,7 +59,7 @@ function UserStory(props: UserStoryProps) {
     return (
 
         <Card style={styles.card}>
-            <TouchableWithoutFeedback onPress={() => { responseScreen(props.story) }}>
+            <TouchableWithoutFeedback  disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
                         <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />

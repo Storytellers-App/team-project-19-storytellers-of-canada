@@ -22,6 +22,7 @@ userstory_fields = {
     'description': fields.String,
     'recording': fields.String,
     'parent': fields.Integer,
+    'parentType': fields.String,
     'numLikes': fields.Integer,
     'numReplies': fields.Integer,
     'tags': fields.List(fields.String),
@@ -48,6 +49,8 @@ comment_fields = {
     'creationTime': fields.DateTime,
     'comment': fields.String,
     'numLikes': fields.Integer,
+    'parent': fields.Integer,
+    'parentType': fields.String,
     'numReplies': fields.Integer,
     'type': fields.String,
     'isLiked': fields.Boolean,
@@ -164,6 +167,7 @@ class Admin(Resource):
                     'description': response.description,
                     'recording': response.recording,
                     'parent': response.parent,
+                    'parentType': response.parentType,
                     'author': response.author,
                     'image': response.image,
                     'numLikes': response.numLikes,
@@ -192,10 +196,10 @@ class Admin(Resource):
     def post(self):
         get_user_stories_args = reqparse.RequestParser()
         get_user_stories_args.add_argument("id", type=int, required=True)
+        get_user_stories_args.add_argument("parent_type", type=str, default=StoryType.USER.value)
         get_user_stories_args.add_argument("approved", type=bool, default=True)
         get_user_stories_args.add_argument("type", type=str,
                                            default=StoryType.USER.value)
-
         args = get_user_stories_args.parse_args()
 
         try:
@@ -208,9 +212,12 @@ class Admin(Resource):
                 abort(HTTPStatus.BAD_REQUEST, message='Could not find post')
             parent = None
             if post.parent is not None:
-                parent = Story.query.filter_by(id=post.parent).first()
+                if args['parent_type'] == "comment":
+                    parent = Comment.query.filter_by(id=post.parent).first()
+                else:
+                    parent = Story.query.filter_by(id=post.parent).first()
             if args['approved']:
-                if parent is not None:
+                if parent is not None and not post.approved:
                     parent.numReplies += 1
                 post.approved = args['approved']
                 post.approvedTime = func.now()

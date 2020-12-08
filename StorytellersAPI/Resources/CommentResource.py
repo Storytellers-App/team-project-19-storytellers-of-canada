@@ -15,9 +15,12 @@ class CommentRes(Resource):
         post_comment_args.add_argument("username", type=str, required=True)
         post_comment_args.add_argument("comment", type=str, required=True)
         args = post_comment_args.parse_args()
-        story = Story.query.filter_by(id=args['parent']).first()
+        if args['parentType'] == 'comment':
+            story = Comment.query.filter_by(id=args['parent']).first()
+        else:
+            story = Story.query.filter_by(id=args['parent']).first()
         if not story:
-            abort(HTTPStatus.BAD_REQUEST, message='Story no longer exists')
+            abort(HTTPStatus.BAD_REQUEST, message='Item no longer exists')
         comment = Comment(username=args['username'],
                           creationTime=func.now(),
                           parent=args['parent'],
