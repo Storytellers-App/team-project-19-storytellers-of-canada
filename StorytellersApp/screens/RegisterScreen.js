@@ -26,6 +26,14 @@ class RegisterScreen extends Component {
      */
     goToLogin(){
         // Actions.LoginScreen();
+        Actions.LoginScreen();
+    }
+
+    /**
+     * Go to the email verification page
+     */
+    goToEmailVerification() {
+        console.log('Go to email verification');
         Actions.EmailVerification({email: this.state.email, code: "", username: ""});
     }
 
@@ -64,8 +72,8 @@ class RegisterScreen extends Component {
                     .then(result => {
                         if (result["success"]) {
                             console.log("Successful response")
-                            // Going to the login screen
-                            this.goToLogin();
+                            // Going to the email screen
+                            this.goToEmailVerification();
                         } else {
                             Alert.alert(
                                 "Invalid Registration Information"
