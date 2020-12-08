@@ -33,6 +33,8 @@ class EmailVerificationService:
                 except Exception as e:
                     print(e)
                     return False
+            else:
+                return False
 
         except Exception as e:
             print(e)
@@ -60,7 +62,7 @@ class EmailVerificationService:
         """
         Validates a user when given an email
         """
-        self.activate_user(email, token)
+        return self.activate_user(email, token)
 
     def validateWithoutEmail(self, username, token):
         """
@@ -130,7 +132,7 @@ Storytellers of Canada
 
             # Now send the email
             # https://www.tutorialspoint.com/send-mail-from-your-gmail-account-using-python
-            sender_email = 'kirksmith.john@gmail.com'
+            sender_email = 'radioapp@storytellers-conteurs.ca'
             message = MIMEMultipart()
             message['From'] = sender_email
             message['To'] = reciever
@@ -138,9 +140,9 @@ Storytellers of Canada
             message.attach(MIMEText(email_message, 'plain'))
 
             # Create SMTP session for sending the mail
-            session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+            session = smtplib.SMTP('mail.storytellers-conteurs.ca', 587)
             session.starttls()  # enable security
-            session.login(sender_email, 'PureStandardProducts1')
+            session.login(sender_email, 'R@dioapp2021!')
             text = message.as_string()
             session.sendmail(sender_email, reciever, text)
             session.quit()
