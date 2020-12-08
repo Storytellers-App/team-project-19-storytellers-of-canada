@@ -7,7 +7,7 @@ export default function AdminPanelScreen() {
   const [helpOpen, setHelpOpen] = React.useState(false);
 
   return (
-    <SafeAreaView>
+    <View style={{ flex: 1 }}>
       <Appbar.Header
         style={{ backgroundColor: "white", marginLeft: 20, display: "flex" }}
       >
@@ -39,7 +39,7 @@ export default function AdminPanelScreen() {
         </Portal>
       )}
       <AdminFeed></AdminFeed>
-    </SafeAreaView>
+    </View>
   );
 }
 
