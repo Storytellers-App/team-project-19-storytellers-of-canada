@@ -45,7 +45,7 @@ export default class ResponseFeed extends Component<Props> {
         if ((header as StorySaveType).author) {
             return (
                 <View>
-                    <SavedStory story={header as StorySaveType}></SavedStory>
+                    <SavedStory story={header as StorySaveType} disableResponse={true}></SavedStory>
                     <View
                         style={{
                             borderBottomColor: Colors.light.tint,
@@ -59,7 +59,7 @@ export default class ResponseFeed extends Component<Props> {
         else if ((header as CommentType).comment) {
             return (
                 <View>
-                    <Comment comment={header as CommentType}></Comment>
+                    <Comment comment={header as CommentType} disableResponse={true}></Comment>
                     <View
                         style={{
                             borderBottomColor: Colors.light.tint,
@@ -73,7 +73,7 @@ export default class ResponseFeed extends Component<Props> {
         else {
             // Temporary styling to distinguish header story from replies
             return (<View>
-                <UserStory story={header as UserStoryType}></UserStory>
+                <UserStory story={header as UserStoryType} disableResponse={true}></UserStory>
                 <View
                     style={{
                         borderBottomColor: Colors.light.tint,

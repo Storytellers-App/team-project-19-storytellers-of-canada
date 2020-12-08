@@ -33,6 +33,7 @@ import Tags from "../Tags";
 export type StoredStoryProps = {
   story: StorySaveType;
   admin?: boolean;
+  disableResponse?: boolean;
 };
 import Footer from "../CardFooter";
 import AdminFooter from "../AdminFooter";
@@ -60,6 +61,7 @@ function SavedStory(props: StoredStoryProps) {
         onPress={() => {
           responseScreen(props.story);
         }}
+        disabled={props.disableResponse == true ? props.disableResponse : false}
       >
         <View>
           <View style={[styles.row, styles.attribution]}>
