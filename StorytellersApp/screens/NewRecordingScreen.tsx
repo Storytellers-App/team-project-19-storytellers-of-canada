@@ -108,8 +108,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       // ADTS is more for streaming
       this.recordingSettings = {
         android: {
-            extension: '.aac',
-            outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_AAC_ADTS,
+            extension: '.m4a',
+            outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
             audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
             sampleRate: 44100,
             numberOfChannels: 2,
@@ -127,7 +127,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         // },
         ios: {
           extension: '.m4a',
-          outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_APPLELOSSLESS,
+          outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
           audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MIN,
           sampleRate: 44100,
           numberOfChannels: 2,

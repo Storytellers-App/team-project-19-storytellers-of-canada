@@ -56,7 +56,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         if (Platform.OS === 'ios'){
             formData.append('extension', 'm4a');
         } else {
-            formData.append('extension', 'aac');
+            formData.append('extension', 'm4a');
         }
         formData.append('title', title);
         if (parent != null && parent != undefined){
