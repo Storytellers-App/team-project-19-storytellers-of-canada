@@ -5,7 +5,7 @@ class Config(object):
     #SQLALCHEMY_DATABASE_URI = os.environ.get(
     #    'DATABASE_URL') or 'mysql+mysqlconnector://admin:+hB4+n#Y9Z?*Ca?Y@csc301storytellers.c6sjsmci2h7j.us-east-2.rds.amazonaws.com/storytellers_schema'
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-       'DATABASE_URL') or 'mysql+mysqlconnector://root:eIfkX4!mLea@QDE^V0@radioapp.storytellers-conteurs.ca/storytellers_schema'
+       'DATABASE_URL') or 'mysql+mysqlconnector://root:eIfkX4!mLea@QDE^V0@127.0.0.1/storytellers_schema'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Gonna need to experiment with these if we get timeouts
     # SQLALCHEMY_ENGINE_OPTIONS = {
