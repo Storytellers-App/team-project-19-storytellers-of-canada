@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from Resources.TestResource import Hello
+from Resources.TestResource import TestDB
 from config import Config
 from extensions import db
 import logging
@@ -21,6 +21,9 @@ from Resources.EmailVerificationWithUsername import EmailVerificationWithUsernam
 from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
 from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
 
+# test database
+from Resources.TestResource import TestDB
+
 app = Flask(__name__)
 app.config.from_object(Config)
 api = Api(app)
@@ -30,6 +33,9 @@ db.init_app(app)
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers.extend(gunicorn_error_logger.handlers)
 app.logger.setLevel(logging.DEBUG)
+
+# GET /testdb
+api.add_resource(TestDB, '/testdb')
 
 # GET /login?username&password
 api.add_resource(Login, '/login')
