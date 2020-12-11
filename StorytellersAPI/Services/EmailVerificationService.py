@@ -10,6 +10,7 @@ import smtplib
 import ssl
 from random import randint
 from Services.GetUserService import GetUserService
+from Services.instance.config import *
 
 # Class for handling registration
 
@@ -142,7 +143,7 @@ Storytellers of Canada
             # Create SMTP session for sending the mail
             session = smtplib.SMTP('mail.storytellers-conteurs.ca', 587)
             session.starttls()  # enable security
-            session.login(sender_email, 'R@dioapp2021!')
+            session.login(sender_email, verification_pw)
             text = message.as_string()
             session.sendmail(sender_email, reciever, text)
             session.quit()
