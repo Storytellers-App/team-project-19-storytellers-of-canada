@@ -3,15 +3,33 @@ jobs:
     working_directory: ~/team-project-19-storytellers-of-canada/StorytellersAPI
     executor: python/default
     steps:
-      - checkout
+      - checkout:
+        path: ~/team-project-19-storytellers-of-canada
       - run:
           command: |
             echo test
           name: Test
+  deploy:
+     machine:
+       enabled: true
+     steps:
+       - run:
+           name: Deploy Over SSH
+           command: |
+             ssh root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull git@github.com:csc301-fall-2020/team-project-19-storytellers-of-canada && sudo systemctl restart sccanada'
+
+
 orbs:
   python: circleci/python@1.1.0
 version: 2.1
-workflows:
-  main:
-    jobs:
-      - build
+ workflows:
+   version: 2
+   build-and-deploy:
+     jobs:
+       - build
+       - deploy:
+           requires:
+             - build # only deploy once build job has completed
+           filters:
+             branches:
+               only: master # only deploy on the master branch
