@@ -3,16 +3,11 @@ jobs:
     working_directory: ~/team-project-19-storytellers-of-canada/StorytellersAPI
     executor: python/default
     steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - python/install-packages:
-          args: pytest
-          pkg-manager: pip
-          pypi-cache: false
+      - checkout:
+        path: ~/team-project-19-storytellers-of-canada
       - run:
           command: |
-            pytest --version
+            echo test
           name: Test
 orbs:
   python: circleci/python@1.1.0
