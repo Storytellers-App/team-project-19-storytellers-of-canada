@@ -1,5 +1,11 @@
 jobs:
   build:
+    docker:
+      - image: cimg/base:2020.01
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    resource_class: small
     working_directory: ~/team-project-19-storytellers-of-canada/StorytellersAPI
     steps:
       - checkout
@@ -8,6 +14,11 @@ jobs:
             echo test
           name: Test
   deploy:
+    docker:
+      - image: cimg/base:2020.01
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
      steps:
        - run:
            name: Deploy Over SSH
