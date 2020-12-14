@@ -3,8 +3,7 @@ jobs:
     working_directory: ~/team-project-19-storytellers-of-canada/StorytellersAPI
     executor: python/default
     steps:
-      - checkout:
-        path: ~/team-project-19-storytellers-of-canada
+      - checkout
       - run:
           command: |
             echo test
@@ -21,8 +20,8 @@ jobs:
 
 orbs:
   python: circleci/python@1.1.0
-version: 2.1
- workflows:
+
+workflows:
    version: 2
    build-and-deploy:
      jobs:
