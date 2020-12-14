@@ -1,0 +1,42 @@
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2020.01
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    resource_class: small
+    working_directory: ~/team-project-19-storytellers-of-canada/StorytellersAPI
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo test
+          name: Test
+  deploy:
+    docker:
+      - image: cimg/base:2020.01
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+       - run:
+           name: Deploy Over SSH
+           command: |
+             ssh root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull git@github.com:csc301-fall-2020/team-project-19-storytellers-of-canada && sudo systemctl restart sccanada'
+
+
+orbs:
+  python: circleci/python@1.1.0
+
+workflows:
+   version: 2
+   build-and-deploy:
+     jobs:
+       - build
+       - deploy:
+           requires:
+             - build # only deploy once build job has completed
+           filters:
+             branches:
+               only: master # only deploy on the master branch
