@@ -4,7 +4,7 @@ jobs:
     executor: python/default
     steps:
       - checkout:
-          path: ~/team-project-19-storytellers-of-canada
+          path: ~/
       - python/install-packages:
           pkg-manager: pip
       - python/install-packages:
@@ -30,4 +30,4 @@ deployment:
    production:
      branch: master
      commands:
-       - ssh root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull origin master && sudo systemctl restart sccanada'
+       - ssh root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull git@github.com:csc301-fall-2020/team-project-19-storytellers-of-canada && sudo systemctl restart sccanada'
