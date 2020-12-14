@@ -8,8 +8,6 @@ jobs:
             echo test
           name: Test
   deploy:
-     machine:
-       enabled: true
      steps:
        - run:
            name: Deploy Over SSH
