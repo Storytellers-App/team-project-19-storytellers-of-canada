@@ -15,9 +15,3 @@ workflows:
   main:
     jobs:
       - build
-
-deployment:
-   production:
-     branch: master
-     commands:
-       - ssh root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull git@github.com:csc301-fall-2020/team-project-19-storytellers-of-canada && sudo systemctl restart sccanada'
