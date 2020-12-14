@@ -1,0 +1,33 @@
+jobs:
+  build:
+    working_directory: ~/team-project-19-storytellers-of-canada/StorytellersAPI
+    executor: python/default
+    steps:
+      - checkout:
+          path: ~/team-project-19-storytellers-of-canada
+      - python/install-packages:
+          pkg-manager: pip
+      - python/install-packages:
+          pip-dependency-file: requirements.txt
+          pkg-manager: pip
+      - python/install-packages:
+          args: pytest
+          pkg-manager: pip
+          pypi-cache: false
+      - run:
+          command: |
+            pytest --version
+          name: Test
+orbs:
+  python: circleci/python@1.1.0
+version: 2.1
+workflows:
+  main:
+    jobs:
+      - build
+
+deployment:
+   production:
+     branch: master
+     commands:
+       - ssh root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull origin master && sudo systemctl restart sccanada'
