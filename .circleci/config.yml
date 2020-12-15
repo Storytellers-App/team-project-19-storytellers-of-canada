@@ -22,9 +22,10 @@ jobs:
     steps:
        - run:
            name: Deploy Over SSH
-           command: |
+           command: | 
              ssh -o "StrictHostKeyChecking no" root@104.131.125.32 'cd /home/storyteller/team-project-19-storytellers-of-canada/StorytellersAPI/ && git pull git@github.com:csc301-fall-2020/team-project-19-storytellers-of-canada && sudo systemctl restart sccanada'
-
+# What does the above command do? a) it sshs to the droplet using the rsa key that CircleCI holds, then b) it cd's to the git repo directory and pulls using the rsa key that is authorized to access this repo,
+# then c) restarts the systemd service that serves the backend to reload the new code.
 
 orbs:
   python: circleci/python@1.1.0
