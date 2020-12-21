@@ -123,12 +123,13 @@ export default class Feed extends Component<Props, State> {
     componentDidMount() {
         this.getUserandFetch()
     };
+    renderItem = ({ item }) => <UserStory story={item} />;
     render() {
         const { stories } = this.state;
         return (
             <FlatList
                 data={stories}
-                renderItem={({ item }) => <UserStory story={item} />}
+                renderItem={this.renderItem}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}
                 onRefresh={this.refresh}
