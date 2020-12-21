@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ScrollViewProps,
 } from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
+import { useScrollToTop, useTheme , } from '@react-navigation/native';
 import {
   Card,
   Text,
@@ -26,17 +26,19 @@ import ProfilePicture from '../components/ProfilePicture';
 import UserStory from '../components/UserStory';
 import Feed from '../components/Feed';
 import NewRecordingButton from '../components/NewRecordingButton';
-import { UserType } from '../types';
+import { UserType , RootStackParamList} from '../types';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SearchBar } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Navigation from '../navigation';
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 
-
-
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
+  
   const ref = React.useRef<TextInput>(null);
   const [user, setUser] = useState<UserType | null>(null);
   const [searchText, setSearchText] = React.useState('');
@@ -76,11 +78,15 @@ export default function HomeScreen() {
   useEffect(() => {
     getUser();
   }, [])
-
+  
+  const openDrawer = () => {
+    navigation.toggleDrawer();
+  }
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header style={{ backgroundColor: "white" }}>
         <View style={{ marginLeft: 7 }}>
+          <TouchableOpacity onPress={openDrawer}>
           <ProfilePicture
             image={
               user === null
@@ -92,6 +98,7 @@ export default function HomeScreen() {
             }
             size={45}
           />
+          </TouchableOpacity>
         </View>
         {/* <Appbar.Content title="Home" /> */}
         <View style={{ flex: 1, marginLeft: 10 }}>

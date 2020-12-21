@@ -138,6 +138,7 @@ export default class StorySave extends Component<Props, State> {
   componentDidMount() {
     this.getUserandFetch()
   };
+  renderItem = ({ item }) => <SavedStory story={item} />;
   render() {
     const { stories } = this.state;
     return (
@@ -145,7 +146,7 @@ export default class StorySave extends Component<Props, State> {
       <FlatList
         ListHeaderComponent={<this.Header></this.Header>}
         data={stories}
-        renderItem={({ item }) => <SavedStory story={item} />}
+        renderItem={this.renderItem}
         keyExtractor={item => item.id.toString()}
         refreshing={this.state.loading}
         onRefresh={this.refresh}
