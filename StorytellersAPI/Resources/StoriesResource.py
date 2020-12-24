@@ -129,6 +129,19 @@ class Stories(Resource):
         else:
             return HTTPStatus.CREATED
 
+    def delete(self):
+        story_args = reqparse.RequestParser()
+        story_args.add_argument(
+            "story_id", type=str, required=True, help="ID of story not specified!"
+        )
+        args = story_args.parse_args()
+        ret = self.s3_service.delete_story(args.story_id)
+        if not ret:
+            return abort(500, description="Error in add_story in S3StoriesResource.")
+        else:
+            # successful
+            return HTTPStatus.NO_CONTENT
+
     def get(self):
         get_user_stories_args = reqparse.RequestParser()
         get_user_stories_args.add_argument(
