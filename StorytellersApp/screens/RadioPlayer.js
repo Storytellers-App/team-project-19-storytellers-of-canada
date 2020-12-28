@@ -38,6 +38,8 @@ export default class RadioPlayer extends React.Component {
     }
 
     _onPlaybackStatusUpdate = playbackStatus => {
+        console.log(this.state.audioState);
+        console.log(playbackStatus);
         if (!playbackStatus.isLoaded) {
             // Not loaded
             if (playbackStatus.error) {
@@ -79,6 +81,7 @@ export default class RadioPlayer extends React.Component {
                 },
                 // downloadFirst = false // This parameter is needed for stories, otherwise it downloads it all before playing
             );
+            this.state.audioState = 'audioLoading';
         } else if (this.state.audioState === 'audioPlaying') {
             // It's a stop button
             // Stop the stream completely
