@@ -16,7 +16,7 @@ class RegisterScreen extends Component {
      */
     constructor() {
         super()
-        this.state = { name: "", email: "", username: "", password: "" }
+        this.state = { name: "", email: "", username: "", password: "", confirmedPassword: "" }
         this.register = this.register.bind(this)
         this.host = Config.HOST
     }
@@ -52,6 +52,11 @@ class RegisterScreen extends Component {
                 "Please make sure you have entered information in all fields before trying to register."
             );
         } else {
+            // Check if the passwords match
+            if (this.state.password != this.state.confirmedPassword) {
+                Alert.alert("Passwords don't match");
+                return;
+            }
             // Validating email
             if (!this.validateEmail(this.state.email)){
                 Alert.alert(
@@ -122,6 +127,13 @@ class RegisterScreen extends Component {
                         placeholder="Password"
                         autoCapitalize = 'none'
                         onChangeText={(text) => this.setState({ password: text })}
+                    />
+                    <Input
+                        secureTextEntry={true}
+                        style={styles.input}
+                        placeholder="Confirm Password"
+                        autoCapitalize = 'none'
+                        onChangeText={(text) => this.setState({ confirmedPassword: text })}
                     />
                 </View>
                 <View>

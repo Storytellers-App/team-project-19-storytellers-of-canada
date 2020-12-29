@@ -16,6 +16,7 @@ import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 import { HOST } from '../config';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 let url = HOST
 
@@ -76,14 +77,22 @@ export default function EmailVerification({email, code, username}: Props) {
                     placeholder="Verification Code"
                     onChangeText={(value) => code = value}
                 />
-                <Button
-                    onPress={verifyCode}
-                    title="Confirm"
-                />
-                <Button
-                    onPress={resendEmail}
-                    title="Resend verification code"
-                />
+                
+                <View style={styles.signInButton}>
+                    <Button
+                        color="#FFF"
+                        onPress={verifyCode}
+                        title="Confirm"
+                    />
+                </View>
+                <View style={styles.signInButton}>
+                    <Button
+                        color="#FFF"
+                        onPress={resendEmail}
+                        title="Resend verification code"
+                    />
+                </View>
+                
             </View>
         </View>
     );
