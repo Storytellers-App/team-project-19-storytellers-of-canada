@@ -98,7 +98,7 @@ const BottomPlayer = () => {
     <View style={styles.container}>
       <View style={[styles.progress, { width: `${getProgress()}%` }]} />
       <View style={styles.row}>
-        {story.image != undefined && story.image != null ? <Image source={{ uri: story.image === null ? undefined : story.image }} style={styles.image} /> : null}
+        {story.image != undefined && story.image != null && story.image != "" ? <Image source={{ uri: story.image === null ? undefined : story.image }} style={styles.image} /> : null}
         <View style={styles.rightContainer}>
           <View style={styles.nameContainer}>
             <Text style={styles.title}>{story.title}</Text>

@@ -66,13 +66,14 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
         }
         else {
             skipPositionUpdates = 5;
-            let creator = (newStory as UserStoryType).user.name ? (newStory as UserStoryType).user.name :
+            let creator = (newStory as UserStoryType).user ? (newStory as UserStoryType).user.name :
                 (newStory as StorySaveType).author;
             let changedStory = {
                 recording: newStory.recording, image: newStory.image,
                 creator: creator, title: newStory.title,
                 isLiked: newStory.isLiked, id: newStory.id.toString()
             } as currentStory;
+            console.log(changedStory);
             setPosition(currPosition);
             setStory(changedStory);
         }
@@ -113,17 +114,17 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
         const totalSeconds = millis / 1000;
         const seconds = Math.floor(totalSeconds % 60);
         const minutes = Math.floor(totalSeconds / 60);
-    
+
         const padWithZero = (number: number) => {
-          const string = number.toString();
-          if (number < 10) {
-            return "0" + string;
-          }
-          return string;
+            const string = number.toString();
+            if (number < 10) {
+                return "0" + string;
+            }
+            return string;
         };
         return padWithZero(minutes) + ":" + padWithZero(seconds);
-      }
-    
+    }
+
     //   const getPlaybackTimestamp = () =>{
     //     if (
     //       currPosition != null &&
@@ -135,31 +136,31 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
     //     }
     //     return "";
     //   }
-      const getPlaybackTimestamp = () =>{
+    const getPlaybackTimestamp = () => {
         if (
-          currPosition != null &&
-          currDuration != null
+            currPosition != null &&
+            currDuration != null
         ) {
-          return `${getMMSSFromMillis(
-            currPosition
-          )}`;
+            return `${getMMSSFromMillis(
+                currPosition
+            )}`;
         }
         return "";
-      }
+    }
 
-      const getDurationTimestamp = () =>{
+    const getDurationTimestamp = () => {
         if (
-          currPosition != null &&
-          currDuration != null
+            currPosition != null &&
+            currDuration != null
         ) {
-          return `${getMMSSFromMillis(currDuration)}`;
+            return `${getMMSSFromMillis(currDuration)}`;
         }
         return "";
-      }
+    }
 
     return (
 
-        
+
         <View style={{
             flex: 0,
             flexDirection: 'column',
@@ -168,50 +169,41 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
             paddingLeft: 8,
             paddingRight: 8,
         }}>
-        <View style={{
-            flex: 0,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingLeft: 8,
-            paddingRight: 8,
-            height: 35
-        }}>
-            <TouchableOpacity onPress={toggleAudio}>
-                {story != null && story.id === newStory.id.toString() && isPlaying ? <MaterialIcons name="pause" size={30} color="black" />
-                    :
-                    <Entypo name="controller-play" size={30} color="black" />
-                }
-            </TouchableOpacity>
-            <View style={styles.playbackContainer}>
-                <Slider
-                    style={styles.playbackSlider}
-                    value={getSeekSliderPosition()}
-                    onValueChange={onSeekSliderValueChange}
-                    onSlidingComplete={onSeekSliderSlidingComplete}
-                // disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
-                />
-                <View style={{
-                        flex: 0,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                    }}>
-                        <Text>{getPlaybackTimestamp()}</Text>
-                        <Text>{getDurationTimestamp()}</Text>
+            <View style={{
+                flex: 0,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingLeft: 8,
+                paddingRight: 8,
+                height: 35
+            }}>
+                <TouchableOpacity onPress={toggleAudio}>
+                    {story != null && story.id === newStory.id.toString() && isPlaying ? <MaterialIcons name="pause" size={30} color="black" />
+                        :
+                        <Entypo name="controller-play" size={30} color="black" />
+                    }
+                </TouchableOpacity>
+                <View style={styles.playbackContainer}>
+                    <Slider
+                        style={styles.playbackSlider}
+                        value={getSeekSliderPosition()}
+                        onValueChange={onSeekSliderValueChange}
+                        onSlidingComplete={onSeekSliderSlidingComplete}
+                    />
                 </View>
-                {/* <Text
-                style={[
-                  styles.playbackTimestamp,
-                  
-                ]}
-              >
-                {this._getPlaybackTimestamp()}
-              </Text> */}
+            </View>
+            <View style={{
+                flex: 0,
+                flexDirection: "row",
+                justifyContent: "space-between",
+            }}>
+                <Text>{getPlaybackTimestamp()}</Text>
+                <Text>{getDurationTimestamp()}</Text>
             </View>
         </View>
-        </View>
 
-        
+
     )
 }
 export default AudioPlayer;
