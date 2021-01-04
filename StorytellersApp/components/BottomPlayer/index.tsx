@@ -15,7 +15,7 @@ const BottomPlayer = () => {
   const [duration, setDuration] = useState<number | null>(null);
   const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
 
-  const { story, position, setPosition, isPlaying, setIsPlaying } = useContext(AppContext);
+  const { story, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete , setIsSeekingComplete} = useContext(AppContext);
 
   
   const onPlaybackStatusUpdate = (status) => {
@@ -38,7 +38,7 @@ const BottomPlayer = () => {
     }
     const { sound: newSound } = await Sound.createAsync(
       { uri: story.recording },
-      { shouldPlay: true, positionMillis: position, isLooping: false },
+      { shouldPlay: false, positionMillis: position, isLooping: false },
       onPlaybackStatusUpdate
     )
     setSound(newSound)
@@ -58,11 +58,17 @@ const BottomPlayer = () => {
     }
   }), [isPlaying]
 
+  useEffect(() => {
+    if(isSeekingComplete){
+      sound?.setPositionAsync(position);
+      setIsSeekingComplete(false);
+    }
+  }), [isSeekingComplete]
+
   const toggleAudio = async () => {
     if (!sound || loading) {
       return;
     }
-    console.log(replay);
     if(replay){
       await sound.replayAsync();
     }

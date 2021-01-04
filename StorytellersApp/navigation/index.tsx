@@ -25,15 +25,17 @@ export default function Navigation(props: any) {
   const [story, setStory] = useState<currentStory | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [position, setPosition] = useState<number|null>(null);
-
+  const [isSeekingComplete, setIsSeekingComplete] = useState<boolean>(false);
   return (
     <AppContext.Provider value={{
       story: story,
       isPlaying: isPlaying,
       position: position,
+      isSeekingComplete: isSeekingComplete,
       setStory: (newStory: currentStory) => setStory(newStory),
       setPosition: (newPosition: number) => setPosition(newPosition),
       setIsPlaying: (isPlaying: boolean) => setIsPlaying(isPlaying),
+      setIsSeekingComplete: (isSeekingComplete: boolean) => setIsSeekingComplete(isSeekingComplete),
     }}>
     <NavigationContainer
       linking={LinkingConfiguration}

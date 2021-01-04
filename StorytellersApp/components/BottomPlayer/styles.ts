@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   artist: {
     color: 'lightgray',
     fontSize: 18,
-  }
+  },
 })
 
 export default styles;
