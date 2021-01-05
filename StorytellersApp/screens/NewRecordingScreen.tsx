@@ -26,6 +26,8 @@ import * as Permissions from "expo-permissions";
 import * as Icons from "../components/Icons";
 import { yellow100 } from 'react-native-paper/lib/typescript/src/styles/colors';
 import NewStoryButton from '../components/NewStoryButton';
+import UploadStoryButton from '../components/UploadStoryButton';
+
 import NewRecordingButton from '../components/NewRecordingButton';
 import {ResponseType as ResponseStory, RootStackParamList} from '../types'; 
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -413,6 +415,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       return `${this._getMMSSFromMillis(0)}`;
     }
 
+
     // private handleNext() {
     //     const navigation = useNavigation();
     //     console.log( this.route.params.parent);
@@ -614,6 +617,9 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
               </TouchableHighlight>
               </View>
             </View>
+            <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory}/>             
+
+
               {/* <Text
                   style={[styles.liveText, ]}
                 >
