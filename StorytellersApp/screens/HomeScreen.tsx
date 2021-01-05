@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useEffect, useState } from "react";
 import {
   View,
   TextInput,
@@ -6,8 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   ScrollViewProps,
-} from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
+} from "react-native";
+import { useScrollToTop, useTheme } from "@react-navigation/native";
 import {
   Card,
   Text,
@@ -19,30 +19,29 @@ import {
   Appbar,
   Button,
   Portal,
-} from 'react-native-paper';
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import ProfilePicture from '../components/ProfilePicture';
-import UserStory from '../components/UserStory';
-import Feed from '../components/Feed';
-import NewRecordingButton from '../components/NewRecordingButton';
-import { UserType } from '../types';
-import AsyncStorage from '@react-native-community/async-storage';
-import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SearchBar } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-
-
+} from "react-native-paper";
+import Colors from "../constants/Colors";
+import useColorScheme from "../hooks/useColorScheme";
+import ProfilePicture from "../components/ProfilePicture";
+import UserStory from "../components/UserStory";
+import Feed from "../components/Feed";
+import NewRecordingButton from "../components/NewRecordingButton";
+import { UserType } from "../types";
+import AsyncStorage from "@react-native-community/async-storage";
+import { Icon } from "react-native-paper/lib/typescript/src/components/Avatar/Avatar";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { SearchBar } from "react-native-elements";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import RecentPosts from "../components/RecentPosts";
 
 export default function HomeScreen() {
   const ref = React.useRef<TextInput>(null);
   const [user, setUser] = useState<UserType | null>(null);
-  const [searchText, setSearchText] = React.useState('');
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchText, setSearchText] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [focus, setFocus] = React.useState(false);
   const [helpOpen, setHelpOpen] = React.useState(false);
+  const [notificationsOpen, setNotificationsOpen] = React.useState(false);
   const colorScheme = useColorScheme();
 
   const getUser = async () => {
@@ -57,25 +56,25 @@ export default function HomeScreen() {
       image: image,
     } as UserType;
     setUser(user);
-  }
+  };
 
   const onChangeSearch = (query: string) => {
     setSearchText(query);
-  }
+  };
 
   const onSubmit = () => {
     setSearchQuery(searchText);
-  }
+  };
 
   useEffect(() => {
-    if (searchText == '' && !ref.current?.isFocused()) {
+    if (searchText == "" && !ref.current?.isFocused()) {
       setSearchQuery(searchText);
     }
-  }, [searchText, focus])
+  }, [searchText, focus]);
 
   useEffect(() => {
     getUser();
-  }, [])
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -90,7 +89,7 @@ export default function HomeScreen() {
                   user.name
                 : user.image
             }
-            size={45}
+            size={42}
           />
         </View>
         {/* <Appbar.Content title="Home" /> */}
@@ -117,17 +116,50 @@ export default function HomeScreen() {
           <Portal>
             <View style={styles.faded}>
               <View style={styles.message}>
-                <Text style={styles.messageTextLoud}>This is the Home Screen</Text>
-                <Text style={styles.messageText}>All of the stories made by users will appear here. You can scroll through them, or click on any story to view its comments.</Text>
-                <Text style={styles.messageText}>If you want to "like" a story, tap the heart. If you want to comment on a story, tap the speech bubble.</Text>
+                <Text style={styles.messageTextLoud}>
+                  This is the Home Screen
+                </Text>
+                <Text style={styles.messageText}>
+                  All of the stories made by users will appear here. You can
+                  scroll through them, or click on any story to view its
+                  comments.
+                </Text>
+                <Text style={styles.messageText}>
+                  If you want to "like" a story, tap the heart. If you want to
+                  comment on a story, tap the speech bubble.
+                </Text>
               </View>
               <View style={styles.message2}>
-              <Text style={styles.messageText}>Tap the blue microphone button to record your own story!</Text>
+                <Text style={styles.messageText}>
+                  Tap the blue microphone button to record your own story!
+                </Text>
               </View>
             </View>
             <TouchableOpacity
               style={{ height: "100%" }}
               onPress={() => setHelpOpen(false)}
+            />
+          </Portal>
+        )}
+        <Button
+          onPress={() => {
+            setNotificationsOpen(!notificationsOpen);
+          }}
+        >
+          &#x24D8;
+        </Button>
+        {notificationsOpen && (
+          <Portal>
+            <View style={styles.faded}>
+              <View style={styles.message}>
+                <Text style={styles.messageTextLoud}>Recent Post Activity</Text>
+                <Text></Text>
+                <RecentPosts />
+              </View>
+            </View>
+            <TouchableOpacity
+              style={{ height: "100%" }}
+              onPress={() => setNotificationsOpen(false)}
             />
           </Portal>
         )}
