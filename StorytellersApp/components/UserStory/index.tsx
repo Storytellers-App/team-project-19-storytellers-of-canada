@@ -28,7 +28,6 @@ import { UserStoryType, RootStackParamList, ResponseType, currentStory } from '.
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { memo, useContext } from 'react';
-import AudioSlider from '../StoryPlayer/AudioSlider';
 import AudioPlayer from '../AudioPlayer';
 import Tags from '../Tags';
 export type UserStoryProps = {
@@ -84,8 +83,6 @@ function UserStory(props: UserStoryProps) {
                             {props.story.description}
                         </Text>
                         <AudioPlayer newStory={props.story}></AudioPlayer>
-                        {/* @ts-ignore
-                        <AudioSlider story={props.story} audio={props.story.recording}></AudioSlider> */}
                     </Card.Content>
                 </View>
             </TouchableWithoutFeedback>
