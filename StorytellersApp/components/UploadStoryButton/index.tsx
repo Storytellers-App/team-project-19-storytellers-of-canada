@@ -27,13 +27,13 @@ const UploadStoryButton = ({recording, username, parent}:Props) => {
             if (resp.type === 'success'){
                 console.log("Success")
                 recording = resp.uri
+                navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent});    
             }
             else{
                 Alert.alert("There was a problem. Please try again");
 
             }
         })
-        navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent});    
     }
     return (
         

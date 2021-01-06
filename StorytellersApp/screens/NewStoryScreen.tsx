@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform } from 'react-native';
+import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker } from 'react-native';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RootStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -26,65 +26,76 @@ type Props = {
 export default function NewStoryScreen({ route, navigation }: Props) {
     const host = Config.HOST;
     const { parent, recording, username } = route.params;
-   
+
     const [title, setTitle] = useState("");
+    const [author, setAuthor] = useState("");
+    const [isStoredStory, setIsStoredStory] = useState(false);
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState({
         tag: '',
         tagsArray: [],
     });
-    
+
     const [currentTag, setCurrentTag] = useState("");
 
     const handleOnChangeTitle = (text: string) => {
         setTitle(text);
+    }
+    const handleOnChangeAuthor = (text: string) => {
+        setAuthor(text);
     }
 
     const handleOnChangeDescription = (text: string) => {
         setDescription(text);
     }
 
-    
+
     const handleSubmit = async () => {
-        if (recording === null){
+        if (recording === null) {
             return;
         }
         const formData = new FormData();
-        let uri =  recording
+        let uri = recording
         formData.append('username', username);
         // file type: setting mp3 
-        if (Platform.OS === 'ios'){
+        if (Platform.OS === 'ios') {
             formData.append('extension', 'm4a');
         } else {
             formData.append('extension', 'm4a');
         }
         formData.append('title', title);
-        if (parent != null && parent != undefined){
+        if (parent != null && parent != undefined) {
             formData.append('parent', parent.id.toString());
             formData.append('parent_type', parent.type);
         }
         formData.append('description', description);
+        if (isStoredStory) {
+            formData.append('author', author)
+        }
         tags.tagsArray.forEach(element => {
             formData.append('tags', element);
         });
         /*@ts-ignore*/
-        formData.append('recording', {uri: uri, 
+        formData.append('recording', {
+            uri: uri,
             name: uri,
-             type: 'audio/mpeg'});
+            type: 'audio/mpeg'
+        });
         formData.append('type', 'userstory');
         const xhr = new XMLHttpRequest();
-        xhr.open('PUT', host + 'stories'); 
+        xhr.open('PUT', host + 'stories');
         xhr.send(formData);
         xhr.onreadystatechange = e => {
-          if (xhr.readyState !== 4) {
-            return;
-          }
-          if (xhr.status === 200) {
-            navigation.navigate('HomeScreen')
-            Alert.alert("Your submission is under review!")
-          } else {
-            console.log('error', xhr.responseText);
-          }
+            console.log('GOT HERE');
+            if (xhr.readyState !== 4) {
+                return;
+            }
+            if (xhr.status === 200) {
+                navigation.navigate('HomeScreen')
+                Alert.alert("Your submission is under review!")
+            } else {
+                console.log('error', xhr.responseText);
+            }
         };
     }
 
@@ -96,11 +107,29 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 <Text style={styles.title}>Submit Your New Story For Review!</Text>
             </View>
             <View>
+            <Text style={styles.input}>Is this a Story for the Story Save Collection?</Text>
+                <Picker
+                    selectedValue={isStoredStory}
+                    style={{ height: 50, width: 100 }}
+                    onValueChange={(itemValue, itemIndex) => setIsStoredStory(itemValue)}>
+                    <Picker.Item label="Yes" value={true} />
+                    <Picker.Item label="No" value={false} />
+                </Picker>
                 <Input
                     style={styles.input}
                     placeholder="Title"
                     onChangeText={(text) => handleOnChangeTitle(text)}
                 />
+                
+                
+                {isStoredStory
+                    ? <Input
+                        style={styles.input}
+                        placeholder="Author"
+                        onChangeText={(text) => handleOnChangeAuthor(text)}
+                    />
+                    : null
+                }
                 <Input
                     style={styles.input}
                     placeholder="Description"
