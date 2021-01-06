@@ -12,8 +12,6 @@ import ProfilePicture from '../components/ProfilePicture';
 import { ScreenStackHeaderLeftView } from 'react-native-screens';
 import RadioPlayer from '../screens/RadioPlayer';
 import AdminPanelScreen from '../screens/AdminPanelScreen';
-
-
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator({admin} : {admin: boolean}) {

@@ -28,7 +28,7 @@ import { UserStoryType, StorySaveType, RootStackParamList, ResponseType } from "
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { memo } from "react";
-import AudioSlider from "../StoryPlayer/AudioSlider";
+import AudioPlayer from "../AudioPlayer";
 import Tags from "../Tags";
 export type StoredStoryProps = {
   story: StorySaveType;
@@ -86,8 +86,7 @@ function SavedStory(props: StoredStoryProps) {
               }}
             />}
             <Text style={{ marginBottom: 15 }}>{props.story.description}</Text>
-            {/*@ts-ignore*/}
-            <AudioSlider audio={props.story.recording}></AudioSlider>
+            <AudioPlayer newStory={props.story}></AudioPlayer>
           </Card.Content>
         </View>
       </TouchableWithoutFeedback>
