@@ -70,7 +70,8 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         }
         formData.append('description', description);
         if (isStoredStory) {
-            formData.append('author', author)
+            formData.append('author', author);
+            formData.append('type', "storysave");
         }
         tags.tagsArray.forEach(element => {
             formData.append('tags', element);
