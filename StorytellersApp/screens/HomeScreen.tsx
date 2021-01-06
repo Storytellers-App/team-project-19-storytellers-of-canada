@@ -41,6 +41,9 @@ export default function HomeScreen({navigation}) {
   
   const ref = React.useRef<TextInput>(null);
   const [user, setUser] = useState<UserType | null>(null);
+  console.log("Usert name::::"+user?.username);
+
+  console.log("Usert type::::"+user?.type);
   const [searchText, setSearchText] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [focus, setFocus] = React.useState(false);
@@ -50,7 +53,7 @@ export default function HomeScreen({navigation}) {
   const getUser = async () => {
     const username = await AsyncStorage.getItem("username");
     const name = await AsyncStorage.getItem("name");
-    const type = await AsyncStorage.getItem("image");
+    const type = await AsyncStorage.getItem("type");
     const image = await AsyncStorage.getItem("image");
     let user = {
       username: username,
@@ -141,7 +144,8 @@ export default function HomeScreen({navigation}) {
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
       <Feed key={searchQuery} search={searchQuery}></Feed>
-      <NewRecordingButton user={user?.username} />
+      {/* {console.log(user?.username)} */}
+      <NewRecordingButton user={user?.username} userType={user?.type}/>
     </View>
   );
 }

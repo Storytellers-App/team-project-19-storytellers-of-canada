@@ -9,7 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AppContext } from '../../AppContext';
 import { RotationGestureHandler } from 'react-native-gesture-handler';
 
-const NewRecordingButton = ({ user }: { user?: string }) => {
+const NewRecordingButton = ({ user , userType}: { user?: string , userType?: string}) => {
     const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -21,7 +21,7 @@ const NewRecordingButton = ({ user }: { user?: string }) => {
         }
         setIsPlaying(false);
         setIsRadioPlaying(false);
-        navigation.navigate("NewRecording", { username: user });
+        navigation.navigate("NewRecording", { username: user , userType: userType});
     }
     return (<TouchableOpacity style={styles.button}
         onPress={onPress}

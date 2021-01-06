@@ -14,15 +14,16 @@ import AsyncStorage from '@react-native-community/async-storage';
 export type Props = {
     recording: string | null;
     username: string;
+    userType: string;
     parent?: ResponseType;
 };
 
-const NewStoryButton = ({recording, username, parent}:Props) => {
+const NewStoryButton = ({recording, username, parent, userType}:Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
-        navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent});    
+        navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
     }
     return (
         

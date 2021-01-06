@@ -12,8 +12,8 @@ export type RootStackParamList = {
     user: string, //Ideally I want the whole user. Will change to pass this around screens directly from login
   };
   NotFound: undefined;
-  NewRecording: {parent?: ResponseType, username: string};
-  NewStory: {recording: string | null, 'username': string, parent?: ResponseType};
+  NewRecording: {parent?: ResponseType, username: string, userType: string};
+  NewStory: {recording: string | null, 'username': string, parent?: ResponseType, userType: string};
 };
 
 
