@@ -1,10 +1,10 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
+import React, { useState } from 'react';
+import { ColorSchemeName, View, Text } from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
-import { RootStackParamList } from '../types';
+import { RootStackParamList, currentStory, ResponseType } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -13,20 +13,41 @@ import NewStoryScreen from '../screens/NewStoryScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import StoryResponseScreen from '../screens/StoryResponseScreen';
 import NewCommentScreen from '../screens/NewCommentScreen';
-import { Drawer } from 'react-native-paper';
-
+import { AppContext } from '../AppContext';
+import BottomPlayer from '../components/BottomPlayer';
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 // { colorScheme }: { colorScheme: ColorSchemeName }, admin : any
 export default function Navigation(props: any) {
+  const [story, setStory] = useState<currentStory | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [position, setPosition] = useState<number|null>(null);
+  const [isSeekingComplete, setIsSeekingComplete] = useState<boolean>(false);
+  const[ isRadioPlaying, setIsRadioPlaying] = useState<boolean>(false);
+  const [fullStory, setFullStory] = useState<ResponseType | null>(null);
 
   return (
+    <AppContext.Provider value={{
+      story: story,
+      isPlaying: isPlaying,
+      position: position,
+      isSeekingComplete: isSeekingComplete,
+      isRadioPlaying: isRadioPlaying,
+      fullStoryType: fullStory,
+      setStory: (newStory: currentStory) => setStory(newStory),
+      setPosition: (newPosition: number) => setPosition(newPosition),
+      setIsPlaying: (isPlaying: boolean) => setIsPlaying(isPlaying),
+      setIsSeekingComplete: (isSeekingComplete: boolean) => setIsSeekingComplete(isSeekingComplete),
+      setIsRadioPlaying: (isRadioPlaying: boolean) => setIsRadioPlaying(isRadioPlaying),
+      setFullStoryType: (fullStoryType: ResponseType ) => setFullStory(fullStoryType)
+    }}>
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={ DefaultTheme}>
       <RootNavigator admin={props.admin}/>
     </NavigationContainer>
+    </AppContext.Provider>
   );
 }
 
@@ -37,8 +58,13 @@ const NavigationDrawer = createDrawerNavigator();
 function BaseNavigation({ navigation, route }) {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+   
     <Stack.Screen name="Root" >
-    {props => <BottomTabNavigator admin={route.params.admin}/>}
+    {props =>
+    <React.Fragment>
+        <BottomTabNavigator admin={route.params.admin}/>  
+        <BottomPlayer></BottomPlayer>      
+    </React.Fragment>}
     </Stack.Screen>
     <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
     <Stack.Screen name="NewStory" component={NewStoryScreen} />
