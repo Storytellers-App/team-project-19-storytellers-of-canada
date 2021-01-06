@@ -2,23 +2,19 @@ import { StyleSheet} from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    bottom: 49,
-    backgroundColor: '#131313',
+    backgroundColor: '#686868',
     width: '100%',
-    borderWidth: 2,
-    borderColor: 'black',
   },
   progress: {
-    height: 3,
-    backgroundColor: '#bcbcbc'
+    height: 4,
+    backgroundColor: '#006699',
   },
   row: {
     flexDirection: 'row',
   },
   image: {
-    width: 75,
-    height: 75,
+    width: 70,
+    height: 70,
     marginRight: 10,
   },
   rightContainer: {
@@ -27,8 +23,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 2,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   iconsContainer: {
     flexDirection: 'row',
@@ -38,13 +36,12 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 'bold',
-    margin: 10,
   },
   artist: {
     color: 'lightgray',
-    fontSize: 18,
+    fontSize: 13,
   },
 })
 

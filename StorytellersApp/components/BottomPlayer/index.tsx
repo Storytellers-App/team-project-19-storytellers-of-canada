@@ -3,10 +3,12 @@ import { Text, Image, View, TouchableOpacity } from 'react-native';
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
 import styles from './styles';
-import { StoryType } from "../../types";
 import { Sound } from "expo-av/build/Audio/Sound";
-
+import { RootStackParamList, ResponseType } from '../../types';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { AppContext } from '../../AppContext';
+import TextTicker from 'react-native-text-ticker';
 
 let loading = true;
 let replay = false;
@@ -15,9 +17,9 @@ const BottomPlayer = () => {
   const [duration, setDuration] = useState<number | null>(null);
   const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
 
-  const { story, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete , setIsSeekingComplete} = useContext(AppContext);
+  const {fullStoryType, story, setStory, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete, setIsSeekingComplete, isRadioPlaying } = useContext(AppContext);
 
-  
+
   const onPlaybackStatusUpdate = (status) => {
     replay = false;
     setSoundPlaying(status.isPlaying);
@@ -26,7 +28,7 @@ const BottomPlayer = () => {
     if (status.didJustFinish) {
       replay = true;
       setIsPlaying(status.isPlaying);
-      
+
     }
   }
 
@@ -59,7 +61,7 @@ const BottomPlayer = () => {
   }), [isPlaying]
 
   useEffect(() => {
-    if(isSeekingComplete){
+    if (isSeekingComplete) {
       sound?.setPositionAsync(position);
       setIsSeekingComplete(false);
     }
@@ -69,7 +71,7 @@ const BottomPlayer = () => {
     if (!sound || loading) {
       return;
     }
-    if(replay){
+    if (replay) {
       await sound.replayAsync();
     }
     else if (soundPlaying) {
@@ -81,6 +83,10 @@ const BottomPlayer = () => {
   const onPlayPausePress = async () => {
     setIsPlaying(!isPlaying);
   }
+  const onClose = async () => {
+    setIsPlaying(false);
+    setStory(null);
+  }
 
   const getProgress = () => {
     if (sound === null || duration === null || position === null) {
@@ -89,30 +95,54 @@ const BottomPlayer = () => {
     return (position / duration) * 100;
 
   }
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const responseScreen = (header: ResponseType) => {
+    navigation.push("StoryResponse", { 'header': header });
+}
 
-  if (!story) {
+  if (!story || isRadioPlaying) {
     return null;
   }
-
   return (
+    <TouchableOpacity onPress={() => { responseScreen(fullStoryType) }}>
     <View style={styles.container}>
       <View style={[styles.progress, { width: `${getProgress()}%` }]} />
       <View style={styles.row}>
-        {story.image != undefined && story.image != null && story.image != "" ? <Image source={{ uri: story.image === null ? undefined : story.image }} style={styles.image} /> : null}
+        {story.image != undefined && story.image != null && story.image != "" ?
+          <Image resizeMode={"contain"} source={{ uri: story.image }} style={styles.image} /> :
+          <Image style={styles.image}
+            source={require('../../assets/images/SCCC_logo.png')} resizeMode={"contain"} />}
         <View style={styles.rightContainer}>
           <View style={styles.nameContainer}>
-            <Text style={styles.title}>{story.title}</Text>
-            <Text style={styles.artist}>{story.creator}</Text>
+            <TextTicker style={styles.title}
+              duration={3000}
+              loop
+              bounce
+              repeatSpacer={25}
+              marqueeDelay={2000}>
+              {story.title
+              }</TextTicker>
+            <TextTicker style={styles.artist}
+              duration={3000}
+              loop
+              bounce
+              repeatSpacer={25}
+              marqueeDelay={2000}>
+              {story.creator}
+            </TextTicker>
           </View>
           <View style={styles.iconsContainer}>
-            <AntDesign name="hearto" size={30} color={"white"} />
             <TouchableOpacity onPress={onPlayPausePress}>
-              <FontAwesome name={isPlaying ? 'pause' : 'play'} size={30} color={"white"} />
+              <FontAwesome name={isPlaying ? 'pause' : 'play'} size={25} color={"white"} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onClose}>
+              <AntDesign name="close" size={28} color={"white"} />
             </TouchableOpacity>
           </View>
         </View>
       </View>
     </View>
+    </TouchableOpacity>
   )
 }
 

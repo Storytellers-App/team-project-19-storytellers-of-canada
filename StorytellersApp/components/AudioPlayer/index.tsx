@@ -44,7 +44,7 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
         getDurationFromFile();
     }), []
 
-    const { story, position, setPosition, isPlaying, setIsPlaying, setStory, setIsSeekingComplete } = useContext(AppContext);
+    const { setFullStoryType, story, position, setPosition, isPlaying, setIsPlaying, setStory, setIsSeekingComplete, setIsRadioPlaying } = useContext(AppContext);
     const [currPosition, setCurrPosition] = useState<number>(0);
     const [currDuration, setCurrDuration] = useState<number | null>(null);
 
@@ -61,6 +61,7 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
     }), [position]
 
     const toggleAudio = () => {
+        setIsRadioPlaying(false);
         if (story != null && story.id === newStory.id.toString()) {
             setIsPlaying(!isPlaying);
         }
@@ -73,9 +74,9 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
                 creator: creator, title: newStory.title,
                 isLiked: newStory.isLiked, id: newStory.id.toString()
             } as currentStory;
-            console.log(changedStory);
             setPosition(currPosition);
             setStory(changedStory);
+            setFullStoryType(newStory);      
         }
     }
     const getSeekSliderPosition = () => {

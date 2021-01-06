@@ -1,4 +1,4 @@
-import React, { useEffect, useState , memo} from 'react';
+import React, { useEffect, useState, memo, useContext } from 'react';
 import {
     View,
     TextInput,
@@ -8,6 +8,7 @@ import {
     ScrollViewProps,
     TouchableOpacity,
     TouchableWithoutFeedback,
+    Alert,
 } from 'react-native';
 import { useScrollToTop, useTheme } from '@react-navigation/native';
 import {
@@ -28,7 +29,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { HOST } from '../../config';
 import { useNavigation } from '@react-navigation/native';
-
+import { AppContext } from '../../AppContext';
 
 export type UserStoryProps = {
     story: ResponseType,
@@ -40,6 +41,7 @@ const Footer = (props: UserStoryProps) => {
     const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [userLike, setUserLike] = useState(props.story.isLiked);
     const [replyVisible, setReplyVisible] = useState(false);
+    const { setIsPlaying , setIsRadioPlaying} = useContext(AppContext);
     useEffect(() => {
         const fetchUser = async () => {
             const currentUser = await AsyncStorage.getItem("username");
@@ -98,7 +100,8 @@ const Footer = (props: UserStoryProps) => {
 
 
     const onLike = async () => {
-        if (!user) {
+        if (user === undefined || user === null || user === "") {
+            Alert.alert("Please login to like a story");
             return;
         }
         if (!userLike) {
@@ -113,6 +116,8 @@ const Footer = (props: UserStoryProps) => {
 
     const audioReply = () => {
         setReplyVisible(false);
+        setIsPlaying(false);
+        setIsRadioPlaying(false);
         navigation.navigate("NewRecording", { parent: props.story, username: user });
     }
 
@@ -126,6 +131,10 @@ const Footer = (props: UserStoryProps) => {
     }
 
     const showDialog = () => {
+        if (user === undefined || user === null || user === "") {
+            Alert.alert("Please login to record a story");
+            return;
+        }
         setReplyVisible(true);
     }
 
@@ -149,8 +158,8 @@ const Footer = (props: UserStoryProps) => {
                 }}>{props.story.numReplies}</Text>}
             </View>
             <Portal>
-                <Dialog visible={replyVisible} onDismiss={hideDialog} style={{backgroundColor: 'white'}}>
-                    <Dialog.Title style={{color: 'black'}}>Reply</Dialog.Title>
+                <Dialog visible={replyVisible} onDismiss={hideDialog} style={{ backgroundColor: 'white' }}>
+                    <Dialog.Title style={{ color: 'black' }}>Reply</Dialog.Title>
                     <Dialog.Content>
                         <View style={styles.replyMenu}>
                             <TouchableOpacity onPress={commentReply}>
