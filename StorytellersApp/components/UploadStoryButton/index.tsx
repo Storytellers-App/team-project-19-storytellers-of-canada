@@ -15,10 +15,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 export type Props = {
     recording: string | null;
     username: string;
+    userType: string;
     parent?: ResponseType;
 };
 
-const UploadStoryButton = ({recording, username, parent}:Props) => {
+const UploadStoryButton = ({recording, username, parent, userType}:Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -27,7 +28,7 @@ const UploadStoryButton = ({recording, username, parent}:Props) => {
             if (resp.type === 'success'){
                 console.log("Success")
                 recording = resp.uri
-                navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent});    
+                navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
             }
             else{
                 Alert.alert("There was a problem. Please try again");

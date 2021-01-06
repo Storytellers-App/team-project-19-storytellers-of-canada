@@ -78,6 +78,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     private readonly recordingSettings: Audio.RecordingOptions;
     private username: string;
     private parentStory: ResponseStory | undefined;
+    private userType: string;
     constructor(props: Props) {
       super(props);
       this.recording = null;
@@ -85,6 +86,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       this.isSeeking = false;
       this.shouldPlayAtEndOfSeek = false;
       this.username = props.route.params.username;
+      this.userType = props.route.params.userType;
       this.parentStory = props.route.params.parent;
       this.state = {
         haveRecordingPermissions: false,
@@ -551,7 +553,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                         Next
                     </Text>
                 </TouchableHighlight> */}   
-                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory}/>             
+                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType}/>             
             </View>
 
             
@@ -617,7 +619,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
               </TouchableHighlight>
               </View>
             </View>
-            <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory}/>             
+            <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType}/>             
 
 
               {/* <Text

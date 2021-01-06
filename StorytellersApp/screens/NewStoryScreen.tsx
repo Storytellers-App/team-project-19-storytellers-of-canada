@@ -25,8 +25,8 @@ type Props = {
 
 export default function NewStoryScreen({ route, navigation }: Props) {
     const host = Config.HOST;
-    const { parent, recording, username } = route.params;
-
+    const { parent, recording, username, userType } = route.params;
+    console.log('Usertype: ' + userType);
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [isStoredStory, setIsStoredStory] = useState(false);
@@ -73,6 +73,9 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             formData.append('author', author);
             formData.append('type', "storysave");
         }
+        else {
+            formData.append('type', 'userstory');
+        }
         tags.tagsArray.forEach(element => {
             formData.append('tags', element);
         });
@@ -82,7 +85,6 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             name: uri,
             type: 'audio/mpeg'
         });
-        formData.append('type', 'userstory');
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', host + 'stories');
         xhr.send(formData);
@@ -108,29 +110,36 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 <Text style={styles.title}>Submit Your New Story For Review!</Text>
             </View>
             <View>
-            <Text style={styles.input}>Is this a Story for the Story Save Collection?</Text>
-                <Picker
-                    selectedValue={isStoredStory}
-                    style={{ height: 50, width: 100 }}
-                    onValueChange={(itemValue, itemIndex) => setIsStoredStory(itemValue)}>
-                    <Picker.Item label="Yes" value={true} />
-                    <Picker.Item label="No" value={false} />
-                </Picker>
+                {userType === 'ADMIN' ?
+                    <View>
+                        <Text style={styles.input}>Is this a Story for the Story Save Collection?</Text>
+                        <Picker
+                            selectedValue={isStoredStory}
+                            style={{ height: 50, width: 100 }}
+                            onValueChange={(itemValue, itemIndex) => setIsStoredStory(itemValue)}>
+                            <Picker.Item label="Yes" value={true} />
+                            <Picker.Item label="No" value={false} />
+                        </Picker>
+
+
+                        {isStoredStory
+                            ? <Input
+                                style={styles.input}
+                                placeholder="Author"
+                                onChangeText={(text) => handleOnChangeAuthor(text)}
+                            />
+                            : null
+                        }
+
+                    </View> :
+                    null
+                }
+
                 <Input
                     style={styles.input}
                     placeholder="Title"
                     onChangeText={(text) => handleOnChangeTitle(text)}
                 />
-                
-                
-                {isStoredStory
-                    ? <Input
-                        style={styles.input}
-                        placeholder="Author"
-                        onChangeText={(text) => handleOnChangeAuthor(text)}
-                    />
-                    : null
-                }
                 <Input
                     style={styles.input}
                     placeholder="Description"
