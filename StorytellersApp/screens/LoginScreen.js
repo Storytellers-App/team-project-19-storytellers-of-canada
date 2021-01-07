@@ -34,7 +34,7 @@ export default class LoginScreen extends Component {
      * Redirect to the main page
      */
     goToHome(user = null) {
-        Actions.HomeScreen({user: user});
+        Actions.reset("HomeScreen", {user: user});
     }
 
     /**
