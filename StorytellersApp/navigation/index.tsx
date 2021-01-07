@@ -15,19 +15,23 @@ import StoryResponseScreen from '../screens/StoryResponseScreen';
 import NewCommentScreen from '../screens/NewCommentScreen';
 import { Drawer } from 'react-native-paper';
 
+import { DrawerContent } from './DrawerContent'
+import ProfileScreen from '../screens/ProfileScreen';
+import LoginScreen from '../screens/LoginScreen';
+
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 // { colorScheme }: { colorScheme: ColorSchemeName }, admin : any
 export default function Navigation(props: any) {
 
-  return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={ DefaultTheme}>
-      <RootNavigator admin={props.admin}/>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer
+            linking={LinkingConfiguration}
+            theme={DefaultTheme}>
+            <RootNavigator admin={props.admin} />
+        </NavigationContainer>
+    );
 }
 
 // A root stack navigator is often used for displaying modals on top of all other content
@@ -35,26 +39,28 @@ export default function Navigation(props: any) {
 const Stack = createStackNavigator<RootStackParamList>();
 const NavigationDrawer = createDrawerNavigator();
 function BaseNavigation({ navigation, route }) {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Root" >
-    {props => <BottomTabNavigator admin={route.params.admin}/>}
-    </Stack.Screen>
-    <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
-    <Stack.Screen name="NewStory" component={NewStoryScreen} />
-    <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />
-    <Stack.Screen name="NewComment" component={NewCommentScreen} />
-    <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-  </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Root" >
+                {props => <BottomTabNavigator admin={route.params.admin} />}
+            </Stack.Screen>
+            <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
+            <Stack.Screen name="NewStory" component={NewStoryScreen} />
+            <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />
+            <Stack.Screen name="NewComment" component={NewCommentScreen} />
+            <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+        </Stack.Navigator>
+    );
 }
-function RootNavigator({admin} : {admin: boolean}) {
-  let adminClean = admin === true ? admin : false;
-  return (
-    <NavigationDrawer.Navigator>
-      <NavigationDrawer.Screen name="Home" component={BaseNavigation} initialParams={{admin: adminClean}} />
-      <NavigationDrawer.Screen name="NotFound" component={NotFoundScreen}/>
-    </NavigationDrawer.Navigator>
-   
-  );
+function RootNavigator({ admin }: { admin: boolean }) {
+    let adminClean = admin === true ? admin : false;
+    return (
+        <NavigationDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+            <NavigationDrawer.Screen name="Home" component={BaseNavigation} initialParams={{ admin: adminClean }} />
+            <NavigationDrawer.Screen name="NotFound" component={NotFoundScreen} />
+            <NavigationDrawer.Screen name="ProfilePage" component={ProfileScreen} />
+            <NavigationDrawer.Screen name="Login" component={LoginScreen} />
+        </NavigationDrawer.Navigator>
+
+    );
 }

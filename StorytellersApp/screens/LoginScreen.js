@@ -33,8 +33,7 @@ export default class LoginScreen extends Component {
      * Redirect to the main page
      */
     goToHome(isAdmin = false) {
-
-        Actions.HomeScreen({admin: isAdmin});
+        Actions.reset("HomeScreen", {admin: isAdmin});
     }
 
     /**

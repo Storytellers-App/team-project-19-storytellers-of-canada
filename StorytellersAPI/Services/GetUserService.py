@@ -29,3 +29,15 @@ class GetUserService:
             return None
         except:
             return None
+
+    def getUserWithAuthToken(self, authToken) -> Optional[User]:
+        """
+        Gets a user object given their auth token
+        """
+        try:
+            # Getting user's auth token information if it exists
+            for user in db.session.query(User).filter_by(authToken=authToken):
+                return user
+            return None
+        except:
+            return None

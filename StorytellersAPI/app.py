@@ -20,6 +20,9 @@ from Resources.StoryUploadResource import StoryUpload
 from Resources.EmailVerificationWithUsername import EmailVerificationWithUsername
 from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
 from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
+from Resources.UpdateNameResource import UpdateName
+from Resources.UpdateEmailResource import UpdateEmail
+from Resources.UpdatePasswordResource import UpdatePassword
 
 # test database
 from Resources.TestResource import TestDB
@@ -64,6 +67,11 @@ api.add_resource(StoryUpload, '/story_upload')
 
 # GET /story_fetch?key&bucket
 api.add_resource(StoryFetch, '/story_fetch')
+
+# Update user info resources
+api.add_resource(UpdateName, '/updateName')
+api.add_resource(UpdateEmail, '/updateEmail')
+api.add_resource(UpdatePassword, '/updatePassword')
 
 if __name__ == '__main__':
     # host = ''  # ip host address
