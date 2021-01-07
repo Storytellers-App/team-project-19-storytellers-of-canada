@@ -16,6 +16,9 @@ import NewCommentScreen from '../screens/NewCommentScreen';
 import { AppContext } from '../AppContext';
 
 import BottomPlayer from '../components/BottomPlayer';
+import ProfileScreen from '../screens/ProfileScreen';
+import LoginScreen from '../screens/LoginScreen';
+import { DrawerContent } from './DrawerContent'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -78,9 +81,10 @@ function BaseNavigation({ navigation, route }) {
 }
 function RootNavigator({ user }: { user: UserType | undefined }) {
   return (
-    <NavigationDrawer.Navigator>
+    <NavigationDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
       <NavigationDrawer.Screen name="Home" component={BaseNavigation} initialParams={{ user: user }} />
-      <NavigationDrawer.Screen name="NotFound" component={NotFoundScreen} />
+      <NavigationDrawer.Screen name="ProfilePage" component={ProfileScreen} />
+      <NavigationDrawer.Screen name="Login" component={LoginScreen} />
     </NavigationDrawer.Navigator>
 
   );
