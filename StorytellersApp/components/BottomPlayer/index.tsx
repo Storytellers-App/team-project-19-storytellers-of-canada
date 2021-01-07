@@ -11,6 +11,7 @@ import { AppContext } from '../../AppContext';
 import TextTicker from 'react-native-text-ticker';
 
 let loading = true;
+let closed = true;
 const BottomPlayer = () => {
   const [sound, setSound] = useState<Sound | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
@@ -46,11 +47,12 @@ const BottomPlayer = () => {
     )
     setSound(newSound)
     loading = false;
-    setIsPlaying(true);
+    setIsPlaying(!closed);
   }
 
   useEffect(() => {
     if (story) {
+      closed = false;
       playCurrentSong();
     }
   }, [story])
@@ -86,6 +88,7 @@ const BottomPlayer = () => {
     setIsPlaying(!isPlaying);
   }
   const onClose = async () => {
+    closed = true;
     setIsPlaying(false);
     setStory(null);
   }

@@ -19,6 +19,7 @@ import BottomPlayer from '../components/BottomPlayer';
 import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import { DrawerContent } from './DrawerContent'
+import { UserContext } from '../UserContext';
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -61,9 +62,13 @@ export default function Navigation(props: any) {
 const Stack = createStackNavigator<RootStackParamList>();
 const NavigationDrawer = createDrawerNavigator();
 function BaseNavigation({ navigation, route }) {
+  const [user, setUser] = useState<UserType | undefined>(route.params.user);
   return (
+    <UserContext.Provider value= {{
+      user: user,
+      setUser: (user: UserType | undefined) => setUser(user)
+  }}>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
       <Stack.Screen name="Root" >
         {props =>
           <React.Fragment>
@@ -77,6 +82,7 @@ function BaseNavigation({ navigation, route }) {
       <Stack.Screen name="NewComment" component={NewCommentScreen} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
+    </UserContext.Provider>
   );
 }
 function RootNavigator({ user }: { user: UserType | undefined }) {
