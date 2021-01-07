@@ -369,14 +369,14 @@ export default function ProfileScreen(props) {
                                 uri: "https://ui-avatars.com/api/?background=006699&color=fff&name=" + user?.name
                             }}
                             size={120}
-                            style={{ marginTop: 30, marginBottom: 10 }}
+                            style={{ marginTop: 30, marginBottom: 30 }}
                         />
-                        <Button
+                        {/*<Button
                             icon="pencil"
                             labelStyle={{ color: 'white', fontSize: 14 }}
                             style={{ paddingBottom: 10 }}>
                             Update Picture
-                        </Button>
+                        </Button>*/}
                     </View>
                 </ImageBackground>
                 <View style={styles.userInfoSection}>
