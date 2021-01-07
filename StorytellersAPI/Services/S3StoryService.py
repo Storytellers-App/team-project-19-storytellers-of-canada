@@ -284,6 +284,21 @@ class S3StoryService:
             logging.exception("message")
             return False
 
+    def delete_story(self, story_id):
+        try:
+            # pycharm says query doesn't exist; it does
+            # get all just to be safe in case of duplicates
+            story_array = Story.query.filter_by(id=story_id).all()
+            if story_array is not None:
+                for story in story_array:
+                    story.deleted = True
+                    self.db.session.merge(story)
+                    self.db.session.commit()
+            return True
+        except:
+            logging.exception("message")
+            return False
+
 
 if __name__ == "__main__":
     client = S3StoryService()

@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox, TouchableOpacity } from 'react-native';
+import React, { Component, useContext } from 'react';
+import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Appbar, Button, Portal } from 'react-native-paper';
 import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { Audio } from 'expo-av';
 import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
-
+import {AppContext} from '../AppContext';
+let loading = false;
 export default class RadioPlayer extends React.Component {
-
-
+    static contextType = AppContext
     constructor() {
         super();
         this.state = {
@@ -17,8 +17,8 @@ export default class RadioPlayer extends React.Component {
             nowPlaying: ''
         };
         this.updateNowPlaying();
+        this.timer = setInterval(()=> this.updateNowPlaying(), 5000);
     }
-
     async componentDidMount() {
         // await Audio.setAudioModeAsync({
         //     playsInSilentModeIOS: true,
@@ -36,6 +36,9 @@ export default class RadioPlayer extends React.Component {
             playThroughEarpieceAndroid: false,
         });
     }
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
 
     _onPlaybackStatusUpdate = playbackStatus => {
         if (!playbackStatus.isLoaded) {
@@ -49,6 +52,15 @@ export default class RadioPlayer extends React.Component {
             }
         } else {
             if (playbackStatus.isPlaying) {
+                if(!this.context.isRadioPlaying){
+                    this.state.sound.stopAsync();
+                    this.state.sound = new Audio.Sound();
+                    this.context.setIsRadioPlaying(false);
+                    this.setState((state) => {
+                        return { audioState: 'audioStopped' }
+                    });
+                    return;
+                }
                 // Update the state
                 this.setState((state) => {
                     return { audioState: 'audioPlaying' }
@@ -68,23 +80,37 @@ export default class RadioPlayer extends React.Component {
     }
 
     toggleAudio = async () => {
+        if(loading){
+            return;
+        }
         if (this.state.audioState === 'notLoaded' || this.state.audioState === 'errorLoading' ||
             this.state.audioState === 'audioStopped') {
+            loading = true;
+            if(this.state.sound != null){
+               await this.state.sound.unloadAsync();
+            }
+            this.setState({ audioState: "audioLoading" });
+            this.context.setIsRadioPlaying(true);
+            this.context.setIsPlaying(false);
             this.state.sound.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
-            this.state.sound.loadAsync(
+            await this.state.sound.loadAsync(
                 { uri: 'https://streams.radio.co/s8d7990b82/listen' },
                 {
                     shouldPlay: true,
                     isLooping: false
-                },
+                },  
                 // downloadFirst = false // This parameter is needed for stories, otherwise it downloads it all before playing
             );
+            loading = false;
         } else if (this.state.audioState === 'audioPlaying') {
             // It's a stop button
             // Stop the stream completely
             this.state.sound.stopAsync();
             this.state.sound = new Audio.Sound();
+            this.context.setIsRadioPlaying(false);
         } else if (this.state.audioState === 'audioStopped') {
+            this.context.setIsRadioPlaying(true);
+            this.context.setIsPlaying(false);
             // It's a play button, maybe just clicking play works...
 
         } else if (this.state.audioState === 'audioBuffering') {
@@ -156,16 +182,16 @@ export default class RadioPlayer extends React.Component {
                     {this.state.nowPlaying}
                 </Text>
                 <Text style={styles.liveText}>Live</Text>
-                <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                {loading || this.state.audioState === 'audioBuffering' || this.state.audioState === 'audioLoading' ? <ActivityIndicator size="large" color='red' /> : <TouchableWithoutFeedback onPress={this.toggleAudio}>
                     <Image
                         style={styles.playButton}
                         source={
-                            this.state.audioState === 'audioPlaying' || this.state.audioState === 'audioBuffering' ?
+                            this.state.audioState === 'audioPlaying' ?
                                 require('../assets/images/Stop.png') :
                                 require('../assets/images/Play.png')
                         }
                     />
-                </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>}
             </View>
           </View>
         );

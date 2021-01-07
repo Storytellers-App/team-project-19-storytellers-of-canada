@@ -38,6 +38,7 @@ class Story(db.Model):
     numLikes = db.Column(db.Integer)
     numReplies = db.Column(db.Integer)
     approvedTime = db.Column(db.DateTime)
+    deleted = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Tag(db.Model):

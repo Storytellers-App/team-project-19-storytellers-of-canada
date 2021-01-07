@@ -1,4 +1,4 @@
-import React, { useEffect, useState , memo} from 'react';
+import React, { useEffect, useState, memo, useContext } from 'react';
 import {
     View,
     TextInput,
@@ -8,6 +8,7 @@ import {
     ScrollViewProps,
     TouchableOpacity,
     TouchableWithoutFeedback,
+    Alert,
 } from 'react-native';
 import { useScrollToTop, useTheme } from '@react-navigation/native';
 import {
@@ -28,7 +29,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { HOST } from '../../config';
 import { useNavigation } from '@react-navigation/native';
-
+import { AppContext } from '../../AppContext';
 
 export type UserStoryProps = {
     story: ResponseType,
@@ -37,9 +38,11 @@ let url = HOST
 
 const Footer = (props: UserStoryProps) => {
     const [user, setUser] = useState<string | null>(null);
-    const [likesCount, setLikesCount] = useState(props.story.numLikes);
+    const [loading, setLoading] = useState(false);
     const [userLike, setUserLike] = useState(props.story.isLiked);
+    const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [replyVisible, setReplyVisible] = useState(false);
+    const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
     useEffect(() => {
         const fetchUser = async () => {
             const currentUser = await AsyncStorage.getItem("username");
@@ -48,57 +51,66 @@ const Footer = (props: UserStoryProps) => {
         fetchUser();
     }, [])
 
-
     const submitLike = async () => {
-
         try {
+            setLoading(true);
+            setUserLike(true);
+            likesCount === undefined ? 1 :
+                setLikesCount(likesCount + 1);
             axios({
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
                     type: props.story.type,
                     username: user
                 }
-
             })
                 .then(response => {
-                    likesCount === undefined ? 1 :
-                        setLikesCount(likesCount + 1);
-                    setUserLike(true);
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error(error);
+                    setLoading(false);
                 });
         } catch (e) {
             console.log(e);
+            setLoading(false);
         }
     }
 
     const removeLike = async () => {
         try {
+            setLoading(true);
+            setUserLike(false);
+            likesCount === undefined ? 0 :
+                setLikesCount(likesCount - 1);
+
             axios({
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
                     type: props.story.type,
                     username: user
                 }
-
             })
                 .then(response => {
-                    likesCount === undefined ? 0 :
-                        setLikesCount(likesCount - 1);
-                    setUserLike(false);
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error(error);
+                    setLoading(false);
                 });
         } catch (e) {
             console.log(e);
+            setLoading(false);
         }
     }
 
 
     const onLike = async () => {
-        if (!user) {
+        if (user === undefined || user === null || user === "") {
+            Alert.alert("Please login to like a story");
+            return;
+        }
+        if (loading) {
             return;
         }
         if (!userLike) {
@@ -113,6 +125,8 @@ const Footer = (props: UserStoryProps) => {
 
     const audioReply = () => {
         setReplyVisible(false);
+        setIsPlaying(false);
+        setIsRadioPlaying(false);
         navigation.navigate("NewRecording", { parent: props.story, username: user });
     }
 
@@ -126,6 +140,10 @@ const Footer = (props: UserStoryProps) => {
     }
 
     const showDialog = () => {
+        if (user === undefined || user === null || user === "") {
+            Alert.alert("Please login to record a story");
+            return;
+        }
         setReplyVisible(true);
     }
 
@@ -149,8 +167,8 @@ const Footer = (props: UserStoryProps) => {
                 }}>{props.story.numReplies}</Text>}
             </View>
             <Portal>
-                <Dialog visible={replyVisible} onDismiss={hideDialog} style={{backgroundColor: 'white'}}>
-                    <Dialog.Title style={{color: 'black'}}>Reply</Dialog.Title>
+                <Dialog visible={replyVisible} onDismiss={hideDialog} style={{ backgroundColor: 'white' }}>
+                    <Dialog.Title style={{ color: 'black' }}>Reply</Dialog.Title>
                     <Dialog.Content>
                         <View style={styles.replyMenu}>
                             <TouchableOpacity onPress={commentReply}>
@@ -169,10 +187,9 @@ const Footer = (props: UserStoryProps) => {
                     </Dialog.Content>
                 </Dialog>
             </Portal>
-            <IconButton style={styles.icon} size={16} icon="share-outline" />
+            {/* <IconButton style={styles.icon} size={16} icon="share-outline" /> */}
 
         </View>
     );
 };
-
 export default memo(Footer);

@@ -79,6 +79,7 @@ export type UserStoryType = {
   approved: boolean,
   tags: string[],
   type: string,
+  image?: string,
   isLiked?: boolean,
 };
 
@@ -100,5 +101,13 @@ export type StoryType = UserStoryType | StorySaveType;
 
 export type ResponseType = StoryType | CommentType;
 
+export type currentStory = {
+  id: string | null, 
+  recording: string | null,
+  title: string | null, 
+  image?: string | null,
+  creator: string | null, 
+  isLiked?: boolean,
+}
 
 
