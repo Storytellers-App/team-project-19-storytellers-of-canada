@@ -35,7 +35,7 @@ export type UserStoryProps = {
     story: ResponseType,
 }
 let url = HOST
-
+let loading = false;
 const Footer = (props: UserStoryProps) => {
     const [user, setUser] = useState<string | null>(null);
     const [likesCount, setLikesCount] = useState(props.story.numLikes);
@@ -52,49 +52,55 @@ const Footer = (props: UserStoryProps) => {
 
 
     const submitLike = async () => {
-
         try {
+            let loading = true;
+            setUserLike(true);
+                    likesCount === undefined ? 1 :
+                        setLikesCount(likesCount + 1);
             axios({
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
                     type: props.story.type,
                     username: user
                 }
-
             })
                 .then(response => {
-                    likesCount === undefined ? 1 :
-                        setLikesCount(likesCount + 1);
-                    setUserLike(true);
+                   loading = false;
                 })
                 .catch((error) => {
                     console.error(error);
+                    loading = false;
                 });
         } catch (e) {
             console.log(e);
+            loading = false;
         }
     }
 
     const removeLike = async () => {
         try {
+            loading = true;
+            setUserLike(false);
+            likesCount === undefined ? 0 :
+                setLikesCount(likesCount - 1);
+            
             axios({
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
                     type: props.story.type,
                     username: user
                 }
-
             })
                 .then(response => {
-                    likesCount === undefined ? 0 :
-                        setLikesCount(likesCount - 1);
-                    setUserLike(false);
+                   loading = false;
                 })
                 .catch((error) => {
                     console.error(error);
+                    loading = false;
                 });
         } catch (e) {
             console.log(e);
+            loading = false;
         }
     }
 
@@ -102,6 +108,9 @@ const Footer = (props: UserStoryProps) => {
     const onLike = async () => {
         if (user === undefined || user === null || user === "") {
             Alert.alert("Please login to like a story");
+            return;
+        }
+        if(loading){
             return;
         }
         if (!userLike) {
@@ -178,7 +187,7 @@ const Footer = (props: UserStoryProps) => {
                     </Dialog.Content>
                 </Dialog>
             </Portal>
-            <IconButton style={styles.icon} size={16} icon="share-outline" />
+            {/* <IconButton style={styles.icon} size={16} icon="share-outline" /> */}
 
         </View>
     );
