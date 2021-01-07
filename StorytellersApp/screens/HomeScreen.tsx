@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useContext, useEffect, useState } from 'react'
 import {
   View,
   TextInput,
@@ -28,41 +28,20 @@ import Feed from '../components/Feed';
 import NewRecordingButton from '../components/NewRecordingButton';
 import { UserType , RootStackParamList} from '../types';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SearchBar } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Navigation from '../navigation';
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-
+import {UserContext} from '../UserContext';
 
 export default function HomeScreen({navigation}) {
   
   const ref = React.useRef<TextInput>(null);
-  const [user, setUser] = useState<UserType | null>(null);
-  console.log("Usert name::::"+user?.username);
-
-  console.log("Usert type::::"+user?.type);
+  const {user} = useContext(UserContext);
   const [searchText, setSearchText] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [focus, setFocus] = React.useState(false);
   const [helpOpen, setHelpOpen] = React.useState(false);
+  
   const colorScheme = useColorScheme();
 
-  const getUser = async () => {
-    const username = await AsyncStorage.getItem("username");
-    const name = await AsyncStorage.getItem("name");
-    const type = await AsyncStorage.getItem("type");
-    const image = await AsyncStorage.getItem("image");
-    let user = {
-      username: username,
-      name: name,
-      type: type,
-      image: image,
-    } as UserType;
-    setUser(user);
-  }
 
   const onChangeSearch = (query: string) => {
     setSearchText(query);
@@ -78,9 +57,6 @@ export default function HomeScreen({navigation}) {
     }
   }, [searchText, focus])
 
-  useEffect(() => {
-    getUser();
-  }, [])
   
   const openDrawer = () => {
     navigation.toggleDrawer();
@@ -92,9 +68,9 @@ export default function HomeScreen({navigation}) {
           <TouchableOpacity onPress={openDrawer}>
           <ProfilePicture
             image={
-              user === null
+              user === null || user === undefined
                 ? undefined
-                : user.image === null
+                : user.image === null || user.image === undefined 
                 ? "https://ui-avatars.com/api/?background=006699&color=fff&name=" +
                   user.name
                 : user.image
@@ -143,8 +119,7 @@ export default function HomeScreen({navigation}) {
         )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <Feed key={searchQuery} search={searchQuery}></Feed>
-      {/* {console.log(user?.username)} */}
+      <Feed key={searchQuery} search={searchQuery} user={user}></Feed>
       <NewRecordingButton user={user?.username} userType={user?.type}/>
     </View>
   );

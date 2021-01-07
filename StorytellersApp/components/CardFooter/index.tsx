@@ -23,7 +23,7 @@ import {
     Button,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType, ResponseType } from '../../types';
+import { UserStoryType, ResponseType, UserType } from '../../types';
 import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -33,75 +33,78 @@ import { AppContext } from '../../AppContext';
 
 export type UserStoryProps = {
     story: ResponseType,
+    user: UserType | undefined | null,
 }
 let url = HOST
 
 const Footer = (props: UserStoryProps) => {
-    const [user, setUser] = useState<string | null>(null);
-    const [likesCount, setLikesCount] = useState(props.story.numLikes);
+    const {user} = props;
+    const [loading, setLoading] = useState(false);
     const [userLike, setUserLike] = useState(props.story.isLiked);
+    const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [replyVisible, setReplyVisible] = useState(false);
-    const { setIsPlaying , setIsRadioPlaying} = useContext(AppContext);
-    useEffect(() => {
-        const fetchUser = async () => {
-            const currentUser = await AsyncStorage.getItem("username");
-            setUser(currentUser);
-        }
-        fetchUser();
-    }, [])
-
+    const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
 
     const submitLike = async () => {
-
         try {
+            setLoading(true);
+            setUserLike(true);
+            likesCount === undefined ? 1 :
+                setLikesCount(likesCount + 1);
             axios({
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
                     type: props.story.type,
                     username: user
                 }
-
             })
                 .then(response => {
-                    likesCount === undefined ? 1 :
-                        setLikesCount(likesCount + 1);
-                    setUserLike(true);
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error(error);
+                    setLoading(false);
                 });
         } catch (e) {
             console.log(e);
+            setLoading(false);
         }
     }
 
     const removeLike = async () => {
         try {
+            setLoading(true);
+            setUserLike(false);
+            likesCount === undefined ? 0 :
+                setLikesCount(likesCount - 1);
+
             axios({
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
                     type: props.story.type,
                     username: user
                 }
-
             })
                 .then(response => {
-                    likesCount === undefined ? 0 :
-                        setLikesCount(likesCount - 1);
-                    setUserLike(false);
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error(error);
+                    setLoading(false);
                 });
         } catch (e) {
             console.log(e);
+            setLoading(false);
         }
     }
 
 
     const onLike = async () => {
-        if (user === undefined || user === null || user === "") {
+        if (user === undefined || user === null) {
             Alert.alert("Please login to like a story");
+            return;
+        }
+        if (loading) {
             return;
         }
         if (!userLike) {
@@ -131,7 +134,7 @@ const Footer = (props: UserStoryProps) => {
     }
 
     const showDialog = () => {
-        if (user === undefined || user === null || user === "") {
+        if (user === undefined || user === null) {
             Alert.alert("Please login to record a story");
             return;
         }
@@ -178,10 +181,9 @@ const Footer = (props: UserStoryProps) => {
                     </Dialog.Content>
                 </Dialog>
             </Portal>
-            <IconButton style={styles.icon} size={16} icon="share-outline" />
+            {/* <IconButton style={styles.icon} size={16} icon="share-outline" /> */}
 
         </View>
     );
 };
-
 export default memo(Footer);

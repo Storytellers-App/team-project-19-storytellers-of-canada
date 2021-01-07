@@ -24,38 +24,37 @@ import ProfilePicture from '../ProfilePicture';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
-import { UserStoryType, RootStackParamList, ResponseType, currentStory } from '../../types';
+import { UserStoryType, RootStackParamList, ResponseType, currentStory, UserType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { memo, useContext } from 'react';
+import { memo, useContext, useState, useEffect } from 'react';
 import AudioPlayer from '../AudioPlayer';
 import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
     admin?: boolean,
+    user: UserType | undefined | null,
     disableResponse?: boolean;
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
 
 
-type ControlProps = {
-    props: UserStoryProps,
-}
-const Controls = ({ props }: ControlProps) => {
-    if (props.admin == true) {
-        return <AdminFooter story={props.story}></AdminFooter>;
-    }
-    else {
-        return <Footer story={props.story} ></Footer>;
-    }
-}
+
 function UserStory(props: UserStoryProps) {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const responseScreen = (header: ResponseType) => {
         navigation.push("StoryResponse", { 'header': header });
     }
-   
+    const Controls = () => {
+        if (props.admin == true) {
+            return <AdminFooter story={props.story} user={props.user}></AdminFooter>;
+        }
+        else {
+            return <Footer story={props.story} user={props.user}></Footer>;
+        }
+    }
+  
     const colorScheme = useColorScheme();
     return (
 
@@ -79,6 +78,12 @@ function UserStory(props: UserStoryProps) {
 
                     </View>
                     <Card.Content style={styles.content}>
+                        {!!props.story.image && <Image
+                            style={styles.topImage}
+                            source={{
+                                uri: props.story.image,
+                            }}
+                        />}
                         <Text style={{ marginBottom: 15 }}>
                             {props.story.description}
                         </Text>
@@ -88,10 +93,13 @@ function UserStory(props: UserStoryProps) {
             </TouchableWithoutFeedback>
             <Tags tags={props.story.tags}></Tags>
             <Divider />
-            <Controls props={props}></Controls>
+            <Controls ></Controls>
         </Card>
 
     );
 }
+function areEqual(prevProps, nextProps) {
+    return prevProps.story.id === nextProps.story.id;
+  }
 
-export default memo(UserStory);
+export default memo(UserStory, areEqual);

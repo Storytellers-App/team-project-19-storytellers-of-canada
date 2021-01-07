@@ -25,15 +25,21 @@ class AddLikes(Resource):
             post = Story.query.filter_by(id=args['id']).first()
         if not post:
             abort(HTTPStatus.NOT_FOUND, message='This story was not found')
-        post.numLikes += 1
+        prev_like = Like.query.filter_by(username=args['username'],
+                                    postId=args['id'],
+                                    postType=args['type']).first()
+        if prev_like:
+            return HTTPStatus.OK
+
         like = Like(username=args['username'], postId=args['id'],
                     postType=args['type'])
-        db.session.add(like)
         try:
+            db.session.add(like)
+            post.numLikes += 1
             db.session.commit()
         except SQLAlchemyError:
             abort(HTTPStatus.BAD_REQUEST, message='Could not register like')
-
+        return HTTPStatus.OK
 
 class RemoveLikes(Resource):
     def post(self):
@@ -48,14 +54,16 @@ class RemoveLikes(Resource):
             post = Comment.query.filter_by(id=args['id']).first()
         else:
             post = Story.query.filter_by(id=args['id']).first()
-        if not post:
+        if post is None:
             return HTTPStatus.OK
-        post.numLikes -= 1
         like = Like.query.filter_by(username=args['username'],
                                     postId=args['id'],
                                     postType=args['type']).first()
+        if like is None:
+            return HTTPStatus.OK
         try:
             db.session.delete(like)
+            post.numLikes -= 1
             db.session.commit()
         except SQLAlchemyError:
             abort(HTTPStatus.BAD_REQUEST, message='Could not remove like')

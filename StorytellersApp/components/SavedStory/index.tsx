@@ -24,37 +24,35 @@ import ProfilePicture from "../ProfilePicture";
 import { Entypo } from "@expo/vector-icons";
 import styles from "./styles";
 import moment from "moment";
-import { UserStoryType, StorySaveType, RootStackParamList, ResponseType } from "../../types";
+import { UserStoryType, StorySaveType, RootStackParamList, ResponseType, UserType } from "../../types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { memo } from "react";
+import { memo, useState } from "react";
 import AudioPlayer from "../AudioPlayer";
 import Tags from "../Tags";
 export type StoredStoryProps = {
   story: StorySaveType;
   admin?: boolean;
+  user: UserType | undefined | null;
   disableResponse?: boolean;
 };
 import Footer from "../CardFooter";
 import AdminFooter from "../AdminFooter";
 
-type ControlProps = {
-  props: StoredStoryProps;
-};
-const Controls = ({ props }: ControlProps) => {
-  if (props.admin == true) {
-    return <AdminFooter story={props.story}></AdminFooter>;
-  } else {
-    return <Footer story={props.story}></Footer>;
-  }
-};
 function SavedStory(props: StoredStoryProps) {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const responseScreen = (header: ResponseType) => {
     navigation.push("StoryResponse", { header: header });
   };
   const colorScheme = useColorScheme();
-
+  const Controls = () => {
+    if (props.admin == true) {
+      return <AdminFooter story={props.story}></AdminFooter>;
+    }
+    else {
+      return <Footer story={props.story} user={props.user} ></Footer>;
+    }
+  }
   return (
     <Card style={styles.card}>
       <TouchableWithoutFeedback
@@ -65,7 +63,7 @@ function SavedStory(props: StoredStoryProps) {
       >
         <View>
           <View style={[styles.row, styles.attribution]}>
-            
+
             <View style={{ flex: 1 }}>
               <Text style={styles.titleStyle}>{props.story.title} </Text>
 
@@ -76,10 +74,10 @@ function SavedStory(props: StoredStoryProps) {
                 </Text>
               </View>
             </View>
-            
+
           </View>
           <Card.Content style={styles.content}>
-              {!!props.story.image && <Image
+            {!!props.story.image && <Image
               style={styles.topImage}
               source={{
                 uri: props.story.image,
@@ -92,7 +90,7 @@ function SavedStory(props: StoredStoryProps) {
       </TouchableWithoutFeedback>
       <Tags tags={props.story.tags}></Tags>
       <Divider />
-      <Controls props={props}></Controls>
+      <Controls ></Controls>
     </Card>
   );
 }

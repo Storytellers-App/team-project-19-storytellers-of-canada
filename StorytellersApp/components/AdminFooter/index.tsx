@@ -19,13 +19,14 @@ import {
     Divider,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType, ResponseType } from '../../types';
+import { UserStoryType, ResponseType, UserType } from '../../types';
 import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { HOST } from '../../config'
 export type UserStoryProps = {
     story: ResponseType,
+    user: UserType | undefined | null,
 }
 let url = HOST
 
@@ -33,7 +34,7 @@ const AdminFooter = (props: UserStoryProps) => {
 
 
     const [approved, setApproved] = useState<boolean | null>(null);
-
+    const {user} = props;
 
 
     const approve = async () => {

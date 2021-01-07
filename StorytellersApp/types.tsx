@@ -45,6 +45,8 @@ export type UserType = {
   name: string,
   type: string,
   image?: string,
+  email: string,
+  authToken: string,
 }
 export type StorySaveType = {
   id: number,

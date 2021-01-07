@@ -1,5 +1,19 @@
 import React from "react";
 import {currentStory, ResponseType} from './types';
+export type AppContextType = {
+  story: null | currentStory,
+  fullStoryType: null | ResponseType,
+  position: null | number,
+  isPlaying: null | boolean,
+  isSeekingComplete: null | boolean,
+  isRadioPlaying: null | boolean,
+  setStory: (newStory: currentStory) => void,
+  setPosition: (newPosition: number) => void,
+  setIsPlaying: (isPlaying : boolean) => void,
+  setIsSeekingComplete: (isSeekingComplete : boolean) => void,
+  setIsRadioPlaying: (isRadioPlaying: boolean ) => void,
+  setFullStoryType: (fullStory: ResponseType) => void,
+}
 const context = {
   story: null,
   fullStoryType: null,
@@ -15,4 +29,4 @@ const context = {
   setFullStoryType: (fullStory: ResponseType) => {},
 }
 
-export const AppContext = React.createContext(context);
+export const AppContext = React.createContext<AppContextType>(context);

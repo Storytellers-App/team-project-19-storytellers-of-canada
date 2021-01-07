@@ -7,14 +7,14 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
 import StorySaveScreen from '../screens/StorySaveScreen';
-import { BottomTabParamList, HomeNavigatorParamList, RadioPlayerParamList, TabTwoParamList, AdminPanelParamList } from '../types';
+import { BottomTabParamList, HomeNavigatorParamList, RadioPlayerParamList, TabTwoParamList, AdminPanelParamList, UserType } from '../types';
 import ProfilePicture from '../components/ProfilePicture';
 import { ScreenStackHeaderLeftView } from 'react-native-screens';
 import RadioPlayer from '../screens/RadioPlayer';
 import AdminPanelScreen from '../screens/AdminPanelScreen';
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function BottomTabNavigator({admin} : {admin: boolean}) {
+export default function BottomTabNavigator({user} : {user: UserType}) {
   const colorScheme = useColorScheme();
   return (
     <BottomTab.Navigator
@@ -44,7 +44,7 @@ export default function BottomTabNavigator({admin} : {admin: boolean}) {
           tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
         }}
       />
-       {admin == true ? <BottomTab.Screen
+       {user != null && user.type === 'ADMIN' ? <BottomTab.Screen
         name="AdminPanelScreen"
         component={AdminPanelNavigator}
         options={{

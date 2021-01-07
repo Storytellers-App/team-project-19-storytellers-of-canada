@@ -24,7 +24,7 @@ import ProfilePicture from '../ProfilePicture';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
-import { UserStoryType, RootStackParamList, ResponseType, CommentType } from '../../types';
+import { UserStoryType, RootStackParamList, ResponseType, CommentType, UserType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { memo } from 'react';
@@ -33,6 +33,7 @@ export type CommentProps = {
     comment: CommentType,
     admin?: boolean,
     disableResponse?: boolean,
+    user: UserType | undefined | null,
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
@@ -42,10 +43,10 @@ type ControlProps = {
 }
 const Controls = ({ props }: ControlProps) => {
     if (props.admin == true) {
-        return <AdminFooter story={props.comment}></AdminFooter>;
+        return <AdminFooter story={props.comment} user={props.user}></AdminFooter>;
     }
     else {
-        return <Footer story={props.comment} ></Footer>;
+        return <Footer story={props.comment} user={props.user}></Footer>;
     }
 }
 function Comment(props: CommentProps) {

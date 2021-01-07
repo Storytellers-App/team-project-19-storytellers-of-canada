@@ -28,6 +28,7 @@ export type TagProps = {
 }
 import Footer from '../CardFooter';
 import { FlatList } from 'react-native-gesture-handler';
+import { memo } from 'react';
 
 const color = ['#66CCFF', '#1C9379', '#8A7BA7'];
 const randomColor = () => {
@@ -51,4 +52,8 @@ function Tags(props: TagProps) {
         </View>
     );
 }
-export default Tags;
+function areEqual(prevProps, nextProps) {
+    return prevProps.tags === nextProps.tags;
+  }
+
+export default memo(Tags, areEqual);

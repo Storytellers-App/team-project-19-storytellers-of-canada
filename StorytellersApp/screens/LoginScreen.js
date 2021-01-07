@@ -6,12 +6,13 @@ import AsyncStorage from '@react-native-community/async-storage'
 import base64 from 'react-native-base64'
 
 import * as Config from '../config';
+import { UserContext } from '../UserContext';
 
 /**
  * Class for the login screen component
  */
 export default class LoginScreen extends Component {
-
+    static contextType = UserContext
     /**
      * Constructor
      */
@@ -32,9 +33,8 @@ export default class LoginScreen extends Component {
     /**
      * Redirect to the main page
      */
-    goToHome(isAdmin = false) {
-
-        Actions.HomeScreen({admin: isAdmin});
+    goToHome(user = null) {
+        Actions.reset("HomeScreen", {user: user});
     }
 
     /**
@@ -96,14 +96,10 @@ export default class LoginScreen extends Component {
                         this.state.name = result["name"]
                         this.state.email = result["email"]
                         this.state.type = result["type"]
-                        this.setUserInfo()
-                        if (this.state.type === "ADMIN"){
-                            // Going to the admin screen
-                            this.goToHome(true);
-                        } else {
-                            // Going to the home screen
-                            this.goToHome(false);
-                        }
+                        let user = {username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"]}
+                        this.setUserInfo();
+                        this.context.setUser(user);
+                        this.goToHome(user);
                         
                     } else {
                         console.log(result);
