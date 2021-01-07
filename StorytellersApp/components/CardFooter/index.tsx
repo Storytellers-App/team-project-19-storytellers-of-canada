@@ -55,7 +55,7 @@ const Footer = (props: UserStoryProps) => {
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
                     type: props.story.type,
-                    username: user
+                    username: user?.username,
                 }
             })
                 .then(response => {
@@ -82,7 +82,7 @@ const Footer = (props: UserStoryProps) => {
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
                     type: props.story.type,
-                    username: user
+                    username: user?.username
                 }
             })
                 .then(response => {
