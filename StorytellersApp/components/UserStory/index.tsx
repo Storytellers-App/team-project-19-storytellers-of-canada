@@ -27,7 +27,7 @@ import moment from 'moment';
 import { UserStoryType, RootStackParamList, ResponseType, currentStory } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { memo, useContext } from 'react';
+import { memo, useContext, useState, useEffect } from 'react';
 import AudioPlayer from '../AudioPlayer';
 import Tags from '../Tags';
 export type UserStoryProps = {
@@ -39,23 +39,21 @@ import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
 
 
-type ControlProps = {
-    props: UserStoryProps,
-}
-const Controls = ({ props }: ControlProps) => {
-    if (props.admin == true) {
-        return <AdminFooter story={props.story}></AdminFooter>;
-    }
-    else {
-        return <Footer story={props.story} ></Footer>;
-    }
-}
+
 function UserStory(props: UserStoryProps) {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const responseScreen = (header: ResponseType) => {
         navigation.push("StoryResponse", { 'header': header });
     }
-
+    const Controls = () => {
+        if (props.admin == true) {
+            return <AdminFooter story={props.story}></AdminFooter>;
+        }
+        else {
+            return <Footer story={props.story} ></Footer>;
+        }
+    }
+  
     const colorScheme = useColorScheme();
     return (
 
@@ -94,10 +92,14 @@ function UserStory(props: UserStoryProps) {
             </TouchableWithoutFeedback>
             <Tags tags={props.story.tags}></Tags>
             <Divider />
-            <Controls props={props}></Controls>
+            <Controls ></Controls>
         </Card>
 
     );
 }
+function areEqual(prevProps, nextProps) {
+    console.log("got to user story equality");
+    return prevProps.story.id === nextProps.story.id;
+  }
 
-export default memo(UserStory);
+export default memo(UserStory, areEqual);

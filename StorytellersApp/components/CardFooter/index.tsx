@@ -35,13 +35,14 @@ export type UserStoryProps = {
     story: ResponseType,
 }
 let url = HOST
-let loading = false;
+
 const Footer = (props: UserStoryProps) => {
     const [user, setUser] = useState<string | null>(null);
-    const [likesCount, setLikesCount] = useState(props.story.numLikes);
+    const [loading, setLoading] = useState(false);
     const [userLike, setUserLike] = useState(props.story.isLiked);
+    const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [replyVisible, setReplyVisible] = useState(false);
-    const { setIsPlaying , setIsRadioPlaying} = useContext(AppContext);
+    const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
     useEffect(() => {
         const fetchUser = async () => {
             const currentUser = await AsyncStorage.getItem("username");
@@ -50,13 +51,12 @@ const Footer = (props: UserStoryProps) => {
         fetchUser();
     }, [])
 
-
     const submitLike = async () => {
         try {
-            let loading = true;
+            setLoading(true);
             setUserLike(true);
-                    likesCount === undefined ? 1 :
-                        setLikesCount(likesCount + 1);
+            likesCount === undefined ? 1 :
+                setLikesCount(likesCount + 1);
             axios({
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
@@ -65,25 +65,25 @@ const Footer = (props: UserStoryProps) => {
                 }
             })
                 .then(response => {
-                   loading = false;
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error(error);
-                    loading = false;
+                    setLoading(false);
                 });
         } catch (e) {
             console.log(e);
-            loading = false;
+            setLoading(false);
         }
     }
 
     const removeLike = async () => {
         try {
-            loading = true;
+            setLoading(true);
             setUserLike(false);
             likesCount === undefined ? 0 :
                 setLikesCount(likesCount - 1);
-            
+
             axios({
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
@@ -92,15 +92,15 @@ const Footer = (props: UserStoryProps) => {
                 }
             })
                 .then(response => {
-                   loading = false;
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error(error);
-                    loading = false;
+                    setLoading(false);
                 });
         } catch (e) {
             console.log(e);
-            loading = false;
+            setLoading(false);
         }
     }
 
@@ -110,7 +110,7 @@ const Footer = (props: UserStoryProps) => {
             Alert.alert("Please login to like a story");
             return;
         }
-        if(loading){
+        if (loading) {
             return;
         }
         if (!userLike) {
@@ -192,5 +192,4 @@ const Footer = (props: UserStoryProps) => {
         </View>
     );
 };
-
 export default memo(Footer);

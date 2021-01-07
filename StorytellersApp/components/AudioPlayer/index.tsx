@@ -207,4 +207,4 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
 
     )
 }
-export default AudioPlayer;
+export default memo(AudioPlayer);
