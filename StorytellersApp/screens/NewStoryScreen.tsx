@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker } from 'react-native';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RootStackParamList } from '../types';
@@ -11,6 +11,7 @@ import TagInput from 'react-native-tags-input';
 import { Feather } from '@expo/vector-icons';
 import * as Config from '../config';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 
 type NewStoryRouteProp = RouteProp<RootStackParamList, 'NewStory'>;
 
@@ -28,6 +29,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     const { parent, recording, username, userType } = route.params;
     console.log('Usertype: ' + userType);
     const [title, setTitle] = useState("");
+    const [image, setImage] = useState("");
     const [author, setAuthor] = useState("");
     const [isStoredStory, setIsStoredStory] = useState(false);
     const [description, setDescription] = useState("");
@@ -37,6 +39,17 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     });
 
     const [currentTag, setCurrentTag] = useState("");
+
+    useEffect(() => {
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
+                }
+            }
+        })();
+    }, []);
 
     const handleOnChangeTitle = (text: string) => {
         setTitle(text);
@@ -49,7 +62,20 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         setDescription(text);
     }
 
+    const onImagePickerPress = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        });
+        console.log(result);
 
+        if (!result.cancelled) {
+            setImage(result.uri);
+            Alert.alert("Your image has been selected!")
+        }
+        else {
+            Alert.alert("Something went wrong, please try again")
+        }
+    }
     const handleSubmit = async () => {
         if (recording === null) {
             return;
@@ -85,6 +111,12 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             name: uri,
             type: 'audio/mpeg'
         });
+
+        formData.append('image', {
+            uri: image,
+            name: image,
+            type: 'image/*'
+        });
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', host + 'stories');
         xhr.send(formData);
@@ -98,6 +130,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 Alert.alert("Your submission is under review!")
             } else {
                 console.log('error', xhr.responseText);
+                Alert.alert("Sorry something went wrong, please try again");
             }
         };
     }
@@ -162,6 +195,19 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 />
             </View>
             <View>
+
+
+                <TouchableHighlight
+                    style={styles.submitButtonImage}
+                    onPress={onImagePickerPress}
+                // disabled={title === ""}
+                >
+                    <Text
+                        style={styles.buttonTextImage}>
+                        Upload Thumbnail Image
+                    </Text>
+                </TouchableHighlight>
+
                 <TouchableHighlight
                     style={styles.submitButton}
                     onPress={handleSubmit}
@@ -169,7 +215,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 >
                     <Text
                         style={styles.buttonText}>
-                        submit
+                        Submit
                     </Text>
                 </TouchableHighlight>
             </View>
@@ -197,6 +243,13 @@ const styles = StyleSheet.create({
         marginBottom: 60,
         marginTop: 50,
     },
+    textImagePicker: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        color: Colors.light.tint,
+        fontSize: 15,
+        textDecorationLine: 'underline',
+    },
     input: {
         fontSize: 16,
     },
@@ -208,12 +261,25 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: 'center',
     },
+    submitButtonImage: {
+        backgroundColor: Colors.light.text,
+        borderRadius: 30,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
     buttonText: {
         paddingHorizontal: 20,
         paddingVertical: 10,
         color: 'white',
         fontWeight: 'bold',
         fontSize: 20,
+    },
+    buttonTextImage: {
+        paddingHorizontal: 20,
+        paddingVertical: 14,
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 15,
     },
     tag: {
         backgroundColor: Colors.light.tint,

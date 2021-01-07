@@ -38,7 +38,7 @@ const UploadStoryButton = ({recording, username, parent, userType}:Props) => {
     }
     return (
         
-     <TouchableHighlight
+     <TouchableHighlight style={styles.button}
                     onPress={onPress}
                 >
                     <Text 
@@ -54,6 +54,10 @@ export default UploadStoryButton;
 
 
 const styles = StyleSheet.create({
+
+button: {
+
+},
 text: {
     paddingHorizontal: 20, 
     paddingVertical: 10, 
