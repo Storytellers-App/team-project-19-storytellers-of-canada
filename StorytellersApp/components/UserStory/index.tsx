@@ -55,7 +55,7 @@ function UserStory(props: UserStoryProps) {
     const responseScreen = (header: ResponseType) => {
         navigation.push("StoryResponse", { 'header': header });
     }
-   
+
     const colorScheme = useColorScheme();
     return (
 
@@ -79,6 +79,12 @@ function UserStory(props: UserStoryProps) {
 
                     </View>
                     <Card.Content style={styles.content}>
+                        {!!props.story.image && <Image
+                            style={styles.topImage}
+                            source={{
+                                uri: props.story.image,
+                            }}
+                        />}
                         <Text style={{ marginBottom: 15 }}>
                             {props.story.description}
                         </Text>
