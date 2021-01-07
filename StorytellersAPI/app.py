@@ -23,6 +23,7 @@ from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
 from Resources.UpdateNameResource import UpdateName
 from Resources.UpdateEmailResource import UpdateEmail
 from Resources.UpdatePasswordResource import UpdatePassword
+from Resources.DeactivateResource import Deactivate
 
 # test database
 from Resources.TestResource import TestDB
@@ -72,6 +73,9 @@ api.add_resource(StoryFetch, '/story_fetch')
 api.add_resource(UpdateName, '/updateName')
 api.add_resource(UpdateEmail, '/updateEmail')
 api.add_resource(UpdatePassword, '/updatePassword')
+
+# POST /deactivate
+api.add_resource(Deactivate, '/deactivate')
 
 if __name__ == '__main__':
     # host = ''  # ip host address

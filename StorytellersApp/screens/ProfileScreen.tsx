@@ -24,45 +24,27 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Actions } from 'react-native-router-flux';
 import { ScrollView } from 'react-native-gesture-handler';
 import base64 from 'react-native-base64'
+import { UserContext } from '../UserContext';
 
 import * as Config from '../config';
+import { CommonActions } from '@react-navigation/native';
 
 export default function ProfileScreen(props) {
 
-    const [user, setUser] = useState<UserType | null>(null);
-
-    const getUser = async () => {
-        const username = await AsyncStorage.getItem("username");
-        const name = await AsyncStorage.getItem("name");
-        const type = await AsyncStorage.getItem("image");
-        const image = await AsyncStorage.getItem("image");
-        const email = await AsyncStorage.getItem("email");
-        const authToken = await AsyncStorage.getItem("authToken")
-        let user = {
-            username: username,
-            name: name,
-            type: type,
-            image: image,
-            email: email,
-            authToken: authToken
-        } as UserType;
-        setUser(user);
-    }
+    const { user, setUser } = React.useContext(UserContext)
 
     const [visible, setVisible] = React.useState(false);
     const showNameModal = () => setVisible(true);
     const hideNameModal = () => setVisible(false);
     const [showEmailModal, setEmailModal] = React.useState(false);
     const [showPasswordModal, setPasswordModal] = React.useState(false);
-
-    useEffect(() => {
-        getUser();
-    }, [])
+    const [showDeactivateModal, setDeactivateModal] = React.useState(false);
+    const [showConfirmModal, setConfirmModal] = React.useState(false);
 
     const [name, setName] = React.useState("")
 
     // Updating the name in the backend
-    const updateName = async () => {
+    const updateName = () => {
         fetch(Config.HOST + `updateName?name=${name}`, {
             method: 'POST',
             headers: new Headers({
@@ -72,10 +54,9 @@ export default function ProfileScreen(props) {
             .then(response => {
                 return response.json()
             })
-            .then(async (result) => {
+            .then((result) => {
                 if (result["success"]) {
                     console.log("Successful response")
-                    await AsyncStorage.setItem("name", name)
                     let newUser = {
                         username: user?.username,
                         name: name,
@@ -109,7 +90,7 @@ export default function ProfileScreen(props) {
     const [confirmEmail, setConfirmEmail] = React.useState("")
 
     // Updating the email in the backend
-    const updateEmail = async () => {
+    const updateEmail = () => {
         // Checking if the emails are the same
         if (!(newEmail === confirmEmail)) {
             Alert.alert(
@@ -126,10 +107,9 @@ export default function ProfileScreen(props) {
                 .then(response => {
                     return response.json()
                 })
-                .then(async (result) => {
+                .then((result) => {
                     if (result["success"]) {
                         console.log("Successful response")
-                        await AsyncStorage.setItem("email", newEmail)
                         let newUser = {
                             username: user?.username,
                             name: user?.name,
@@ -165,7 +145,7 @@ export default function ProfileScreen(props) {
     const [confirmPassword, setConfirmPassword] = React.useState("")
 
     // Updating the email in the backend
-    const updatePassword = async () => {
+    const updatePassword = () => {
         // Checking if the emails are the same
         if (!(newPassword === confirmPassword)) {
             Alert.alert(
@@ -182,7 +162,7 @@ export default function ProfileScreen(props) {
                 .then(response => {
                     return response.json()
                 })
-                .then(async (result) => {
+                .then((result) => {
                     if (result["success"]) {
                         console.log("Successful response")
                         Alert.alert(
@@ -203,6 +183,69 @@ export default function ProfileScreen(props) {
                     )
                     console.error(error);
                 });
+        }
+    }
+
+    const [deactivatePassword, setDeactivatePassword] = React.useState("")
+
+    const deactivate = () => {
+        fetch(Config.HOST + `deactivate`, {
+            method: 'POST',
+            headers: new Headers({
+                'Authorization': base64.encode(`${user?.authToken}:${deactivatePassword}`)
+            })
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then((result) => {
+                console.log(result)
+                if (result["success"]) {
+                    console.log("Successful response")
+                    Alert.alert(
+                        "Deactivation Successful",
+                        "You will now be logged out."
+                    )
+                    // Logging out
+                    setDeactivateModal(false)
+                    setConfirmModal(false)
+                    let newUser = { username: "", authToken: "", name: "", email: "", type: "" }
+                    setUser(newUser)
+                    props.navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [
+                                { name: 'Login' },
+                            ],
+                        })
+                    );
+                } else {
+                    setDeactivateModal(false)
+                    setConfirmModal(false)
+                    Alert.alert(
+                        "Deactivation Failed.",
+                        "Please make sure you have entered the correct current password."
+                    )
+                }
+            })
+            .catch((error) => {
+                Alert.alert(
+                    "Connection Error"
+                )
+                console.error(error);
+            });
+    }
+
+    const goToConfirm = () => {
+        // Continue if a password is entered
+        if (deactivatePassword === "") {
+            Alert.alert(
+                "Invalid Password Information",
+                "Please make sure you have entered your password."
+            )
+        } else {
+            setConfirmModal(true)
+            setDeactivateModal(false)
         }
     }
 
@@ -273,6 +316,42 @@ export default function ProfileScreen(props) {
                     <UpdateButton buttonStyle={styles.button} title="Update" onPress={() => { updatePassword() }} />
                 </Modal>
             </Portal>
+            <Portal>
+                <Modal contentContainerStyle={styles.modal} visible={showDeactivateModal} onDismiss={() => {
+                    setDeactivatePassword("")
+                    setDeactivateModal(false)
+                }}>
+                    <View style={{ alignItems: 'center', padding: 20 }}>
+                        <Title>Deactivate Account</Title>
+                        <Input
+                            style={{ fontSize: 16, marginTop: 40 }}
+                            placeholder="Current Password"
+                            secureTextEntry={true}
+                            autoCapitalize='none'
+                            onChangeText={(text) => { setDeactivatePassword(text) }}
+                        />
+                    </View>
+                    <UpdateButton buttonStyle={styles.deactivateButton} title="Deactivate Account" onPress={() => { goToConfirm() }} />
+                </Modal>
+            </Portal>
+            <Portal>
+                <Modal contentContainerStyle={styles.modal} visible={showConfirmModal} onDismiss={() => {
+                    setDeactivatePassword("")
+                    setConfirmModal(false)
+                }}>
+                    <View style={{ alignItems: 'center', padding: 20 }}>
+                        <Title>Confirm Deactivation</Title>
+                    </View>
+                    <View>
+                        <Text style={{ fontSize: 16, marginLeft: 10, marginRight: 10, textAlign: 'center' }}>Please confirm that you are deactivating your account.</Text>
+                    </View>
+                    <UpdateButton buttonStyle={styles.deactivateButton} title="Deactivate Account" onPress={() => { deactivate() }} />
+                    <UpdateButton buttonStyle={styles.cancelButton} title="Cancel" onPress={() => {
+                        setDeactivatePassword("")
+                        setConfirmModal(false)
+                    }} />
+                </Modal>
+            </Portal>
             <Appbar.Header style={{ backgroundColor: "white" }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Button icon="arrow-left"
@@ -292,12 +371,12 @@ export default function ProfileScreen(props) {
                             size={120}
                             style={{ marginTop: 30, marginBottom: 10 }}
                         />
-                        {/*<Button
+                        <Button
                             icon="pencil"
                             labelStyle={{ color: 'white', fontSize: 14 }}
                             style={{ paddingBottom: 10 }}>
                             Update Picture
-                        </Button>*/}
+                        </Button>
                     </View>
                 </ImageBackground>
                 <View style={styles.userInfoSection}>
@@ -324,7 +403,12 @@ export default function ProfileScreen(props) {
                         onPress={() => { setPasswordModal(true) }}>
                         Change Password
                         </Button>
-                    {/*<Button labelStyle={{ fontSize: 16, color: '#ab0202' }} icon="delete">Deactivate Account</Button>*/}
+                    <Button
+                        labelStyle={{ fontSize: 16, color: '#ab0202' }}
+                        icon="delete"
+                        onPress={() => { setDeactivateModal(true) }}>
+                        Deactivate Account
+                        </Button>
                 </View>
             </View>
         </View>
@@ -380,6 +464,21 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     button: {
+        borderRadius: 20,
+        backgroundColor: "#0062a1",
+        marginBottom: 60,
+        marginLeft: 50,
+        marginRight: 50,
+    },
+    deactivateButton: {
+        borderRadius: 20,
+        backgroundColor: "#9e0500",
+        marginBottom: 20,
+        marginLeft: 50,
+        marginRight: 50,
+        marginTop: 30
+    },
+    cancelButton: {
         borderRadius: 20,
         backgroundColor: "#0062a1",
         marginBottom: 60,

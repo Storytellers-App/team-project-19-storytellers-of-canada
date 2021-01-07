@@ -17,30 +17,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { UserType, RootStackParamList } from '../types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Actions } from 'react-native-router-flux';
+import { UserContext } from '../UserContext';
 
 export function DrawerContent(props) {
 
-    const [user, setUser] = useState<UserType | null>(null);
-
-    const getUser = async () => {
-        const username = await AsyncStorage.getItem("username");
-        const name = await AsyncStorage.getItem("name");
-        const type = await AsyncStorage.getItem("image");
-        const image = await AsyncStorage.getItem("image");
-        const email = await AsyncStorage.getItem("email");
-        let user = {
-            username: username,
-            name: name,
-            type: type,
-            image: image,
-            email: email
-        } as UserType;
-        setUser(user);
-    }
-
-    useEffect(() => {
-        getUser();
-    }, [])
+    const {user, setUser} = React.useContext(UserContext)
 
     // Signout function
     async function signOut(){
@@ -49,6 +30,8 @@ export function DrawerContent(props) {
         await AsyncStorage.setItem("email", "")
         await AsyncStorage.setItem("authToken", "")
         await AsyncStorage.setItem("type", "")
+        let newUser = {username: "", authToken: "", name: "", email: "", type: ""}
+        setUser(newUser)
         props.navigation.dispatch(
             CommonActions.reset({
               index: 0,
