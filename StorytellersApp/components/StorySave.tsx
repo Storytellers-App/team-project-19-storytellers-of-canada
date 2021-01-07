@@ -14,10 +14,10 @@ let url = Config.HOST
 type Props = {
   key: string;
   search: string;
+  user: UserType | null | undefined;
 }
 type State = {
   stories: StorySaveType[],
-  user: string | null,
   page: number,
   loading: boolean,
   sessionStart: string
@@ -25,12 +25,13 @@ type State = {
 export default class StorySave extends Component<Props, State> {
 
   private search: string;
+  private user: UserType | null | undefined;
   constructor(props: Props) {
       super(props);
       this.search = props.search;
+      this.user = props.user;
       this.state = {
           stories: [] as StorySaveType[],
-          user: null,
           page: 1,
           loading: true,
           sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -42,7 +43,7 @@ export default class StorySave extends Component<Props, State> {
     const { page } = this.state;
     const { stories } = this.state;
     const { sessionStart } = this.state;
-    const { user } = this.state;
+    const username = this.user === null || this.user === undefined ? undefined : this.props.user?.username;
     this.setState({
       loading: true
     });
@@ -55,7 +56,7 @@ export default class StorySave extends Component<Props, State> {
           time: sessionStart,
           type: 'storysave',
           filter: this.search == '' || this.search == null || this.search == undefined ? null : this.search,
-          username: user,
+          username: username,
           page: page
         }
       })
@@ -129,16 +130,10 @@ export default class StorySave extends Component<Props, State> {
     );
   }
 
-  getUserandFetch = async () => {
-    const currentUser = await AsyncStorage.getItem("username");
-    this.setState({ user: currentUser },
-      () => { this.fetchStories() })
-  };
-
   componentDidMount() {
-    this.getUserandFetch()
+    this.fetchStories()
   };
-  renderItem = ({ item }) => <SavedStory story={item} />;
+  renderItem = ({ item }) => <SavedStory story={item} user={this.user}/>;
   render() {
     const { stories } = this.state;
     return (

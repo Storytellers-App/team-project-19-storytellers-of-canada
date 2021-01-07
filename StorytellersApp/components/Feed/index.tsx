@@ -14,10 +14,10 @@ let url = Config.HOST //local ip address
 type Props = {
     key: string;
     search: string;
+    user: UserType | null | undefined;
 }
 type State = {
     stories: UserStoryType[],
-    user: string | null,
     page: number,
     loading: boolean,
     sessionStart: string
@@ -25,24 +25,27 @@ type State = {
 
 export default class Feed extends Component<Props, State> {
     private search: string;
+    private user: UserType | null | undefined;
     constructor(props: Props) {
         super(props);
         this.search = props.search;
+        this.user = props.user;
         this.state = {
             stories: [] as UserStoryType[],
-            user: null,
             page: 1,
             loading: true,
             sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
         };
+    };
+    componentDidMount() {
+        this.fetchStories();
     };
 
     fetchStories = async () => {
         const { page } = this.state;
         const { stories } = this.state;
         const { sessionStart } = this.state;
-        const { user } = this.state;
-
+        const username = this.user === null || this.user === undefined ? undefined : this.props.user?.username;
         this.setState({
             loading: true
         });
@@ -51,13 +54,12 @@ export default class Feed extends Component<Props, State> {
 
             //get stories from backend
             // let story_arr = userstories as UserStoryType[];
-           
             axios.get(url + 'stories', {
                 params: {
                     time: sessionStart,
                     type: 'userstory',
                     filter: this.search == '' || this.search == null || this.search == undefined ? null : this.search,
-                    username: user,
+                    username: username,
                     page: page
                 }
             })
@@ -113,17 +115,7 @@ export default class Feed extends Component<Props, State> {
         );
     };
 
-
-    getUserandFetch = async () => {
-        const currentUser = await AsyncStorage.getItem("username");
-        this.setState({ user: currentUser },
-            () => { this.fetchStories() })
-    };
-
-    componentDidMount() {
-        this.getUserandFetch()
-    };
-    renderItem = ({ item }) => <UserStory story={item} />;
+    renderItem = ({ item }) => <UserStory story={item} user={this.user}/>;
     render() {
         const { stories } = this.state;
         return (

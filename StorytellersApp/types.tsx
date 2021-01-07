@@ -41,13 +41,13 @@ export type RadioPlayerParamList = {
 }
 
 export type UserType = {
-    username: string,
-    name: string,
-    type: string,
-    image?: string,
-    email: string,
-    authToken?: string
-  }
+  username: string,
+  name: string,
+  type: string,
+  image?: string,
+  email: string,
+  authToken: string,
+}
 export type StorySaveType = {
   id: number,
   creationTime: string,

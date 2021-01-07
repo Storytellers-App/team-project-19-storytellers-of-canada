@@ -14,11 +14,7 @@ import { memo, useContext, useState } from 'react';
 import { AppContext } from '../../AppContext';
 import { StoryType, UserStoryType, StorySaveType, currentStory } from '../../types';
 import Slider from '@react-native-community/slider';
-import { duration } from 'moment';
 import { Sound } from 'expo-av/build/Audio/Sound';
-import { unloadAllAsync } from 'expo-font';
-import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
-import { RotationGestureHandler } from 'react-native-gesture-handler';
 
 export type AudioPlayerProps = {
     newStory: StoryType,
@@ -31,7 +27,6 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
         //Should only run once per player. Temporarily loads file to allow me to display duration
         const getDurationFromFile = async () => {
             if (currDuration == null || currDuration === undefined) {
-                console.log("reloading from file");
                 const { sound: newSound } = await Sound.createAsync(
                     { uri: newStory.recording },
                     { shouldPlay: false, isLooping: false },

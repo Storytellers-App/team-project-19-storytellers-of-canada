@@ -24,7 +24,7 @@ import ProfilePicture from '../ProfilePicture';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
-import { UserStoryType, RootStackParamList, ResponseType, currentStory } from '../../types';
+import { UserStoryType, RootStackParamList, ResponseType, currentStory, UserType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { memo, useContext, useState, useEffect } from 'react';
@@ -33,6 +33,7 @@ import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
     admin?: boolean,
+    user: UserType | undefined | null,
     disableResponse?: boolean;
 }
 import Footer from '../CardFooter';
@@ -47,10 +48,10 @@ function UserStory(props: UserStoryProps) {
     }
     const Controls = () => {
         if (props.admin == true) {
-            return <AdminFooter story={props.story}></AdminFooter>;
+            return <AdminFooter story={props.story} user={props.user}></AdminFooter>;
         }
         else {
-            return <Footer story={props.story} ></Footer>;
+            return <Footer story={props.story} user={props.user}></Footer>;
         }
     }
   
@@ -98,7 +99,6 @@ function UserStory(props: UserStoryProps) {
     );
 }
 function areEqual(prevProps, nextProps) {
-    console.log("got to user story equality");
     return prevProps.story.id === nextProps.story.id;
   }
 

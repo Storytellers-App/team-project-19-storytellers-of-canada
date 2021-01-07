@@ -24,7 +24,7 @@ import ProfilePicture from "../ProfilePicture";
 import { Entypo } from "@expo/vector-icons";
 import styles from "./styles";
 import moment from "moment";
-import { UserStoryType, StorySaveType, RootStackParamList, ResponseType } from "../../types";
+import { UserStoryType, StorySaveType, RootStackParamList, ResponseType, UserType } from "../../types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { memo, useState } from "react";
@@ -33,6 +33,7 @@ import Tags from "../Tags";
 export type StoredStoryProps = {
   story: StorySaveType;
   admin?: boolean;
+  user: UserType | undefined | null;
   disableResponse?: boolean;
 };
 import Footer from "../CardFooter";
@@ -49,7 +50,7 @@ function SavedStory(props: StoredStoryProps) {
       return <AdminFooter story={props.story}></AdminFooter>;
     }
     else {
-      return <Footer story={props.story} ></Footer>;
+      return <Footer story={props.story} user={props.user} ></Footer>;
     }
   }
   return (

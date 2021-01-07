@@ -36,6 +36,9 @@ const BottomPlayer = () => {
       await sound.pauseAsync();
       await sound.unloadAsync();
     }
+    if(story === null || story.recording === null){
+      return;
+    }
     const { sound: newSound } = await Sound.createAsync(
       { uri: story.recording },
       { shouldPlay: false, positionMillis: position, isLooping: false },
