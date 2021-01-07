@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useEffect, useState, useContext } from 'react'
 import { SafeAreaView, View, StyleSheet, ScrollView, StatusBar, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 import StorySave from '../components/StorySave';
 import {
@@ -7,10 +7,14 @@ import {
   Button,
   Portal,
 } from 'react-native-paper';
+import AsyncStorage from '@react-native-community/async-storage';
+import { UserType } from '../types';
+import { UserContext } from '../UserContext';
 
 export default function StorySaveScreen() {
   const ref = React.useRef<TextInput>(null);
   const [searchText, setSearchText] = React.useState('');
+  const { user } = useContext(UserContext);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [focus, setFocus] = React.useState(false);
   const [helpOpen, setHelpOpen] = React.useState(false);
@@ -69,7 +73,7 @@ export default function StorySaveScreen() {
         )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <StorySave key={searchQuery} search={searchQuery}></StorySave>
+      <StorySave key={searchQuery} search={searchQuery} user={user}></StorySave>
     </View>
   );
 }
