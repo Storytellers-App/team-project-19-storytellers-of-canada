@@ -6,12 +6,13 @@ import AsyncStorage from '@react-native-community/async-storage'
 import base64 from 'react-native-base64'
 
 import * as Config from '../config';
+import { UserContext } from '../UserContext';
 
 /**
  * Class for the login screen component
  */
 export default class LoginScreen extends Component {
-
+    static contextType = UserContext
     /**
      * Constructor
      */
@@ -97,6 +98,7 @@ export default class LoginScreen extends Component {
                         this.state.type = result["type"]
                         let user = {username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"]}
                         this.setUserInfo();
+                        this.context.setUser(user);
                         this.goToHome(user);
                         
                     } else {

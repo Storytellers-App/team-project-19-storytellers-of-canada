@@ -14,7 +14,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import StoryResponseScreen from '../screens/StoryResponseScreen';
 import NewCommentScreen from '../screens/NewCommentScreen';
 import { AppContext } from '../AppContext';
-import { UserContext } from '../UserContext';
+
 import BottomPlayer from '../components/BottomPlayer';
 
 // If you are not familiar with React Navigation, we recommend going through the
@@ -27,7 +27,6 @@ export default function Navigation(props: any) {
   const [isSeekingComplete, setIsSeekingComplete] = useState<boolean>(false);
   const [isRadioPlaying, setIsRadioPlaying] = useState<boolean>(false);
   const [fullStory, setFullStory] = useState<ResponseType | null>(null);
-  const [user, setUser] = useState<UserType | undefined>(props.user);
   return (
 
     <AppContext.Provider value={{
@@ -44,16 +43,11 @@ export default function Navigation(props: any) {
       setIsRadioPlaying: (isRadioPlaying: boolean) => setIsRadioPlaying(isRadioPlaying),
       setFullStoryType: (fullStoryType: ResponseType) => setFullStory(fullStoryType)
     }}>
-      <UserContext.Provider value={{
-        user: user,
-        setUser: (user: UserType) => setUser(user)
-      }}>
         <NavigationContainer
           linking={LinkingConfiguration}
           theme={DefaultTheme}>
           <RootNavigator user={props.user} />
         </NavigationContainer>
-      </UserContext.Provider>
     </AppContext.Provider>
 
   );
