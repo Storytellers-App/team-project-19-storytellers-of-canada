@@ -32,9 +32,8 @@ export default class LoginScreen extends Component {
     /**
      * Redirect to the main page
      */
-    goToHome(isAdmin = false) {
-
-        Actions.HomeScreen({admin: isAdmin});
+    goToHome(user = null) {
+        Actions.HomeScreen({user: user});
     }
 
     /**
@@ -96,14 +95,9 @@ export default class LoginScreen extends Component {
                         this.state.name = result["name"]
                         this.state.email = result["email"]
                         this.state.type = result["type"]
-                        this.setUserInfo()
-                        if (this.state.type === "ADMIN"){
-                            // Going to the admin screen
-                            this.goToHome(true);
-                        } else {
-                            // Going to the home screen
-                            this.goToHome(false);
-                        }
+                        let user = {username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"]}
+                        this.setUserInfo();
+                        this.goToHome(user);
                         
                     } else {
                         console.log(result);

@@ -28,6 +28,7 @@ let url = Config.HOST //local ip address
 
 type Props = {
     response: ResponseType;
+    user: UserType | null | undefined;
 }
 
 export default class ResponseFeed extends Component<Props> {
@@ -41,11 +42,11 @@ export default class ResponseFeed extends Component<Props> {
     };
 
 
-    Header = ({ response: header }: Props) => {
+    Header = ({ response: header, user: user }: Props) => {
         if ((header as StorySaveType).author) {
             return (
                 <View>
-                    <SavedStory story={header as StorySaveType} disableResponse={true}></SavedStory>
+                    <SavedStory story={header as StorySaveType} disableResponse={true} user={user}></SavedStory>
                     <View
                         style={{
                             borderBottomColor: Colors.light.tint,
@@ -59,7 +60,7 @@ export default class ResponseFeed extends Component<Props> {
         else if ((header as CommentType).comment) {
             return (
                 <View>
-                    <Comment comment={header as CommentType} disableResponse={true}></Comment>
+                    <Comment comment={header as CommentType} disableResponse={true} user={user}></Comment>
                     <View
                         style={{
                             borderBottomColor: Colors.light.tint,
@@ -73,7 +74,7 @@ export default class ResponseFeed extends Component<Props> {
         else {
             // Temporary styling to distinguish header story from replies
             return (<View>
-                <UserStory story={header as UserStoryType} disableResponse={true}></UserStory>
+                <UserStory story={header as UserStoryType} disableResponse={true} user={user}></UserStory>
                 <View
                     style={{
                         borderBottomColor: Colors.light.tint,
@@ -86,18 +87,18 @@ export default class ResponseFeed extends Component<Props> {
         }
     }
 
-    Response = ({ response }: Props) => {
+    Response = ({ response, user }: Props) => {
         if ((response as StorySaveType).author) {
-            return <SavedStory story={response as StorySaveType}></SavedStory>;
+            return <SavedStory story={response as StorySaveType} user={user}></SavedStory>;
         }
         else if ((response as CommentType).comment) {
             return (
-                <Comment comment={response as CommentType}></Comment>
+                <Comment comment={response as CommentType} user={user}></Comment>
             );
         }
         else {
             return (
-                <UserStory story={response as UserStoryType}></UserStory>
+                <UserStory story={response as UserStoryType} user={user}></UserStory>
             );
         }
     }
@@ -194,9 +195,9 @@ export default class ResponseFeed extends Component<Props> {
         return (
 
             <FlatList
-                ListHeaderComponent={<this.Header response={this.props.response}></this.Header>}
+                ListHeaderComponent={<this.Header response={this.props.response} user={this.props.user} ></this.Header>}
                 data={responses}
-                renderItem={({ item }) => <this.Response response={item} />}
+                renderItem={({ item }) => <this.Response response={item} user={this.props.user}/>}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}
                 onRefresh={this.refresh}

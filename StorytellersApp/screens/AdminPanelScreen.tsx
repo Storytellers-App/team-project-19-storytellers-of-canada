@@ -1,11 +1,13 @@
 import * as React from "react";
+import {useContext} from 'react';
 import {SafeAreaView, StyleSheet, ScrollView, StatusBar, View, Text, TouchableOpacity} from 'react-native';
 import { Appbar, Button, Portal } from "react-native-paper";
 import  AdminFeed from '../components/AdminFeed';
+import { UserContext } from "../UserContext";
 
 export default function AdminPanelScreen() {
   const [helpOpen, setHelpOpen] = React.useState(false);
-
+  const {user} = useContext(UserContext);
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header
@@ -38,7 +40,7 @@ export default function AdminPanelScreen() {
           />
         </Portal>
       )}
-      <AdminFeed></AdminFeed>
+      <AdminFeed user={user}></AdminFeed>
     </View>
   );
 }

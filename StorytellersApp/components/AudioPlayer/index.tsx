@@ -31,7 +31,6 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
         //Should only run once per player. Temporarily loads file to allow me to display duration
         const getDurationFromFile = async () => {
             if (currDuration == null || currDuration === undefined) {
-                console.log("reloading from file");
                 const { sound: newSound } = await Sound.createAsync(
                     { uri: newStory.recording },
                     { shouldPlay: false, isLooping: false },

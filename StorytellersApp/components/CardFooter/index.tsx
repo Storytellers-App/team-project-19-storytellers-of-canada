@@ -23,7 +23,7 @@ import {
     Button,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType, ResponseType } from '../../types';
+import { UserStoryType, ResponseType, UserType } from '../../types';
 import styles from './styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -33,23 +33,17 @@ import { AppContext } from '../../AppContext';
 
 export type UserStoryProps = {
     story: ResponseType,
+    user: UserType | undefined | null,
 }
 let url = HOST
 
 const Footer = (props: UserStoryProps) => {
-    const [user, setUser] = useState<string | null>(null);
+    const {user} = props;
     const [loading, setLoading] = useState(false);
     const [userLike, setUserLike] = useState(props.story.isLiked);
     const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [replyVisible, setReplyVisible] = useState(false);
     const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
-    useEffect(() => {
-        const fetchUser = async () => {
-            const currentUser = await AsyncStorage.getItem("username");
-            setUser(currentUser);
-        }
-        fetchUser();
-    }, [])
 
     const submitLike = async () => {
         try {
@@ -106,7 +100,7 @@ const Footer = (props: UserStoryProps) => {
 
 
     const onLike = async () => {
-        if (user === undefined || user === null || user === "") {
+        if (user === undefined || user === null) {
             Alert.alert("Please login to like a story");
             return;
         }
@@ -140,7 +134,7 @@ const Footer = (props: UserStoryProps) => {
     }
 
     const showDialog = () => {
-        if (user === undefined || user === null || user === "") {
+        if (user === undefined || user === null) {
             Alert.alert("Please login to record a story");
             return;
         }

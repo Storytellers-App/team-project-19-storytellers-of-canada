@@ -29,6 +29,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import userstories from '../data/userstoriestest';
 import ResponseFeed from '../components/ResponseView'
+import { UserContext } from '../UserContext';
 
 
 type StoryDetailsRouteProp = RouteProp<RootStackParamList, 'StoryResponse'>;
@@ -44,6 +45,7 @@ type Props = {
 export default function StoryResponseScreen({ route, navigation }: Props) {
     const ref = React.useRef<ScrollView>(null);
     const story = route.params.header;
+    const {user} = React.useContext(UserContext);
     useScrollToTop(ref);
 
     const colorScheme = useColorScheme();
@@ -55,7 +57,7 @@ export default function StoryResponseScreen({ route, navigation }: Props) {
                 {/* <Appbar.Action icon="magnify"  />
         <Appbar.Action icon="dots-vertical"  /> */}
             </Appbar.Header>
-            <ResponseFeed response={route.params.header}></ResponseFeed>
+            <ResponseFeed response={route.params.header} user={user}></ResponseFeed>
         </View>
     );
 }
