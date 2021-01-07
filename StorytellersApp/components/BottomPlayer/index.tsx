@@ -11,24 +11,22 @@ import { AppContext } from '../../AppContext';
 import TextTicker from 'react-native-text-ticker';
 
 let loading = true;
-let replay = false;
 const BottomPlayer = () => {
   const [sound, setSound] = useState<Sound | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
+  const [ replay, setIsReplay] = useState<boolean>(false);
 
   const {fullStoryType, story, setStory, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete, setIsSeekingComplete, isRadioPlaying } = useContext(AppContext);
 
 
   const onPlaybackStatusUpdate = (status) => {
-    replay = false;
     setSoundPlaying(status.isPlaying);
     setDuration(status.durationMillis);
     setPosition(status.positionMillis);
     if (status.didJustFinish) {
-      replay = true;
-      setIsPlaying(status.isPlaying);
-
+      setIsReplay(true);
+      setIsPlaying(false);
     }
   }
 
@@ -72,6 +70,7 @@ const BottomPlayer = () => {
       return;
     }
     if (replay) {
+      setIsReplay(false);
       await sound.replayAsync();
     }
     else if (soundPlaying) {
