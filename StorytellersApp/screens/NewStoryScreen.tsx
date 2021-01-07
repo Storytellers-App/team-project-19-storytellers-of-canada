@@ -43,7 +43,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     useEffect(() => {
         (async () => {
             if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
                 }
