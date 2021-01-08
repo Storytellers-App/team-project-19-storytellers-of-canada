@@ -163,6 +163,11 @@ export default function ProfileScreen(props) {
                 "Invalid Password Entry",
                 "Please make sure that your new password is the same for both fields."
             )
+        } else if (currentPassword === newPassword){
+            Alert.alert(
+                "Invalid Password Entry",
+                "You cannot choose your new password to be your current one."
+            )
         } else {
             fetch(Config.HOST + `updatePassword`, {
                 method: 'POST',
