@@ -16,10 +16,11 @@ export default class RadioPlayer extends React.Component {
             audioState: 'notLoaded',
             nowPlaying: ''
         };
-        this.updateNowPlaying();
         this.timer = setInterval(()=> this.updateNowPlaying(), 5000);
     }
     async componentDidMount() {
+        this.mounted = true;
+        this.updateNowPlaying();
         // await Audio.setAudioModeAsync({
         //     playsInSilentModeIOS: true,
         //     allowsRecordingIOS: false,
@@ -37,10 +38,14 @@ export default class RadioPlayer extends React.Component {
         });
     }
     componentWillUnmount() {
+        this.mounted = false;
         clearInterval(this.timer);
     }
 
     _onPlaybackStatusUpdate = playbackStatus => {
+        if(!this.mounted){
+            return;
+        }
         if (!playbackStatus.isLoaded) {
             // Not loaded
             if (playbackStatus.error) {
@@ -80,7 +85,7 @@ export default class RadioPlayer extends React.Component {
     }
 
     toggleAudio = async () => {
-        if(loading){
+        if(loading || !this.mounted){
             return;
         }
         if (this.state.audioState === 'notLoaded' || this.state.audioState === 'errorLoading' ||
@@ -126,6 +131,9 @@ export default class RadioPlayer extends React.Component {
     }
 
     updateNowPlaying = async () => {
+        if(!this.mounted){
+            return;
+        }
         fetch("https://public.radio.co/api/v2/s8d7990b82/track/current", {
             headers: new Headers({
                 'pragma': 'no-cache',
