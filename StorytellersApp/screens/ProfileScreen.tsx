@@ -89,6 +89,12 @@ export default function ProfileScreen(props) {
     const [newEmail, setNewEmail] = React.useState("")
     const [confirmEmail, setConfirmEmail] = React.useState("")
 
+    // Validating the email
+    const validateEmail = (email) => {
+        const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regexp.test(email);
+    }
+
     // Updating the email in the backend
     const updateEmail = () => {
         // Checking if the emails are the same
@@ -96,6 +102,11 @@ export default function ProfileScreen(props) {
             Alert.alert(
                 "Invalid Email Entry",
                 "Please make sure that your email is the same for both fields."
+            )        
+        } else if (!validateEmail(newEmail)){
+            Alert.alert(
+                "Invalid Email Entry",
+                "Please make sure the email you enter is a valid email address."
             )
         } else {
             fetch(Config.HOST + `updateEmail?email=${newEmail}`, {
@@ -151,6 +162,11 @@ export default function ProfileScreen(props) {
             Alert.alert(
                 "Invalid Password Entry",
                 "Please make sure that your new password is the same for both fields."
+            )
+        } else if (currentPassword === newPassword){
+            Alert.alert(
+                "Invalid Password Entry",
+                "You cannot choose your new password to be your current one."
             )
         } else {
             fetch(Config.HOST + `updatePassword`, {
