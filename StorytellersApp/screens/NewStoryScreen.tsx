@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
         width: 90,
         height: 90,
         margin: 10,
+        resizeMode: 'contain',
       },
     input: {
         fontSize: 16,
