@@ -174,7 +174,7 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
                 paddingRight: 8,
                 height: 35
             }}>
-                <TouchableOpacity onPress={toggleAudio}>
+                <TouchableOpacity onPress={toggleAudio} hitSlop={{top: 30, bottom: 60, left: 40, right: 10}}>
                     {story != null && story.id === newStory.id.toString() && isPlaying ? <MaterialIcons name="pause" size={30} color="black" />
                         :
                         <Entypo name="controller-play" size={30} color="black" />

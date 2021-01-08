@@ -25,6 +25,21 @@ import { UserContext } from '../UserContext';
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 // { colorScheme }: { colorScheme: ColorSchemeName }, admin : any
 export default function Navigation(props: any) {
+
+  return (
+    <NavigationContainer
+      linking={LinkingConfiguration}
+      theme={DefaultTheme}>
+      <RootNavigator userProp={props.user} />
+    </NavigationContainer>
+  );
+}
+
+// A root stack navigator is often used for displaying modals on top of all other content
+// Read more here: https://reactnavigation.org/docs/modal
+const Stack = createStackNavigator<RootStackParamList>();
+const NavigationDrawer = createDrawerNavigator();
+function BaseNavigation({ navigation, route }) {
   const [story, setStory] = useState<currentStory | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [position, setPosition] = useState<number | null>(null);
@@ -32,7 +47,6 @@ export default function Navigation(props: any) {
   const [isRadioPlaying, setIsRadioPlaying] = useState<boolean>(false);
   const [fullStory, setFullStory] = useState<ResponseType | null>(null);
   return (
-
     <AppContext.Provider value={{
       story: story,
       isPlaying: isPlaying,
@@ -47,51 +61,39 @@ export default function Navigation(props: any) {
       setIsRadioPlaying: (isRadioPlaying: boolean) => setIsRadioPlaying(isRadioPlaying),
       setFullStoryType: (fullStoryType: ResponseType) => setFullStory(fullStoryType)
     }}>
-        <NavigationContainer
-          linking={LinkingConfiguration}
-          theme={DefaultTheme}>
-          <RootNavigator user={props.user} />
-        </NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Root" >
+          {props =>
+            <React.Fragment>
+              <BottomTabNavigator user={route.params.user} />
+              <BottomPlayer></BottomPlayer>
+            </React.Fragment>}
+        </Stack.Screen>
+        <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
+        <Stack.Screen name="NewStory" component={NewStoryScreen} />
+        <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />
+        <Stack.Screen name="NewComment" component={NewCommentScreen} />
+        <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      </Stack.Navigator>
     </AppContext.Provider>
 
   );
 }
+function RootNavigator({ userProp }: { userProp: UserType | undefined }) {
+  const [user, setUser] = useState<UserType | undefined>(userProp);
 
-// A root stack navigator is often used for displaying modals on top of all other content
-// Read more here: https://reactnavigation.org/docs/modal
-const Stack = createStackNavigator<RootStackParamList>();
-const NavigationDrawer = createDrawerNavigator();
-function BaseNavigation({ navigation, route }) {
-  const [user, setUser] = useState<UserType | undefined>(route.params.user);
   return (
-    <UserContext.Provider value= {{
+    <UserContext.Provider value={{
       user: user,
       setUser: (user: UserType | undefined) => setUser(user)
-  }}>
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" >
-        {props =>
-          <React.Fragment>
-            <BottomTabNavigator user={route.params.user} />
-            <BottomPlayer></BottomPlayer>
-          </React.Fragment>}
-      </Stack.Screen>
-      <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
-      <Stack.Screen name="NewStory" component={NewStoryScreen} />
-      <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />
-      <Stack.Screen name="NewComment" component={NewCommentScreen} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-    </Stack.Navigator>
+    }}>
+      <NavigationDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+        <NavigationDrawer.Screen name="Home" component={BaseNavigation} initialParams={{ user: userProp }} />
+        <NavigationDrawer.Screen name="ProfilePage" component={ProfileScreen} />
+        <NavigationDrawer.Screen name="Login" component={LoginScreen} />
+      </NavigationDrawer.Navigator>
     </UserContext.Provider>
-  );
-}
-function RootNavigator({ user }: { user: UserType | undefined }) {
-  return (
-    <NavigationDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-      <NavigationDrawer.Screen name="Home" component={BaseNavigation} initialParams={{ user: user }} />
-      <NavigationDrawer.Screen name="ProfilePage" component={ProfileScreen} />
-      <NavigationDrawer.Screen name="Login" component={LoginScreen} />
-    </NavigationDrawer.Navigator>
+
 
   );
 }
