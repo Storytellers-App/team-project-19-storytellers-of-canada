@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker } from 'react-native';
+import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker, ActivityIndicator } from 'react-native';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RootStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -33,6 +33,8 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     const [author, setAuthor] = useState("");
     const [isStoredStory, setIsStoredStory] = useState(false);
     const [description, setDescription] = useState("");
+    const [isLoadingImage, setIsLoadingImage] = useState(false);
+    const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
     const [tags, setTags] = useState({
         tag: '',
         tagsArray: [],
@@ -43,7 +45,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     useEffect(() => {
         (async () => {
             if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
                 }
@@ -63,23 +65,28 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     }
 
     const onImagePickerPress = async () => {
+        setIsLoadingImage(true);
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        });
-        console.log(result);
+        }).then((result) => {
+            if (!result.cancelled) {
 
-        if (!result.cancelled) {
-            setImage(result.uri);
-            Alert.alert("Your image has been selected!")
-        }
-        else {
-            Alert.alert("Something went wrong, please try again")
-        }
+                setImage(result.uri);
+                Alert.alert("Image has been selected");
+            }
+            else {
+                Alert.alert("Something went wrong, please try again")
+            }
+            setIsLoadingImage(false);
+        });
+        setIsLoadingImage(false);
+
     }
     const handleSubmit = async () => {
         if (recording === null) {
             return;
         }
+        setIsLoadingSubmit(true);
         const formData = new FormData();
         let uri = recording
         formData.append('username', username);
@@ -123,12 +130,16 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         xhr.onreadystatechange = e => {
             console.log('GOT HERE');
             if (xhr.readyState !== 4) {
+                setIsLoadingSubmit(false);
+
                 return;
             }
             if (xhr.status === 200) {
                 navigation.navigate('HomeScreen')
+                setIsLoadingSubmit(false);
                 Alert.alert("Your submission is under review!")
             } else {
+                setIsLoadingSubmit(false);
                 console.log('error', xhr.responseText);
                 Alert.alert("Sorry something went wrong, please try again");
             }
@@ -211,13 +222,29 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 <TouchableHighlight
                     style={styles.submitButton}
                     onPress={handleSubmit}
-                // disabled={title === ""}
+                    disabled={isLoadingSubmit}
+
                 >
                     <Text
                         style={styles.buttonText}>
                         Submit
                     </Text>
                 </TouchableHighlight>
+                <View style={styles.loading}>
+                    {isLoadingImage ? <ActivityIndicator size="large" color={Colors.light.tint} />
+                        : null}
+
+                    {isLoadingImage ? <Text>Processing Image...</Text>
+                        : null}
+
+                    {isLoadingSubmit ? <ActivityIndicator size="large" color={Colors.light.tint} />
+                        : null}
+
+                    {isLoadingSubmit ? <Text>Submitting Your Story...</Text>
+                        : null}
+
+                </View>
+
             </View>
 
         </ScrollView>
@@ -234,6 +261,11 @@ const styles = StyleSheet.create({
         paddingRight: 50,
         marginVertical: 10,
 
+    },
+    loading: {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        marginTop: 15,
     },
     title: {
         textAlignVertical: "center",
