@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker, ActivityIndicator, Image } from 'react-native';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RootStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -206,6 +206,15 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 />
             </View>
             <View>
+                {image !== "" ? <Image
+                    style={styles.tinyLogo}
+                    source={{
+                        uri: image,
+                    }}
+                /> : null}
+                
+            </View>
+            <View>
 
 
                 <TouchableHighlight
@@ -282,6 +291,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
         textDecorationLine: 'underline',
     },
+    tinyLogo: {
+        width: 90,
+        height: 90,
+        margin: 10,
+      },
     input: {
         fontSize: 16,
     },
