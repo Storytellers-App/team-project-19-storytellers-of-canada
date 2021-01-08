@@ -19,9 +19,11 @@ class UpdateEmail(Resource):
         # Updating the user's name
         try:
             user_service = GetUserService()
+            if (user_service.getUserWithEmail(args["email"]) is not None):
+                return jsonify(success=False, exists=True)
             temp_user = user_service.getUserWithAuthToken(authToken)
             temp_user.email=args["email"]
             db.session.commit()
             return jsonify(success=True, email=args["email"])
         except:
-            return jsonify(success=False)
+            return jsonify(success=False, exists=False)
