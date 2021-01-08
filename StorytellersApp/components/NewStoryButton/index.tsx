@@ -24,14 +24,9 @@ const NewStoryButton = ({recording, username, parent, userType, time}:Props) => 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
-        if (time !== null){
-            if (time > 198000)  {
-                Alert.alert('Story can be 3 minutes Maximum')
-            }
-            else{
-                navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
-            }
-        }
+            
+        navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
+            
     }
     return (
         

@@ -230,6 +230,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     if (!this.mounted) {
       return;
     }
+    
     if (status.canRecord) {
       this.setState({
         isRecording: status.isRecording,
@@ -243,6 +244,11 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       if (!this.state.isLoading) {
         this._stopRecordingAndEnablePlayback();
       }
+    }
+    if (status.durationMillis > 192000) {
+      this._stopRecordingAndEnablePlayback();
+      Alert.alert("Recording can be 3 miinutes max")
+      
     }
   };
 
