@@ -134,10 +134,18 @@ export default function ProfileScreen(props) {
                         setEmailModal(false)
                         props.navigation.navigate("ProfilePage")
                     } else {
-                        Alert.alert(
-                            "Email Update Failed.",
-                            "Please Try Again"
-                        )
+                        if (result["exists"]){
+                            Alert.alert(
+                                "Email Update Failed.",
+                                "This email is already registered."
+                            )
+                        } else {
+                            Alert.alert(
+                                "Email Update Failed.",
+                                "Please Try Again"
+                            )
+                        }
+                        
                     }
                 })
                 .catch((error) => {

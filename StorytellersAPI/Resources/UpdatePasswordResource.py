@@ -31,7 +31,9 @@ class UpdatePassword(Resource):
                 # Updating the password
                 password_service = UpdatePasswordService()
                 password_service._updatePassword(temp_user, newPassword)
-                db.session.commit()            
-            return jsonify(success=True)
+                db.session.commit()  
+                return jsonify(success=True)
+            else:
+                return jsonify(success=False)                     
         except Exception as e:
             return jsonify(success=False)
