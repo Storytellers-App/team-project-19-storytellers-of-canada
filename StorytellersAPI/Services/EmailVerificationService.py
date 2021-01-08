@@ -115,6 +115,8 @@ Storytellers of Canada
         if user is None:
             return False
 
+        self._delete_previous_verification_codes(email)
+
         # User is valid, generate the email then send it
         code = randint(100000, 999999)
         email_message = "Hello " + ",\nYou recently requested to reset your password" + """
@@ -130,8 +132,22 @@ Storytellers of Canada
         self.send_email(email, code, email_message)
         return True
 
+    def _delete_previous_verification_codes(self, email: str):
+        """
+        Delete any previous verification codes that exist
+        """
+        try:
+            # Delete anything previous codes if they exist
+            VerificationCode.query.filter_by(email=email).delete()
+            db.session.commit()
+        except Exception as e:
+            print(e)
+
     def send_email(self, reciever, code, email_message):
         try:
+
+            self._delete_previous_verification_codes(reciever)
+
             verification_code = VerificationCode(email=reciever,
                                                  code=str(code),
                                                  attempts=0)
