@@ -61,7 +61,6 @@ export default function ProfileScreen(props) {
                         username: user?.username,
                         name: name,
                         type: user?.type,
-                        image: image["uri"],
                         email: user?.email,
                         authToken: user?.authToken
                     } as UserType;
@@ -125,7 +124,6 @@ export default function ProfileScreen(props) {
                             username: user?.username,
                             name: user?.name,
                             type: user?.type,
-                            image: image["uri"],
                             email: newEmail,
                             authToken: user?.authToken
                         } as UserType;
