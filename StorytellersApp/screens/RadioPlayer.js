@@ -5,7 +5,7 @@ import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { Audio } from 'expo-av';
 import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
-import {AppContext} from '../AppContext';
+import { AppContext } from '../AppContext';
 let loading = false;
 export default class RadioPlayer extends React.Component {
     static contextType = AppContext
@@ -16,7 +16,7 @@ export default class RadioPlayer extends React.Component {
             audioState: 'notLoaded',
             nowPlaying: ''
         };
-        this.timer = setInterval(()=> this.updateNowPlaying(), 5000);
+        this.timer = setInterval(() => this.updateNowPlaying(), 5000);
     }
     async componentDidMount() {
         this.mounted = true;
@@ -43,7 +43,7 @@ export default class RadioPlayer extends React.Component {
     }
 
     _onPlaybackStatusUpdate = playbackStatus => {
-        if(!this.mounted){
+        if (!this.mounted) {
             return;
         }
         if (!playbackStatus.isLoaded) {
@@ -57,7 +57,7 @@ export default class RadioPlayer extends React.Component {
             }
         } else {
             if (playbackStatus.isPlaying) {
-                if(!this.context.isRadioPlaying){
+                if (!this.context.isRadioPlaying) {
                     this.state.sound.stopAsync();
                     this.state.sound = new Audio.Sound();
                     this.context.setIsRadioPlaying(false);
@@ -85,14 +85,14 @@ export default class RadioPlayer extends React.Component {
     }
 
     toggleAudio = async () => {
-        if(loading || !this.mounted){
+        if (loading || !this.mounted) {
             return;
         }
         if (this.state.audioState === 'notLoaded' || this.state.audioState === 'errorLoading' ||
             this.state.audioState === 'audioStopped') {
             loading = true;
-            if(this.state.sound != null){
-               await this.state.sound.unloadAsync();
+            if (this.state.sound != null) {
+                await this.state.sound.unloadAsync();
             }
             this.setState({ audioState: "audioLoading" });
             this.context.setIsRadioPlaying(true);
@@ -103,7 +103,7 @@ export default class RadioPlayer extends React.Component {
                 {
                     shouldPlay: true,
                     isLooping: false
-                },  
+                },
                 // downloadFirst = false // This parameter is needed for stories, otherwise it downloads it all before playing
             );
             loading = false;
@@ -131,7 +131,7 @@ export default class RadioPlayer extends React.Component {
     }
 
     updateNowPlaying = async () => {
-        if(!this.mounted){
+        if (!this.mounted) {
             return;
         }
         fetch("https://public.radio.co/api/v2/s8d7990b82/track/current", {
@@ -142,9 +142,11 @@ export default class RadioPlayer extends React.Component {
         })
             .then(response => response.json())
             .then((responseData) => {
-                this.setState({
-                    nowPlaying: responseData.data.title
-                })
+                if (this.mounted) {
+                    this.setState({
+                        nowPlaying: responseData.data.title
+                    })
+                }
             })
             .catch((error) => {
                 console.error(error);
@@ -154,54 +156,54 @@ export default class RadioPlayer extends React.Component {
     render() {
         return (
 
-          <View style={{ flex: 1 }}>
-            <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display:'flex' }}>
-                <Text style={{fontSize: 20}}>SC-Radio-CC</Text>
-                <Button
-                  style={{marginLeft: "auto"}}
-                  onPress={() => {
-                    this.setState({ helpOpen: !this.state.helpOpen });
-                  }}
-                >
-                  HELP
+            <View style={{ flex: 1 }}>
+                <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display: 'flex' }}>
+                    <Text style={{ fontSize: 20 }}>SC-Radio-CC</Text>
+                    <Button
+                        style={{ marginLeft: "auto" }}
+                        onPress={() => {
+                            this.setState({ helpOpen: !this.state.helpOpen });
+                        }}
+                    >
+                        HELP
                 </Button>
                 </Appbar.Header>
                 {this.state.helpOpen && (
-                  <Portal>
-                    <View style={styles.faded}>
-                      <View style={styles.message}>
-                        <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
-                        <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
-                      </View>
-                    </View>
-                    <TouchableOpacity
-                      style={{ height: "100%" }}
-                      onPress={() => this.setState({ helpOpen: false })}
-                    />
-                  </Portal>
+                    <Portal>
+                        <View style={styles.faded}>
+                            <View style={styles.message}>
+                                <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
+                                <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity
+                            style={{ height: "100%" }}
+                            onPress={() => this.setState({ helpOpen: false })}
+                        />
+                    </Portal>
                 )}
 
-            <View style={styles.container}>
-                <Image
-                    style={styles.logo}
-                    source={require('../assets/images/SCCC_logo.png')}
-                />
-                <Text style={styles.nowPlayingText} numberOfLines={2}>
-                    {this.state.nowPlaying}
-                </Text>
-                <Text style={styles.liveText}>Live</Text>
-                {loading || this.state.audioState === 'audioBuffering' || this.state.audioState === 'audioLoading' ? <ActivityIndicator size="large" color='red' /> : <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                <View style={styles.container}>
                     <Image
-                        style={styles.playButton}
-                        source={
-                            this.state.audioState === 'audioPlaying' ?
-                                require('../assets/images/Stop.png') :
-                                require('../assets/images/Play.png')
-                        }
+                        style={styles.logo}
+                        source={require('../assets/images/SCCC_logo.png')}
                     />
-                </TouchableWithoutFeedback>}
+                    <Text style={styles.nowPlayingText} numberOfLines={2}>
+                        {this.state.nowPlaying}
+                    </Text>
+                    <Text style={styles.liveText}>Live</Text>
+                    {loading || this.state.audioState === 'audioBuffering' || this.state.audioState === 'audioLoading' ? <ActivityIndicator size="large" color='red' /> : <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                        <Image
+                            style={styles.playButton}
+                            source={
+                                this.state.audioState === 'audioPlaying' ?
+                                    require('../assets/images/Stop.png') :
+                                    require('../assets/images/Play.png')
+                            }
+                        />
+                    </TouchableWithoutFeedback>}
+                </View>
             </View>
-          </View>
         );
     }
 }
@@ -238,11 +240,11 @@ const styles = StyleSheet.create({
         color: 'red'
     },
     faded: {
-      backgroundColor: '#00000099',
-      position: 'absolute',
-      zIndex: 0,
-      height: '100%',
-      width: '100%',
+        backgroundColor: '#00000099',
+        position: 'absolute',
+        zIndex: 0,
+        height: '100%',
+        width: '100%',
     },
     message: {
         top: '15%',
@@ -262,5 +264,5 @@ const styles = StyleSheet.create({
         padding: 3,
         fontSize: 16,
     },
-  });
+});
 
