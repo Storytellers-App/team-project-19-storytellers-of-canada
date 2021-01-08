@@ -24,7 +24,12 @@ class EmailVerificationService:
         try:
             code = VerificationCode.query.filter_by(email=emailInput).first()
             valid = code.code == validationTokenInput
-
+            if code.attempts >= 5:
+                # Delete and resend the code
+                VerificationCode.query.filter_by(email=emailInput).delete()
+                db.session.commit()
+                self.validate_new_email(emailInput, "")
+                return False
             if valid:
                 # Delete the code
                 try:
@@ -35,6 +40,8 @@ class EmailVerificationService:
                     print(e)
                     return False
             else:
+                code.attempts = code.attempts + 1
+                db.session.commit()
                 return False
 
         except Exception as e:
@@ -96,7 +103,6 @@ Thanks,
 
 Storytellers of Canada
 """
-        print("Validation code is" + str(code))
         self.send_email(email, code, email_message)
 
     def send_password_reset_email(self, email):
@@ -127,7 +133,8 @@ Storytellers of Canada
     def send_email(self, reciever, code, email_message):
         try:
             verification_code = VerificationCode(email=reciever,
-                                                 code=str(code))
+                                                 code=str(code),
+                                                 attempts=0)
             db.session.add(verification_code)
             db.session.commit()
 
