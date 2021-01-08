@@ -30,15 +30,25 @@ type Props = {
     response: ResponseType;
     user: UserType | null | undefined;
 }
+type State = {
+    responses: ResponseType[],
+    page: number,
+    loading: boolean,
+    sessionStart: string
+};
 
-export default class ResponseFeed extends Component<Props> {
-
-    state = {
-        responses: [] as StoryType[],
-        page: 1,
-        user: null,
-        loading: true,
-        sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+export default class ResponseFeed extends Component<Props, State> {
+    private cancelTokenSource: any;
+    private user: UserType | null | undefined;
+    constructor(props: Props) {
+        super(props);
+        this.user = props.user;
+        this.state = {
+            responses: [] as ResponseType[],
+            page: 1,
+            loading: true,
+            sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+        };
     };
 
 
@@ -104,12 +114,12 @@ export default class ResponseFeed extends Component<Props> {
     }
 
 
-
+    
     fetchStories = async () => {
         const { page } = this.state;
         const { responses } = this.state;
         const { sessionStart } = this.state;
-        const { user } = this.state;
+        const username = this.user === null || this.user === undefined ? undefined : this.props.user?.username;
         this.setState({
             loading: true
         });
@@ -120,10 +130,11 @@ export default class ResponseFeed extends Component<Props> {
             // let story_arr = userstories as UserStoryType[];
 
             axios.get(url + 'stories/responses', {
+                cancelToken: this.cancelTokenSource.token,
                 params: {
                     id: this.props.response.id,
                     time: sessionStart,
-                    username: user,
+                    username: username,
                     type: this.props.response.type,
                     page: page
                 }
@@ -139,7 +150,12 @@ export default class ResponseFeed extends Component<Props> {
                     );
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (axios.isCancel(error)){
+                        return;
+                    }
+                    else{
+                        console.error(error);
+                    }
                 });
         } catch (e) {
 
@@ -170,7 +186,7 @@ export default class ResponseFeed extends Component<Props> {
         this.setState(
             {
                 page: 1,
-                stories: [],
+                responses: [],
                 sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
             }
             ,
@@ -180,16 +196,15 @@ export default class ResponseFeed extends Component<Props> {
         );
     };
 
-    getUserandFetch = async () => {
-        const currentUser = await AsyncStorage.getItem("username");
-        this.setState({ user: currentUser },
-            () => { this.fetchStories() })
-    };
 
     componentDidMount() {
-        this.getUserandFetch()
+        this.cancelTokenSource = axios.CancelToken.source();
+        this.fetchStories();
     };
 
+    componentWillUnmount(){
+        this.cancelTokenSource.cancel();
+    }
     render() {
         const { responses } = this.state;
         return (

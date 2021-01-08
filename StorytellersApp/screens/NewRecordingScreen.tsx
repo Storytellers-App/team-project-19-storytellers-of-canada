@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Alert } from 'react-native';
 import { Text, View } from 'react-native';
 import { EvilIcons, AntDesign } from "@expo/vector-icons"
 import Colors from '../constants/Colors';
@@ -26,6 +26,8 @@ import * as Permissions from "expo-permissions";
 import * as Icons from "../components/Icons";
 import { yellow100 } from 'react-native-paper/lib/typescript/src/styles/colors';
 import NewStoryButton from '../components/NewStoryButton';
+import UploadStoryButton from '../components/UploadStoryButton';
+
 import NewRecordingButton from '../components/NewRecordingButton';
 import { ResponseType as ResponseStory, RootStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -86,6 +88,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
   private shouldPlayAtEndOfSeek: boolean;
   private readonly recordingSettings: Audio.RecordingOptions;
   private username: string;
+  private userType: string;
   private mounted: boolean | null;
   private parentStory: ResponseStory | undefined;
   constructor(props: Props) {
@@ -96,6 +99,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     this.isSeeking = false;
     this.shouldPlayAtEndOfSeek = false;
     this.username = props.route.params.username;
+    this.userType = props.route.params.userType;
+
     this.parentStory = props.route.params.parent;
     this.state = {
       haveRecordingPermissions: false,
@@ -225,6 +230,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     if (!this.mounted) {
       return;
     }
+    
     if (status.canRecord) {
       this.setState({
         isRecording: status.isRecording,
@@ -238,6 +244,11 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       if (!this.state.isLoading) {
         this._stopRecordingAndEnablePlayback();
       }
+    }
+    if (status.durationMillis > 192000) {
+      this._stopRecordingAndEnablePlayback();
+      Alert.alert("Recording can be 3 miinutes max")
+      
     }
   };
 
@@ -501,6 +512,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
           ]}
         >
           <View />
+          
+         
           <View style={styles.playbackContainer}>
             <Slider
               style={styles.playbackSlider}
@@ -589,10 +602,10 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                     style={styles.text}>
                         Next
                     </Text>
-                </TouchableHighlight> */}
-            <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} />
-          </View>
-
+                </TouchableHighlight> */}  
+                 
+                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType} time={this.state.recordingDuration}/>             
+            </View>
 
           {/* <View
               style={[
@@ -618,11 +631,10 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                 <Text style={[]}>
                   PC: {this.state.shouldCorrectPitch ? "yes" : "no"}
                 </Text>
-              </TouchableHighlight>
-            </View> */}
+              </TouchableHighlight>*/}
+            </View> 
           <View />
-        </View>
-
+       
         <View
           style={[
             styles.halfScreenContainerBottom,
@@ -640,7 +652,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                   styles.recordingTimestamp,
                 ]}
               >
-                {this._getRecordingTimestamp()}
+                {this._getRecordingTimestamp() === "00:00"? '3 Minutes Maximum' : this._getRecordingTimestamp()}
               </Text>
             </View>
             <View style={styles.recordButton}>
@@ -655,20 +667,33 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
 
               </TouchableHighlight>
             </View>
-          </View>
-          {/* <Text
+        
+
+
+
+              {/* <Text
                   style={[styles.liveText, ]}
                 >
                   {this.state.isRecording ? "Stop" : "Record"}
                 </Text> */}
           {/* <View style={styles.recordingDataContainer}> */}
           <View />
+
           {/* </View> */}
           <View />
+
+          
           {/* </View> */}
           <View />
+
         </View>
+        <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType}/>             
+
       </View>
+
+      </View>
+
+      
     );
   }
 }
@@ -681,6 +706,7 @@ const styles = StyleSheet.create({
   bottom: {
     flexDirection: 'column',
     alignItems: 'center',
+    flex: 1,
   },
   container: {
     flex: 1,
@@ -709,7 +735,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "stretch",
     //marginBottom: 50,
-    paddingBottom: 100,
+    paddingBottom: 50,
+    
 
   },
   recordingContainer: {
@@ -723,7 +750,7 @@ const styles = StyleSheet.create({
   },
   recordButton: {
     flexDirection: 'row',
-    flex: 1,
+    flex: 3,
     marginTop: 10,
 
   },
