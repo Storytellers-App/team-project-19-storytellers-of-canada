@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Alert } from 'react-native';
 import { Text, View } from 'react-native';
 import { EvilIcons, AntDesign } from "@expo/vector-icons"
 import Colors from '../constants/Colors';
@@ -506,6 +506,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
           ]}
         >
           <View />
+          
+         
           <View style={styles.playbackContainer}>
             <Slider
               style={styles.playbackSlider}
@@ -594,8 +596,9 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                     style={styles.text}>
                         Next
                     </Text>
-                </TouchableHighlight> */}   
-                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType}/>             
+                </TouchableHighlight> */}  
+                 
+                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType} time={this.state.recordingDuration}/>             
             </View>
 
           {/* <View
@@ -643,7 +646,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                   styles.recordingTimestamp,
                 ]}
               >
-                {this._getRecordingTimestamp()}
+                {this._getRecordingTimestamp() === "00:00"? '3 Minutes Maximum' : this._getRecordingTimestamp()}
               </Text>
             </View>
             <View style={styles.recordButton}>
@@ -697,6 +700,7 @@ const styles = StyleSheet.create({
   bottom: {
     flexDirection: 'column',
     alignItems: 'center',
+    flex: 1,
   },
   container: {
     flex: 1,
@@ -725,7 +729,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "stretch",
     //marginBottom: 50,
-    paddingBottom: 100,
+    paddingBottom: 50,
+    
 
   },
   recordingContainer: {
@@ -739,7 +744,7 @@ const styles = StyleSheet.create({
   },
   recordButton: {
     flexDirection: 'row',
-    flex: 1,
+    flex: 3,
     marginTop: 10,
 
   },

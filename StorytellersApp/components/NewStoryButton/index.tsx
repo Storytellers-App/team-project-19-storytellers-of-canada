@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, TouchableHighlight } from 'react-native'
+import { TouchableOpacity, TouchableHighlight, Alert } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {StyleSheet} from 'react-native';
 import Colors from '../../constants/Colors';
@@ -16,14 +16,22 @@ export type Props = {
     username: string;
     userType: string;
     parent?: ResponseType;
+    time: number | null;
 };
 
-const NewStoryButton = ({recording, username, parent, userType}:Props) => {
+const NewStoryButton = ({recording, username, parent, userType, time}:Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
-        navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
+        if (time !== null){
+            if (time > 198000)  {
+                Alert.alert('Story can be 3 minutes Maximum')
+            }
+            else{
+                navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
+            }
+        }
     }
     return (
         

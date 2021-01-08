@@ -24,7 +24,7 @@ const UploadStoryButton = ({recording, username, parent, userType}:Props) => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
-        await DocumentPicker.getDocumentAsync().then(resp => {
+        await DocumentPicker.getDocumentAsync({type: 'audio/*'}).then(resp => {
             if (resp.type === 'success'){
                 console.log("Success")
                 recording = resp.uri
@@ -43,7 +43,7 @@ const UploadStoryButton = ({recording, username, parent, userType}:Props) => {
                 >
                     <Text 
                     style={styles.text}>
-                        Click here to upload an mp3 from your device
+                        Upload an mp3 audio file from your device
                     </Text>
                 </TouchableHighlight> 
             
@@ -56,14 +56,16 @@ export default UploadStoryButton;
 const styles = StyleSheet.create({
 
 button: {
-
+    backgroundColor: Colors.light.tint,
+        borderRadius: 30,
+        alignItems: 'center',
 },
 text: {
-    paddingHorizontal: 20, 
-    paddingVertical: 10, 
-    color: Colors.light.tint,
-    fontSize: 15,
-    textDecorationLine: 'underline',
+    paddingHorizontal: 20,
+        paddingVertical: 10,
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 15,
 },
 
 });
