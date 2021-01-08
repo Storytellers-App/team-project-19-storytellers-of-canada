@@ -32,6 +32,7 @@ userstory_fields = {
     "title": fields.String,
     "description": fields.String,
     "recording": fields.String,
+    'image': fields.String,
     "parent": fields.Integer,
     "numLikes": fields.Integer,
     "numReplies": fields.Integer,
@@ -217,7 +218,7 @@ class Stories(Resource):
                     Story.type,
                     Story.approvedTime,
                 ).join(matched_tags, Story.id == matched_tags.c.storyid)
-                query = matched_stories.union(joined)
+                query = matched_stories.union(joined).order_by(Story.creationTime.desc(), Story.id.desc())
                 pass
 
             stories = query.paginate(
