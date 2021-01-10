@@ -20,6 +20,7 @@ from Resources.StoryUploadResource import StoryUpload
 from Resources.EmailVerificationWithUsername import EmailVerificationWithUsername
 from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
 from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
+from Resources.GDPRResource import GDPRResource
 
 # test database
 from Resources.TestResource import TestDB
@@ -52,6 +53,7 @@ api.add_resource(EmailVerification, '/emailVerification')
 api.add_resource(EmailVerificationWithUsername, '/emailVerification/noUsername')
 api.add_resource(SendForgotPasswordEmailResource, '/sendForgotPasswordEmail')
 api.add_resource(ResetForgotPasswordResource, '/resetForgotPassword')
+api.add_resource(GDPRResource, '/gdpr')
 # DELETE /story_delete?key&bucket
 api.add_resource(StoryDelete, '/story_delete')
 
