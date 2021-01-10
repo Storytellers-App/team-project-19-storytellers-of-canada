@@ -32,10 +32,10 @@ class GDPRResource(Resource):
 
             # make backend send all stuff to email
             self.service.send_gdpr_email(user, args.email)
-        except:
+        except Exception as e:
             return abort(
                 400,
-                description="Invalid request. Please check the form fields and try again.",
+                description="Error: {}".format(e),
             )
 
         return Response(status=201)
