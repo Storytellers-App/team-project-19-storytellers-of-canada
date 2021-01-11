@@ -86,6 +86,9 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         if (recording === null) {
             return;
         }
+        if (isLoadingSubmit){
+            return;
+        }
         setIsLoadingSubmit(true);
         const formData = new FormData();
         let uri = recording
@@ -118,12 +121,13 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             name: uri,
             type: 'audio/mpeg'
         });
-
-        formData.append('image', {
-            uri: image,
-            name: image,
-            type: 'image/*'
-        });
+        if (image !== "") {
+            formData.append('image', {
+                uri: image,
+                name: image,
+                type: 'image/*'
+            });
+        }
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', host + 'stories');
         xhr.send(formData);
@@ -156,7 +160,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             <View>
                 {userType === 'ADMIN' ?
                     <View>
-                        <Text style={styles.input}>Is this a Story for the Story Save Collection?</Text>
+                        <Text style={styles.input}>{' Is this a Story for the Story Save \n Collection?'}</Text>
                         <Picker
                             selectedValue={isStoredStory}
                             style={{ height: 50, width: 100 }}
@@ -215,6 +219,20 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 
             </View>
             <View>
+                <View style={styles.loading}>
+                    {isLoadingImage ? <ActivityIndicator size="large" color={Colors.light.tint} />
+                        : null}
+
+                    {isLoadingImage ? <Text>{'\t \t \t Processing Image...'}</Text>
+                        : null}
+
+                    {isLoadingSubmit ? <ActivityIndicator size="large" color={Colors.light.tint} />
+                        : null}
+
+                    {isLoadingSubmit ? <Text>{'\t \t \t Submitting Your Story...'}</Text>
+                        : null}
+
+                </View>
 
 
                 <TouchableHighlight
@@ -239,20 +257,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                         Submit
                     </Text>
                 </TouchableHighlight>
-                <View style={styles.loading}>
-                    {isLoadingImage ? <ActivityIndicator size="large" color={Colors.light.tint} />
-                        : null}
-
-                    {isLoadingImage ? <Text>Processing Image...</Text>
-                        : null}
-
-                    {isLoadingSubmit ? <ActivityIndicator size="large" color={Colors.light.tint} />
-                        : null}
-
-                    {isLoadingSubmit ? <Text>Submitting Your Story...</Text>
-                        : null}
-
-                </View>
+                
 
             </View>
 
@@ -274,7 +279,7 @@ const styles = StyleSheet.create({
     loading: {
         flexDirection: 'column',
         justifyContent: 'space-between',
-        marginTop: 15,
+        marginVertical: 15,
     },
     title: {
         textAlignVertical: "center",
@@ -292,9 +297,9 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     tinyLogo: {
-        width: 90,
-        height: 90,
-        margin: 10,
+        width: 150,
+        height: 150,
+        marginVertical: 10,
         resizeMode: 'contain',
       },
     input: {
