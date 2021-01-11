@@ -57,7 +57,7 @@ const submitRequest = async (username, password, email) => {
     });
 
     if (res.ok) {
-        return await res.json();
+        return res.status;
     }
 
     throw new Error(await res.text());
