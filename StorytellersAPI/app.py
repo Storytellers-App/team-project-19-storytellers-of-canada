@@ -23,6 +23,7 @@ from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
 from Resources.UpdateNameResource import UpdateName
 from Resources.UpdateEmailResource import UpdateEmail
 from Resources.UpdatePasswordResource import UpdatePassword
+from Resources.PromoteUserResource import PromoteUser
 from Resources.DeactivateResource import Deactivate
 
 # test database
@@ -53,7 +54,8 @@ api.add_resource(RemoveLikes, '/stories/removelike')
 api.add_resource(Admin, '/admin')
 api.add_resource(CommentRes, '/comment')
 api.add_resource(EmailVerification, '/emailVerification')
-api.add_resource(EmailVerificationWithUsername, '/emailVerification/noUsername')
+api.add_resource(EmailVerificationWithUsername,
+                 '/emailVerification/noUsername')
 api.add_resource(SendForgotPasswordEmailResource, '/sendForgotPasswordEmail')
 api.add_resource(ResetForgotPasswordResource, '/resetForgotPassword')
 # DELETE /story_delete?key&bucket
@@ -73,6 +75,9 @@ api.add_resource(StoryFetch, '/story_fetch')
 api.add_resource(UpdateName, '/updateName')
 api.add_resource(UpdateEmail, '/updateEmail')
 api.add_resource(UpdatePassword, '/updatePassword')
+
+# Promote user to Admin
+api.add_resource(PromoteUser, '/promoteUser')
 
 # POST /deactivate
 api.add_resource(Deactivate, '/deactivate')
