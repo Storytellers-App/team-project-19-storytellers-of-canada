@@ -34,15 +34,15 @@ class GDPRService:
         message = "User: \n"
         message = message + json.dumps(object_as_dict(user), indent=2) + "\n"
 
-        message = message + "Stories: \n"
+        message = message + "\n\nStories: \n"
         for story in db.session.query(Story).filter_by(username=user.username):
             message = message + json.dumps(object_as_dict(story), indent=2) + "\n"
 
-        message = message + "Likes: \n"
+        message = message + "\n\nLikes: \n"
         for like in db.session.query(Like).filter_by(username=user.username):
             message = message + json.dumps(object_as_dict(like), indent=2) + "\n"
 
-        message = message + "Comments: \n"
+        message = message + "\n\nComments: \n"
         for comment in db.session.query(Comment).filter_by(username=user.username):
             message = message + json.dumps(object_as_dict(comment), indent=2) + "\n"
 
