@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const submitRequest = async (username, password, email) => {
-    const res = await fetch("http://radioapp.storytellers-conteurs.ca/gdpr", {
+    const res = await fetch("https://radioapp.storytellers-conteurs.ca/gdpr", {
         method: "POST",
         body: JSON.stringify({username, password, email}),
         headers: {
@@ -69,9 +69,9 @@ export default function SignUp() {
 
     const submitForm = async (event) => {
         event.preventDefault();
-        console.log(event.target[0].value);
-        console.log(event.target[2].value);
-        console.log(event.target[4].value);
+        // console.log(event.target[0].value);
+        // console.log(event.target[2].value);
+        // console.log(event.target[4].value);
         submitRequest(event.target[0].value, event.target[2].value, event.target[4].value)
             .then((_) => {
                 addToast(`Successfully submitted request.`, {
@@ -110,6 +110,7 @@ export default function SignUp() {
                                 id="password"
                                 label="Password"
                                 name="password"
+                                type="password"
                                 autoComplete="current-password"
                             />
                         </Grid>
