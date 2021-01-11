@@ -37,11 +37,17 @@ export default function NewCommentScreen({ route, navigation }: Props) {
   const [comment, setComment] = useState("");
   const parent = route.params.parent;
   const user = route.params.user;
+  const [isLoading, setIsLoading] = useState(false);
 
   const onPostComment = async () => {
+    if (isLoading) {
+      return;
+    }
     if (parent === undefined || comment === "" || user === undefined) {
       return;
     }
+
+    setIsLoading(true);
     try {
       axios({
         method: 'post', url: url + 'comment', data: {
@@ -52,14 +58,20 @@ export default function NewCommentScreen({ route, navigation }: Props) {
         }
       })
         .then(response => {
+          setIsLoading(false);
+
           Alert.alert("Your submission is under review!")
           navigation.goBack();
         })
         .catch((error) => {
           console.error(error);
+          setIsLoading(false);
+          Alert.alert("Sorry something went wrong, please try again.");
         });
     } catch (e) {
       console.log(e);
+      setIsLoading(false);
+      Alert.alert("Sorry something went wrong, please try again.");
     }
 
 
