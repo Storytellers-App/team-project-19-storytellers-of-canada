@@ -181,7 +181,7 @@ export default class LoginScreen extends Component {
                 {/* Option to enter the app as a guest */}
                 <View style={styles.guestButtonText}>
                     <Text style={styles.text}>Don't want an account?</Text>
-                    <TouchableOpacity onPress={this.goToHome}>
+                    <TouchableOpacity onPress={() => {this.goToHome()}}>
                         <Text style={styles.buttonText}> Login as a Guest</Text>
                     </TouchableOpacity>
                 </View>
