@@ -124,12 +124,12 @@ const Footer = (props: UserStoryProps) => {
         setReplyVisible(false);
         setIsPlaying(false);
         setIsRadioPlaying(false);
-        navigation.navigate("NewRecording", { parent: props.story, username: user });
+        navigation.navigate("NewRecording", { parent: props.story, username: user?.username });
     }
 
     const commentReply = () => {
         setReplyVisible(false);
-        navigation.navigate("NewComment", { parent: props.story, user: user })
+        navigation.navigate("NewComment", { parent: props.story, user: user?.username })
     }
 
     const hideDialog = () => {
