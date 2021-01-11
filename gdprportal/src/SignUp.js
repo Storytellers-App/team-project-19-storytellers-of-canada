@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const submitRequest = async (username, password, email) => {
-    const res = await fetch("/gdpr", {
+    const res = await fetch("http://radioapp.storytellers-conteurs.ca/gdpr", {
         method: "POST",
         body: JSON.stringify({username, password, email}),
         headers: {
