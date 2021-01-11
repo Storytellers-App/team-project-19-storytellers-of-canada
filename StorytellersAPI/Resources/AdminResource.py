@@ -99,8 +99,10 @@ class Admin(Resource):
                                                 Story.approvedTime.label(
                                                     'approvedTime'),
                                                 sqlalchemy.sql.null().label(
-                                                    'comment')
+                                                    'comment'),
+                                                Story.deleted.label('deleted'),
                                                 )
+
             comments = Comment.query.with_entities(Comment.id.label('id'),
                                                    Comment.username.label(
                                                        'username'),
@@ -130,7 +132,10 @@ class Admin(Resource):
                                                    Comment.approvedTime.label(
                                                        'approvedTime'),
                                                    Comment.comment.label(
-                                                       'comment'))
+                                                       'comment'),
+                                                   Comment.deleted.label(
+                                                       'deleted'),
+                                                   )
 
             both = stories.union(comments).subquery()
 
@@ -153,7 +158,8 @@ class Admin(Resource):
                 User, User.username == both.c.username).order_by(
                 both.c.creationTime.desc(), both.c.id.desc()).filter(
                 both.c.approved.is_(False)).filter(
-                both.c.creationTime < time).paginate(
+                both.c.creationTime < time).filter(
+                both.c.deleted.is_(False)).paginate(
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for response in responses:

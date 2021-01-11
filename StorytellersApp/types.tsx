@@ -63,6 +63,7 @@ export type StorySaveType = {
   type: string,
   image?: string,
   isLiked?: boolean,
+  user: UserType,
 }
 
 export type UserStoryType = {
