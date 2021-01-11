@@ -1,4 +1,6 @@
 from flask_restful import Resource, reqparse, abort, fields, marshal_with, marshal
+from sqlalchemy import inspect
+
 from extensions import db
 from models import VerificationCode, User
 from sqlalchemy.exc import *
@@ -15,22 +17,27 @@ from extensions import db
 from models import Story, Like, Comment
 
 
+def object_as_dict(obj):
+    return {c.key: getattr(obj, c.key)
+            for c in inspect(obj).mapper.column_attrs}
+
+
 class GDPRService:
     def get_user_data(self, user):
         message = "User: \n"
-        message = message + json.dumps(user.__dict__, indent=2) + "\n"
+        message = message + json.dumps(object_as_dict(user), indent=2) + "\n"
 
         message = message + "Stories: \n"
         for story in db.session.query(Story).filter_by(username=user.username):
-            message = message + json.dumps(story.__dict__, indent=2) + "\n"
+            message = message + json.dumps(object_as_dict(story), indent=2) + "\n"
 
         message = message + "Likes: \n"
         for like in db.session.query(Like).filter_by(username=user.username):
-            message = message + json.dumps(like.__dict__, indent=2) + "\n"
+            message = message + json.dumps(object_as_dict(like), indent=2) + "\n"
 
         message = message + "Comments: \n"
         for comment in db.session.query(Comment).filter_by(username=user.username):
-            message = message + json.dumps(comment.__dict__, indent=2) + "\n"
+            message = message + json.dumps(object_as_dict(comment), indent=2) + "\n"
 
         return message
 
