@@ -15,11 +15,18 @@ from Services.instance.config import *
 import json
 from extensions import db
 from models import Story, Like, Comment
+from datetime import datetime
 
 
 def object_as_dict(obj):
-    return {c.key: getattr(obj, c.key)
-            for c in inspect(obj).mapper.column_attrs}
+    obj_dict = {}
+    for c in inspect(obj).mapper.column_attrs:
+        attribute = getattr(obj, c.key)
+        if isinstance(attribute, datetime):
+            attribute = attribute.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+        obj_dict[c.key] = attribute
+
+    return obj_dict
 
 
 class GDPRService:
