@@ -6,7 +6,7 @@ function App() {
   return (
       <ToastProvider
           autoDismiss={true}
-          autoDismissTimeout={2000}
+          autoDismissTimeout={10000}
           placement="bottom-center"
       >
         <SignUp />
