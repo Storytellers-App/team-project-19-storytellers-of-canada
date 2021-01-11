@@ -30,7 +30,7 @@ export function DrawerContent(props) {
         await AsyncStorage.setItem("email", "")
         await AsyncStorage.setItem("authToken", "")
         await AsyncStorage.setItem("type", "")
-        let newUser = {username: "", authToken: "", name: "", email: "", type: ""}
+        let newUser = undefined;
         setUser(newUser)
         props.navigation.dispatch(
             CommonActions.reset({

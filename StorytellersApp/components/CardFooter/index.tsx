@@ -21,6 +21,7 @@ import {
     Dialog,
     Portal,
     Button,
+    Paragraph,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { UserStoryType, ResponseType, UserType } from '../../types';
@@ -43,6 +44,8 @@ const Footer = (props: UserStoryProps) => {
     const [userLike, setUserLike] = useState(props.story.isLiked);
     const [likesCount, setLikesCount] = useState(props.story.numLikes);
     const [replyVisible, setReplyVisible] = useState(false);
+    const [deleteVisible, setDeleteVisible] = useState(false);
+    const [deleted, setDeleted] = useState(false);
     const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
 
     const submitLike = async () => {
@@ -134,15 +137,67 @@ const Footer = (props: UserStoryProps) => {
     }
 
     const showDialog = () => {
-        if (user === undefined || user === null) {
+        if (user === undefined || user === null || user.username === "") {
             Alert.alert("Please login to record a story");
             return;
         }
         setReplyVisible(true);
     }
 
+    const showConfirmDelete = () => {
+        if (user === undefined || user === null) {
+            return;
+        }
+        setDeleteVisible(true);
+    }
+
+    const hideConfirmDelete = () => {
+        setDeleteVisible(false);
+    }
+
+    const onDelete = async () => {
+        if(loading){
+            return;
+        }
+        let path = "stories"
+        if(props.story.type === 'comment'){
+            path = 'comment'
+        }
+        try {
+            setLoading(true);
+            setDeleted(true);
+            hideConfirmDelete();
+            axios({
+                method: 'delete', url: url + path, data: {
+                    id: props.story.id,
+                    auth_token: user?.authToken,
+                }
+            })
+                .then(response => {
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    setLoading(false);
+                });
+        } catch (e) {
+            console.log(e);
+            setLoading(false);
+        }
+}
+    if(deleted){
+      return (
+        <View style={{  flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+             justifyContent: "space-around",}}>
+        <IconButton size={16} icon="delete-forever-outline" />
+        </View>
+      );
+    }
 
     return (
+        
         <View style={styles.iconcontainer}>
             <View style={styles.icon}>
                 <IconButton size={16} icon={!userLike ? "heart-outline" : "heart"} onPress={onLike} color={!userLike ? 'grey' : 'red'} />
@@ -180,9 +235,20 @@ const Footer = (props: UserStoryProps) => {
                         </View>
                     </Dialog.Content>
                 </Dialog>
+                <Dialog visible={deleteVisible} onDismiss={hideConfirmDelete} style={{ backgroundColor: 'white' }}>
+                <Dialog.Content>
+                    <Paragraph >Are you sure that you want to delete this story?</Paragraph>
+                </Dialog.Content>
+                <Dialog.Actions>
+            <Button onPress={hideConfirmDelete}>Cancel</Button>
+            <Button style={{marginHorizontal: 15}}onPress={onDelete}>Yes</Button>
+          </Dialog.Actions>
+        
+                </Dialog>
             </Portal>
-            {/* <IconButton style={styles.icon} size={16} icon="share-outline" /> */}
-
+            {(user?.type === 'ADMIN' ||  (props.story.user != null && props.story.user != undefined && props.story.user.username === user?.username)) && <View style={styles.icon}>
+           <IconButton size={17} icon="delete-outline" onPress={showConfirmDelete}/>
+            </View>}
         </View>
     );
 };

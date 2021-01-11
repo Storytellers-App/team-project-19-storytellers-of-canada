@@ -15,8 +15,9 @@ from models import Story, User, Tag, Comment, Like
 from sqlalchemy.exc import *
 from sqlalchemy import func, union_all
 from datetime import datetime
-from common.Enums import StoryType
+from common.Enums import StoryType, UserType
 import werkzeug.datastructures
+
 from Services.S3StoryService import *
 import sys
 
@@ -133,10 +134,14 @@ class Stories(Resource):
     def delete(self):
         story_args = reqparse.RequestParser()
         story_args.add_argument(
-            "story_id", type=str, required=True, help="ID of story not specified!"
+            "id", type=str, required=True, help="ID of story not specified!"
+        )
+        story_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
         )
         args = story_args.parse_args()
-        ret = self.s3_service.delete_story(args.story_id)
+        ret = self.s3_service.delete_story(args.id, args.auth_token)
         if not ret:
             return abort(500, description="Error in add_story in S3StoriesResource.")
         else:
@@ -185,7 +190,7 @@ class Stories(Resource):
                 .filter(Story.type == story_args["type"])
                 .filter(Story.parent.is_(None))
                 .filter(Story.approved.is_(True))
-                .filter(Story.approvedTime < time)
+                .filter(Story.approvedTime < time).filter(Story.deleted.is_(False))
             )
 
             if story_args["filter"] is not None:
@@ -303,6 +308,7 @@ class Responses(Resource):
                 Story.numLikes.label("numLikes"),
                 Story.numReplies.label("numReplies"),
                 Story.approvedTime.label("approvedTime"),
+                Story.deleted.label("deleted"),
                 sqlalchemy.sql.null().label("comment"),
             )
             comments = Comment.query.with_entities(
@@ -321,6 +327,7 @@ class Responses(Resource):
                 Comment.numLikes.label("numLikes"),
                 Comment.numReplies.label("numReplies"),
                 Comment.approvedTime.label("approvedTime"),
+                Comment.deleted.label("deleted"),
                 Comment.comment.label("comment"),
             )
 
@@ -351,7 +358,7 @@ class Responses(Resource):
                 .filter(both.c.approved.is_(True))
                 .filter(both.c.approvedTime < time)
                 .filter(both.c.parentType == args["type"])
-                .filter(both.c.parent == args["id"])
+                .filter(both.c.parent == args["id"]).filter(both.c.deleted.is_(False))
                 .paginate(args["page"], args["per_page"], False)
                 .items
             )
