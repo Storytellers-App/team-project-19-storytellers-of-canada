@@ -1,14 +1,12 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, FlatList, Image, Text } from 'react-native';
-import styles from "./styles";
-import SavedStory from './SavedStory';
-import { UserStoryType, StorySaveType, UserType } from "../types";
 import axios from 'axios';
 import moment from 'moment';
-import AsyncStorage from '@react-native-community/async-storage';
+import React, { Component } from 'react';
+import { FlatList, Image, Text, View } from 'react-native';
+import * as Config from '../../config';
+import { StorySaveType, UserType } from "../../types";
+import SavedStory from '../SavedStory';
+import styles from "./styles";
 
-import * as Config from '../config';
-import { Header } from 'react-native/Libraries/NewAppScreen';
 
 let url = Config.HOST
 type Props = {

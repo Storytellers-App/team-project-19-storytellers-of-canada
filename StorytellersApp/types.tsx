@@ -1,19 +1,16 @@
 
-import { Audio } from "expo-av";
-import { UserStoryProps } from "./components/UserStory";
-
 export type RootStackParamList = {
   Root: undefined;
   StoryResponse: {
     header: ResponseType;
   };
-  NewComment : {
+  NewComment: {
     parent?: ResponseType,
     user: string, //Ideally I want the whole user. Will change to pass this around screens directly from login
   };
   NotFound: undefined;
-  NewRecording: {parent?: ResponseType, username: string, userType: string};
-  NewStory: {recording: string | null, 'username': string, parent?: ResponseType, userType: string};
+  NewRecording: { parent?: ResponseType, username: string, userType: string };
+  NewStory: { recording: string | null, 'username': string, parent?: ResponseType, userType: string };
 };
 
 
@@ -33,7 +30,7 @@ export type TabTwoParamList = {
 };
 
 export type AdminPanelParamList = {
-    AdminPanelScreen: undefined;
+  AdminPanelScreen: undefined;
 };
 
 export type RadioPlayerParamList = {
@@ -103,11 +100,11 @@ export type StoryType = UserStoryType | StorySaveType;
 export type ResponseType = StoryType | CommentType;
 
 export type currentStory = {
-  id: string | null, 
+  id: string | null,
   recording: string | null,
-  title: string | null, 
+  title: string | null,
   image?: string | null,
-  creator: string | null, 
+  creator: string | null,
   isLiked?: boolean,
 }
 

@@ -1,14 +1,12 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, FlatList } from 'react-native';
-
-import userstories from '../../data/userstoriestest';
-import UserStory from '../UserStory';
-import { UserStoryType, UserType } from "../../types";
 import axios from 'axios';
 import moment from 'moment';
-import AsyncStorage from '@react-native-community/async-storage';
-
+import React, { Component } from 'react';
+import { FlatList } from 'react-native';
 import * as Config from '../../config';
+import { UserStoryType, UserType } from "../../types";
+import UserStory from '../UserStory';
+
+
 
 let url = Config.HOST //local ip address 
 type Props = {
@@ -115,7 +113,7 @@ export default class Feed extends Component<Props, State> {
         );
     };
 
-    renderItem = ({ item }) => <UserStory story={item} user={this.user}/>;
+    renderItem = ({ item }) => <UserStory story={item} user={this.user} />;
     render() {
         const { stories } = this.state;
         return (

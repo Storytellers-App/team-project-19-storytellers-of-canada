@@ -1,20 +1,15 @@
-import React, { useEffect } from 'react';
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
-import {
-    TouchableOpacity,
-    Animated,
-    PanResponder,
-    View,
-    Easing,
-    Text
-} from "react-native";
-
-import styles from './styles';
-import { memo, useContext, useState } from 'react';
-import { AppContext } from '../../AppContext';
-import { StoryType, UserStoryType, StorySaveType, currentStory } from '../../types';
 import Slider from '@react-native-community/slider';
 import { Sound } from 'expo-av/build/Audio/Sound';
+import React, { memo, useContext, useEffect, useState } from 'react';
+import {
+    Text, TouchableOpacity,
+    View
+} from "react-native";
+import { AppContext } from '../../AppContext';
+import { currentStory, StorySaveType, StoryType, UserStoryType } from '../../types';
+import styles from './styles';
+
 
 export type AudioPlayerProps = {
     newStory: StoryType,
@@ -23,6 +18,12 @@ let skipPositionUpdates = 5; //mildly sketchy way to minimize progress bar jumpi
 let isSeeking = false;
 let prevPlayingValue = false;
 const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
+   
+
+    const { setFullStoryType, story, position, setPosition, isPlaying, setIsPlaying, setStory, setIsSeekingComplete, setIsRadioPlaying } = useContext(AppContext);
+    const [currPosition, setCurrPosition] = useState<number>(0);
+    const [currDuration, setCurrDuration] = useState<number | null>(null);
+
     useEffect(() => {
         //Should only run once per player. Temporarily loads file to allow me to display duration
         const getDurationFromFile = async () => {
@@ -38,11 +39,6 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
         }
         getDurationFromFile();
     }), []
-
-    const { setFullStoryType, story, position, setPosition, isPlaying, setIsPlaying, setStory, setIsSeekingComplete, setIsRadioPlaying } = useContext(AppContext);
-    const [currPosition, setCurrPosition] = useState<number>(0);
-    const [currDuration, setCurrDuration] = useState<number | null>(null);
-
 
     useEffect(() => {
         if (story === null || story.id != newStory.id.toString() || isSeeking) {
@@ -71,7 +67,7 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
             } as currentStory;
             setPosition(currPosition);
             setStory(changedStory);
-            setFullStoryType(newStory);      
+            setFullStoryType(newStory);
         }
     }
     const getSeekSliderPosition = () => {
@@ -174,7 +170,7 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
                 paddingRight: 8,
                 height: 35
             }}>
-                <TouchableOpacity onPress={toggleAudio} hitSlop={{top: 30, bottom: 60, left: 40, right: 10}}>
+                <TouchableOpacity onPress={toggleAudio} hitSlop={{ top: 30, bottom: 60, left: 40, right: 10 }}>
                     {story != null && story.id === newStory.id.toString() && isPlaying ? <MaterialIcons name="pause" size={30} color="black" />
                         :
                         <Entypo name="controller-play" size={30} color="black" />

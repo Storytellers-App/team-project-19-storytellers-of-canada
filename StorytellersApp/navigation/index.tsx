@@ -1,25 +1,22 @@
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { ColorSchemeName, View, Text } from 'react-native';
-
-import NotFoundScreen from '../screens/NotFoundScreen';
-import { RootStackParamList, currentStory, ResponseType, UserType } from '../types';
-import BottomTabNavigator from './BottomTabNavigator';
-import LinkingConfiguration from './LinkingConfiguration';
-
+import { AppContext } from '../AppContext';
+import BottomPlayer from '../components/BottomPlayer';
+import LoginScreen from '../screens/LoginScreen';
+import NewCommentScreen from '../screens/NewCommentScreen';
 import NewRecordingScreen from '../screens/NewRecordingScreen';
 import NewStoryScreen from '../screens/NewStoryScreen';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import StoryResponseScreen from '../screens/StoryResponseScreen';
-import NewCommentScreen from '../screens/NewCommentScreen';
-import { AppContext } from '../AppContext';
-
-import BottomPlayer from '../components/BottomPlayer';
+import NotFoundScreen from '../screens/NotFoundScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import LoginScreen from '../screens/LoginScreen';
-import { DrawerContent } from './DrawerContent'
+import StoryResponseScreen from '../screens/StoryResponseScreen';
+import { currentStory, ResponseType, RootStackParamList, UserType } from '../types';
 import { UserContext } from '../UserContext';
+import BottomTabNavigator from './BottomTabNavigator';
+import { DrawerContent } from './DrawerContent';
+import LinkingConfiguration from './LinkingConfiguration';
+
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started

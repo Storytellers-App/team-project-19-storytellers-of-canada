@@ -1,22 +1,12 @@
-import React, { Component, useEffect, useState } from 'react'
+import axios from 'axios';
+import React from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  StyleSheet,
-  Button,
-  Alert
+    Alert, Button, StyleSheet, Text, View
 } from 'react-native';
-
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
-import axios from 'axios';
 import { HOST } from '../config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+
 
 let url = HOST
 

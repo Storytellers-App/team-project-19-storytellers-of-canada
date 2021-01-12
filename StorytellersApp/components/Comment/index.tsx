@@ -1,42 +1,27 @@
-import * as React from 'react';
-import {
-    View,
-    TextInput,
-    Image,
-    ScrollView,
-    StyleSheet,
-    ScrollViewProps,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-} from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
-import {
-    Card,
-    Text,
-    Avatar,
-    Subheading,
-    IconButton,
-    Divider,
-} from 'react-native-paper';
-import Colors from '../../constants/Colors';
-import useColorScheme from '../../hooks/useColorScheme';
-import ProfilePicture from '../ProfilePicture';
-import { Entypo } from '@expo/vector-icons';
-import styles from './styles';
-import moment from 'moment';
-import { UserStoryType, RootStackParamList, ResponseType, CommentType, UserType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';
+import * as React from 'react';
 import { memo } from 'react';
-import Tags from '../Tags';
+import {
+    TouchableWithoutFeedback, View
+} from 'react-native';
+import {
+    Card,
+    Divider, Text
+} from 'react-native-paper';
+import useColorScheme from '../../hooks/useColorScheme';
+import { CommentType, ResponseType, RootStackParamList, UserType } from '../../types';
+import AdminFooter from '../AdminFooter';
+import Footer from '../CardFooter';
+import ProfilePicture from '../ProfilePicture';
+import styles from './styles';
 export type CommentProps = {
     comment: CommentType,
     admin?: boolean,
     disableResponse?: boolean,
     user: UserType | undefined | null,
 }
-import Footer from '../CardFooter';
-import AdminFooter from '../AdminFooter';
 
 type ControlProps = {
     props: CommentProps,

@@ -1,13 +1,12 @@
-import React, { useContext } from 'react';
-import { Alert, TouchableOpacity } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { RootStackParamList } from '../../types';
-
-import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useContext } from 'react';
+import { Alert, TouchableOpacity } from 'react-native';
 import { AppContext } from '../../AppContext';
-import { RotationGestureHandler } from 'react-native-gesture-handler';
+import { RootStackParamList } from '../../types';
+import styles from './styles';
+
 
 const NewRecordingButton = ({ user , userType}: { user?: string , userType?: string}) => {
     const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
