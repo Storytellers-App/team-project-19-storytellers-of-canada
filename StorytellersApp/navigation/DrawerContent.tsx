@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { CommonActions } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import {
     Avatar,
     Caption,
@@ -33,7 +33,13 @@ export function DrawerContent(props) {
             })
           ); 
     } 
-
+    const goToProfile = () => {
+        if (user === undefined || user === null || user.username === "") {
+            Alert.alert("Please login to view profile information");
+            return;
+        }
+        props.navigation.navigate('ProfilePage') 
+    }
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
@@ -47,8 +53,8 @@ export function DrawerContent(props) {
                                 size={120}
                             />
                             <View style={{ marginTop: 20 }}>
-                                <Title style={styles.title}>{user?.name}</Title>
-                                <Caption style={styles.caption}>{user?.email}</Caption>
+                                <Title style={styles.title}>{user === undefined || user === null ? "Guest User" : user?.name}</Title>
+                                {user != null && user != undefined && <Caption style={styles.caption}>{user?.email}</Caption>}
                             </View>
                         </View>
                     </View>
@@ -73,7 +79,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Profile"
-                            onPress={() => { props.navigation.navigate('ProfilePage') }}
+                            onPress={goToProfile}
                         />
                     </Drawer.Section>
                 </View>
