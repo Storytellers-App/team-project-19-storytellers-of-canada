@@ -1,3 +1,4 @@
+import { useScrollToTop } from '@react-navigation/native';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import {
@@ -10,6 +11,8 @@ import { UserContext } from '../UserContext';
 
 export default function StorySaveScreen() {
   const ref = React.useRef<TextInput>(null);
+  const scrollRef = React.useRef(null);
+  useScrollToTop(scrollRef);
   const [searchText, setSearchText] = React.useState('');
   const { user } = useContext(UserContext);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -70,7 +73,7 @@ export default function StorySaveScreen() {
         )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <StorySave key={searchQuery} search={searchQuery} user={user}></StorySave>
+      <StorySave scrollRef={scrollRef} key={searchQuery} search={searchQuery} user={user}></StorySave>
     </View>
   );
 }

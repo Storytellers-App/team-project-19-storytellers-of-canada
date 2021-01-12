@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import {
   StyleSheet, TextInput, View
 } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import {
   Appbar,
   Button,
@@ -14,10 +14,13 @@ import NewRecordingButton from '../components/NewRecordingButton';
 import ProfilePicture from '../components/ProfilePicture';
 import useColorScheme from '../hooks/useColorScheme';
 import { UserContext } from '../UserContext';
+import { useScrollToTop } from '@react-navigation/native';
 
 export default function HomeScreen({navigation}) {
   
   const ref = React.useRef<TextInput>(null);
+  const scrollRef = React.useRef(null);
+  useScrollToTop(scrollRef);
   const {user} = useContext(UserContext);
   const [searchText, setSearchText] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -103,7 +106,7 @@ export default function HomeScreen({navigation}) {
         )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <Feed key={searchQuery} search={searchQuery} user={user}></Feed>
+      <Feed scrollRef={scrollRef} key={searchQuery} search={searchQuery} user={user}></Feed>
       <NewRecordingButton user={user}/>
     </View>
   );

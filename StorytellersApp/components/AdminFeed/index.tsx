@@ -12,6 +12,7 @@ let url = Config.HOST
 
 type Props = {
     user: UserType | undefined | null;
+    scrollRef: any;
 }
 type State = {
     posts: ResponseType[],
@@ -22,9 +23,11 @@ type State = {
 
 export default class AdminFeed extends Component<Props, State> {
     private user: UserType | null | undefined;
+    private scrollRef: any;
     constructor(props: Props) {
         super(props);
         this.user = props.user;
+        this.scrollRef = props.scrollRef;
         this.state = {
             posts: [] as ResponseType[],
             page: 1,
@@ -129,6 +132,7 @@ export default class AdminFeed extends Component<Props, State> {
 
             <FlatList
                 data={posts}
+                ref={this.scrollRef}
                 renderItem={({ item }) => <this.Response response={item} />}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}
