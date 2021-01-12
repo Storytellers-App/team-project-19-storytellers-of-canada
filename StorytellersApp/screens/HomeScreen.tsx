@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   Appbar,
   Button,
+  IconButton,
   Portal, Searchbar, Text
 } from 'react-native-paper';
 import Feed from '../components/Feed';
@@ -49,7 +50,7 @@ export default function HomeScreen({navigation}) {
       <Appbar.Header style={{ backgroundColor: "white" }}>
         <View style={{ marginLeft: 7 }}>
           <TouchableOpacity onPress={openDrawer}>
-          <ProfilePicture
+          {  user === null || user === undefined ? <IconButton size={25} icon={"menu"} /> : <ProfilePicture
             image={
               user === null || user === undefined
                 ? undefined
@@ -59,7 +60,7 @@ export default function HomeScreen({navigation}) {
                 : user.image
             }
             size={45}
-          />
+          />}
           </TouchableOpacity>
         </View>
         {/* <Appbar.Content title="Home" /> */}
