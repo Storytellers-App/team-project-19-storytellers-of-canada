@@ -10,6 +10,8 @@ import TagInput from 'react-native-tags-input';
 import * as Config from '../config';
 import Colors from '../constants/Colors';
 import { RootStackParamList } from '../types';
+import { Audio } from 'expo-av';
+
 
 type NewStoryRouteProp = RouteProp<RootStackParamList, 'NewStory'>;
 
@@ -32,6 +34,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     const [description, setDescription] = useState("");
     const [isLoadingImage, setIsLoadingImage] = useState(false);
     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+    const [long, setLong] = useState(false);
     const [tags, setTags] = useState({
         tag: '',
         tagsArray: [],
@@ -47,6 +50,26 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                     alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
                 }
             }
+            const { sound: playbackObject } = await Audio.Sound.createAsync(
+                { uri: recording },
+                { shouldPlay: false }
+            );
+    
+            playbackObject.loadAsync({ uri: recording });
+            playbackObject.getStatusAsync().then((status) => {
+                if (status.isLoaded) {
+                    try {
+                        if (status.durationMillis === undefined ? false : status.durationMillis > 192000) {
+                            console.log('LONG SET TO TRUE');
+                            setLong(true);
+                        }
+                    }
+    
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
+            })
         })();
     }, []);
 
@@ -80,10 +103,21 @@ export default function NewStoryScreen({ route, navigation }: Props) {
 
     }
     const handleSubmit = async () => {
+        
         if (recording === null) {
             return;
         }
         if (isLoadingSubmit){
+            return;
+        }
+
+        if (title === ""){
+            Alert.alert("Please give your story a title!");
+            return;
+        }
+
+        if (isStoredStory && author===""){
+            Alert.alert("Please give the story an author!");
             return;
         }
         setIsLoadingSubmit(true);
@@ -125,7 +159,15 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 type: 'image/*'
             });
         }
-        const xhr = new XMLHttpRequest();
+        console.log(long);
+
+        if (!isStoredStory && long){
+            Alert.alert("Stories must be maximum 3 minutes in length");
+            setIsLoadingSubmit(false);
+            return;
+        }
+        else {
+            const xhr = new XMLHttpRequest();
         xhr.open('PUT', host + 'stories');
         xhr.send(formData);
         xhr.onreadystatechange = e => {
@@ -145,6 +187,8 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 Alert.alert("Sorry something went wrong, please try again");
             }
         };
+        }
+        
     }
 
     return (
