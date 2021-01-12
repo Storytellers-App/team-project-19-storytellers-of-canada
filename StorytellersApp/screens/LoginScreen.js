@@ -16,9 +16,10 @@ export default class LoginScreen extends Component {
      */
     constructor() {
         super()
-        this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "" }
+        this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "", renderScreen: false }
         this.login = this.login.bind(this)
         this.host = Config.HOST
+        this.checkPrevLogin();
     }
 
     /**
@@ -32,13 +33,13 @@ export default class LoginScreen extends Component {
      * Redirect to the main page
      */
     goToHome(user = null) {
-        Actions.reset("HomeScreen", {user: user});
+        Actions.reset("HomeScreen", { user: user });
     }
 
     /**
      * Redirect to the admin page
      */
-    goToAdmin(){
+    goToAdmin() {
         Actions.AdminScreen();
     }
 
@@ -46,7 +47,7 @@ export default class LoginScreen extends Component {
      * Redirect to the email verification page
      */
     goToEmailVerification() {
-        Actions.EmailVerification({email: "", code: "", username: this.state.username});
+        Actions.EmailVerification({ email: "", code: "", username: this.state.username });
     }
 
     /**
@@ -70,7 +71,7 @@ export default class LoginScreen extends Component {
      * Login to the Storytellers app
      */
     login = async () => {
-        
+
         if (this.state.username === "" || this.state.password === "") {
             Alert.alert(
                 "Missing Login Information",
@@ -79,10 +80,10 @@ export default class LoginScreen extends Component {
         } else {
             // Submitting a login request
             fetch(this.host + 'login', {
-                    headers: new Headers({
-                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
-                    })
+                headers: new Headers({
+                    'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
                 })
+            })
                 .then(response => {
                     return response.json()
                 })
@@ -94,15 +95,15 @@ export default class LoginScreen extends Component {
                         this.state.name = result["name"]
                         this.state.email = result["email"]
                         this.state.type = result["type"]
-                        let user = {username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"]}
+                        let user = { username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"] }
                         this.setUserInfo();
                         this.goToHome(user);
-                        
+
                     } else {
                         console.log(result);
                         console.log(result["active"]);
                         console.log(!result["active"]);
-                        console.log(result["active"] === undefined); 
+                        console.log(result["active"] === undefined);
                         if (result["active"] === undefined) {
                             // Invalid login information
                             Alert.alert(
@@ -115,7 +116,7 @@ export default class LoginScreen extends Component {
                                 this.goToEmailVerification();
                             }
                         }
-                        
+
                     }
                 })
                 .catch((error) => {
@@ -126,11 +127,31 @@ export default class LoginScreen extends Component {
                 });
         }
     }
+    checkPrevLogin = async () => {
+        let username = await AsyncStorage.getItem("username")
+        let name = await AsyncStorage.getItem("name")
+        let email = await AsyncStorage.getItem("email")
+        let authToken = await AsyncStorage.getItem("authToken")
+        let type = await AsyncStorage.getItem("type")
+        if ((username != "" && username != null && username != undefined)
+            && (name != "" && name != null && name != undefined) &&
+            (email != "" && email != null && email != undefined) &&
+            (authToken != "" && authToken != null && authToken != undefined) &&
+            (type != "" && type != null && type != undefined)) {
+            let user = { username: username, authToken: authToken, name: name, email: email, type: type }
+            this.goToHome(user);
+            return;
+        }
+        this.setState({ renderScreen: true });
+    }
 
     /**
      * Render the login screen
      */
     render() {
+        if (!this.state.renderScreen) {
+            return null;
+        }
         return (
             <View style={styles.container}>
                 {/* Storytellers of Canada logo */}
@@ -148,14 +169,14 @@ export default class LoginScreen extends Component {
                     <Input
                         style={styles.input}
                         placeholder="Username"
-                        autoCapitalize = 'none'
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
                         style={styles.input}
                         secureTextEntry={true}
                         placeholder="Password"
-                        autoCapitalize = 'none'
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
                 </View>
@@ -181,7 +202,7 @@ export default class LoginScreen extends Component {
                 {/* Option to enter the app as a guest */}
                 <View style={styles.guestButtonText}>
                     <Text style={styles.text}>Don't want an account?</Text>
-                    <TouchableOpacity onPress={() => {this.goToHome()}}>
+                    <TouchableOpacity onPress={() => { this.goToHome() }}>
                         <Text style={styles.buttonText}> Login as a Guest</Text>
                     </TouchableOpacity>
                 </View>
