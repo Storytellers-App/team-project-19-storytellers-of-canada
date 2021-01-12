@@ -12,6 +12,7 @@ let url = Config.HOST
 type Props = {
   key: string;
   search: string;
+  scrollRef: any;
   user: UserType | null | undefined;
 }
 type State = {
@@ -24,10 +25,12 @@ export default class StorySave extends Component<Props, State> {
 
   private search: string;
   private user: UserType | null | undefined;
+  private scrollRef: any;
   constructor(props: Props) {
       super(props);
       this.search = props.search;
       this.user = props.user;
+      this.scrollRef = props.scrollRef;
       this.state = {
           stories: [] as StorySaveType[],
           page: 1,
@@ -139,6 +142,7 @@ export default class StorySave extends Component<Props, State> {
       <FlatList
         ListHeaderComponent={<this.Header></this.Header>}
         data={stories}
+        ref={this.scrollRef}
         renderItem={this.renderItem}
         keyExtractor={item => item.id.toString()}
         refreshing={this.state.loading}

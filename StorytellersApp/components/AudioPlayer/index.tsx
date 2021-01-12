@@ -23,8 +23,9 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
     const { setFullStoryType, story, position, setPosition, isPlaying, setIsPlaying, setStory, setIsSeekingComplete, setIsRadioPlaying } = useContext(AppContext);
     const [currPosition, setCurrPosition] = useState<number>(0);
     const [currDuration, setCurrDuration] = useState<number | null>(null);
-
+    let mounted = false;
     useEffect(() => {
+        mounted = true;
         //Should only run once per player. Temporarily loads file to allow me to display duration
         const getDurationFromFile = async () => {
             if (currDuration == null || currDuration === undefined) {
@@ -33,13 +34,13 @@ const AudioPlayer = ({ newStory }: AudioPlayerProps) => {
                     { shouldPlay: false, isLooping: false },
                 )
                 const status = await newSound.getStatusAsync();
-                setCurrDuration(status["durationMillis"]);
+                if(mounted){setCurrDuration(status["durationMillis"])};
                 newSound.unloadAsync();
             }
         }
         getDurationFromFile();
-    }), []
-
+    }, []);
+    useEffect( () => () => { mounted = false}, [] );
     useEffect(() => {
         if (story === null || story.id != newStory.id.toString() || isSeeking) {
             return;

@@ -1,3 +1,4 @@
+import { useScrollToTop } from "@react-navigation/native";
 import * as React from "react";
 import {useContext} from 'react';
 import {SafeAreaView, StyleSheet, ScrollView, StatusBar, View, Text, TouchableOpacity} from 'react-native';
@@ -8,6 +9,8 @@ import { UserContext } from "../UserContext";
 export default function AdminPanelScreen() {
   const [helpOpen, setHelpOpen] = React.useState(false);
   const {user} = useContext(UserContext);
+  const scrollRef = React.useRef(null);
+  useScrollToTop(scrollRef);
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header
@@ -40,7 +43,7 @@ export default function AdminPanelScreen() {
           />
         </Portal>
       )}
-      <AdminFeed user={user}></AdminFeed>
+      <AdminFeed scrollRef={scrollRef} user={user}></AdminFeed>
     </View>
   );
 }
