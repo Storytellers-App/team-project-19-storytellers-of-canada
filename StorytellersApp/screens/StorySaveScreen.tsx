@@ -1,14 +1,11 @@
-import React, { Component, useEffect, useState, useContext } from 'react'
-import { SafeAreaView, View, StyleSheet, ScrollView, StatusBar, Image, Text, TextInput, TouchableOpacity } from 'react-native';
-import StorySave from '../components/StorySave';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import {
-  Searchbar,
   Appbar,
   Button,
-  Portal,
+  Portal, Searchbar
 } from 'react-native-paper';
-import AsyncStorage from '@react-native-community/async-storage';
-import { UserType } from '../types';
+import StorySave from '../components/StorySave/';
 import { UserContext } from '../UserContext';
 
 export default function StorySaveScreen() {

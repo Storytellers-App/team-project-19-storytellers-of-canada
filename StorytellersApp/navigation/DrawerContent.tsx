@@ -1,22 +1,14 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { CommonActions } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import {
-    useTheme,
     Avatar,
-    Title,
     Caption,
-    Paragraph,
-    Drawer,
-    Text,
-    TouchableRipple,
-    Switch
+    Drawer, Title
 } from 'react-native-paper';
-import AsyncStorage from '@react-native-community/async-storage';
-import { UserType, RootStackParamList } from '../types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Actions } from 'react-native-router-flux';
 import { UserContext } from '../UserContext';
 
 export function DrawerContent(props) {

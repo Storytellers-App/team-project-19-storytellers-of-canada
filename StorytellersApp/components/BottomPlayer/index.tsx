@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Text, Image, View, TouchableOpacity } from 'react-native';
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-
-import styles from './styles';
-import { Sound } from "expo-av/build/Audio/Sound";
-import { RootStackParamList, ResponseType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AppContext } from '../../AppContext';
+import { Sound } from "expo-av/build/Audio/Sound";
+import React, { useContext, useEffect, useState } from 'react';
+import { Image, TouchableOpacity, View } from 'react-native';
 import TextTicker from 'react-native-text-ticker';
+import { AppContext } from '../../AppContext';
+import { ResponseType, RootStackParamList } from '../../types';
+import styles from './styles';
+
 
 let loading = true;
 let closed = true;
@@ -16,9 +16,9 @@ const BottomPlayer = () => {
   const [sound, setSound] = useState<Sound | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
-  const [ replay, setIsReplay] = useState<boolean>(false);
+  const [replay, setIsReplay] = useState<boolean>(false);
 
-  const {fullStoryType, story, setStory, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete, setIsSeekingComplete, isRadioPlaying } = useContext(AppContext);
+  const { fullStoryType, story, setStory, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete, setIsSeekingComplete, isRadioPlaying } = useContext(AppContext);
 
 
   const onPlaybackStatusUpdate = (status) => {
@@ -37,7 +37,7 @@ const BottomPlayer = () => {
       await sound.pauseAsync();
       await sound.unloadAsync();
     }
-    if(story === null || story.recording === null){
+    if (story === null || story.recording === null) {
       return;
     }
     const { sound: newSound } = await Sound.createAsync(
@@ -103,50 +103,50 @@ const BottomPlayer = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const responseScreen = (header: ResponseType) => {
     navigation.push("StoryResponse", { 'header': header });
-}
+  }
 
   if (!story || isRadioPlaying) {
     return null;
   }
   return (
     <TouchableOpacity onPress={() => { responseScreen(fullStoryType) }}>
-    <View style={styles.container}>
-      <View style={[styles.progress, { width: `${getProgress()}%` }]} />
-      <View style={styles.row}>
-        {story.image != undefined && story.image != null && story.image != "" ?
-          <Image resizeMode={"contain"} source={{ uri: story.image }} style={styles.image} /> :
-          <Image style={styles.image}
-            source={require('../../assets/images/SCCC_logo.png')} resizeMode={"contain"} />}
-        <View style={styles.rightContainer}>
-          <View style={styles.nameContainer}>
-            <TextTicker style={styles.title}
-              duration={3000}
-              loop
-              bounce
-              repeatSpacer={25}
-              marqueeDelay={2000}>
-              {story.title
-              }</TextTicker>
-            <TextTicker style={styles.artist}
-              duration={3000}
-              loop
-              bounce
-              repeatSpacer={25}
-              marqueeDelay={2000}>
-              {story.creator}
-            </TextTicker>
-          </View>
-          <View style={styles.iconsContainer}>
-            <TouchableOpacity onPress={onPlayPausePress}>
-              <FontAwesome name={isPlaying ? 'pause' : 'play'} size={25} color={"white"} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onClose}>
-              <AntDesign name="close" size={28} color={"white"} />
-            </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={[styles.progress, { width: `${getProgress()}%` }]} />
+        <View style={styles.row}>
+          {story.image != undefined && story.image != null && story.image != "" ?
+            <Image resizeMode={"contain"} source={{ uri: story.image }} style={styles.image} /> :
+            <Image style={styles.image}
+              source={require('../../assets/images/SCCC_logo.png')} resizeMode={"contain"} />}
+          <View style={styles.rightContainer}>
+            <View style={styles.nameContainer}>
+              <TextTicker style={styles.title}
+                duration={3000}
+                loop
+                bounce
+                repeatSpacer={25}
+                marqueeDelay={2000}>
+                {story.title
+                }</TextTicker>
+              <TextTicker style={styles.artist}
+                duration={3000}
+                loop
+                bounce
+                repeatSpacer={25}
+                marqueeDelay={2000}>
+                {story.creator}
+              </TextTicker>
+            </View>
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity onPress={onPlayPausePress} hitSlop={{top: 20, bottom: 20, left: 50, right: 10}}>
+                <FontAwesome name={isPlaying ? 'pause' : 'play'} size={25} color={"white"} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onClose} hitSlop={{top: 20, bottom: 20, left: 10, right: 20}}>
+                <AntDesign name="close" size={28} color={"white"} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
     </TouchableOpacity>
   )
 }

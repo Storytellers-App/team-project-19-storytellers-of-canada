@@ -1,36 +1,17 @@
-import React, { useEffect, useState, memo, useContext } from 'react';
-import {
-    View,
-    TextInput,
-    Image,
-    ScrollView,
-    StyleSheet,
-    ScrollViewProps,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    Alert,
-} from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
-import {
-    Card,
-    Text,
-    Avatar,
-    Subheading,
-    IconButton,
-    Divider,
-    Dialog,
-    Portal,
-    Button,
-    Paragraph,
-} from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType, ResponseType, UserType } from '../../types';
-import styles from './styles';
-import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
-import { HOST } from '../../config';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import React, { memo, useContext, useState } from 'react';
+import {
+    Alert, TouchableOpacity, View
+} from 'react-native';
+import {
+    Button, Dialog, IconButton,
+    Paragraph, Portal, Text
+} from 'react-native-paper';
 import { AppContext } from '../../AppContext';
+import { HOST } from '../../config';
+import { ResponseType, UserType } from '../../types';
+import styles from './styles';
 
 export type UserStoryProps = {
     story: ResponseType,

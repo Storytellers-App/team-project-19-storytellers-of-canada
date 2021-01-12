@@ -1,17 +1,15 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { StyleSheet, TouchableHighlight, ScrollView, Alert, Platform, Picker, ActivityIndicator, Image } from 'react-native';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { RootStackParamList } from '../types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import { Input, Button } from 'react-native-elements';
-import Colors from '../constants/Colors';
-import TagInput from 'react-native-tags-input';
 import { Feather } from '@expo/vector-icons';
-import * as Config from '../config';
-import axios from 'axios';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, Picker, Platform, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Input } from 'react-native-elements';
+import TagInput from 'react-native-tags-input';
+import * as Config from '../config';
+import Colors from '../constants/Colors';
+import { RootStackParamList } from '../types';
 
 type NewStoryRouteProp = RouteProp<RootStackParamList, 'NewStory'>;
 

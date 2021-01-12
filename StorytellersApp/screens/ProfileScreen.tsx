@@ -1,39 +1,21 @@
-import React, { Component, useEffect, useState } from "react";
+import { CommonActions } from "@react-navigation/native";
+import React from "react";
 import {
-  View,
-  StyleSheet,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Alert,
+  Alert, ImageBackground, StyleSheet, View
 } from "react-native";
-import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import {
-  useTheme,
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
-  Text,
-  TextInput,
-  TouchableRipple,
-  Switch,
-  Button,
-  Appbar,
-  Modal,
-  Portal,
-} from "react-native-paper";
-import { Input, Button as UpdateButton } from "react-native-elements";
-import AsyncStorage from "@react-native-community/async-storage";
-import { UserType, RootStackParamList } from "../types";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Actions } from "react-native-router-flux";
-import { ScrollView } from "react-native-gesture-handler";
 import base64 from "react-native-base64";
+import { Button as UpdateButton, Input } from "react-native-elements";
+import { ScrollView } from "react-native-gesture-handler";
+import {
+  Appbar, Avatar,
+  Button,
+  Modal,
+  Portal, Text, Title
+} from "react-native-paper";
+import * as Config from "../config";
+import { UserType } from "../types";
 import { UserContext } from "../UserContext";
 
-import * as Config from "../config";
-import { CommonActions } from "@react-navigation/native";
 
 export default function ProfileScreen(props) {
   const { user, setUser } = React.useContext(UserContext);

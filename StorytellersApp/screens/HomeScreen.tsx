@@ -1,35 +1,18 @@
-import React, { Component, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react';
 import {
-  View,
-  TextInput,
-  Image,
-  ScrollView,
-  StyleSheet,
-  ScrollViewProps,
+  StyleSheet, TextInput, View
 } from 'react-native';
-import { useScrollToTop, useTheme , } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
-  Card,
-  Text,
-  Avatar,
-  Subheading,
-  IconButton,
-  Divider,
-  Searchbar,
   Appbar,
   Button,
-  Portal,
+  Portal, Searchbar, Text
 } from 'react-native-paper';
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import ProfilePicture from '../components/ProfilePicture';
-import UserStory from '../components/UserStory';
 import Feed from '../components/Feed';
 import NewRecordingButton from '../components/NewRecordingButton';
-import { UserType , RootStackParamList} from '../types';
-import AsyncStorage from '@react-native-community/async-storage';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import {UserContext} from '../UserContext';
+import ProfilePicture from '../components/ProfilePicture';
+import useColorScheme from '../hooks/useColorScheme';
+import { UserContext } from '../UserContext';
 
 export default function HomeScreen({navigation}) {
   

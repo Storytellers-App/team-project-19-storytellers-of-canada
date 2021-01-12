@@ -1,39 +1,21 @@
-import * as React from 'react';
-import { Platform, StyleSheet, Alert } from 'react-native';
-import { Text, View } from 'react-native';
-import { EvilIcons, AntDesign } from "@expo/vector-icons"
-import Colors from '../constants/Colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Octicons, FontAwesome } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { withNavigation } from 'react-navigation';
-
-
-
-import {
-  Dimensions,
-  Image,
-  Slider,
-  TouchableHighlight,
-} from "react-native";
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, Octicons } from '@expo/vector-icons';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { Audio, AVPlaybackStatus } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import * as Font from "expo-font";
 import * as Permissions from "expo-permissions";
-import * as Icons from "../components/Icons";
-import { yellow100 } from 'react-native-paper/lib/typescript/src/styles/colors';
+import * as React from 'react';
+import {
+  Alert, Dimensions, StyleSheet, Text, TouchableHighlight, View
+} from 'react-native';
+import Slider from '@react-native-community/slider';
 import NewStoryButton from '../components/NewStoryButton';
 import UploadStoryButton from '../components/UploadStoryButton';
-
-import NewRecordingButton from '../components/NewRecordingButton';
+import Colors from '../constants/Colors';
 import { ResponseType as ResponseStory, RootStackParamList } from '../types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar';
-import { RECORDING_OPTION_IOS_AUDIO_QUALITY_LOW } from 'expo-av/build/Audio';
+
+
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "white";
 const LIVE_COLOR = "red";
@@ -745,8 +727,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     alignSelf: "stretch",
-    minHeight: Icons.RECORD_BUTTON.height,
-    maxHeight: Icons.RECORD_BUTTON.height,
+    minHeight: 119,
+    maxHeight: 119,
   },
   recordButton: {
     flexDirection: 'row',
@@ -759,18 +741,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    minHeight: Icons.RECORD_BUTTON.height,
-    maxHeight: Icons.RECORD_BUTTON.height,
-    minWidth: Icons.RECORD_BUTTON.width * 3.0,
-    maxWidth: Icons.RECORD_BUTTON.width * 3.0,
+    minHeight: 119,
+    maxHeight: 119,
+    minWidth: 70 * 3.0,
+    maxWidth: 70 * 3.0,
   },
   recordingDataRowContainer: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    minHeight: Icons.RECORDING.height,
-    maxHeight: Icons.RECORDING.height,
+    minHeight: 14,
+    maxHeight: 14,
   },
   recordingStatus: {
     flex: 1,
@@ -783,12 +765,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "stretch",
-    minHeight: Icons.THUMB_1.height * 2.0,
-    maxHeight: Icons.THUMB_1.height * 2.0,
+    minHeight: 19 * 2.0,
+    maxHeight: 19 * 2.0,
 
   },
   playbackSlider: {
     alignSelf: "stretch",
+    marginHorizontal: 10,
   },
   liveText: {
     color: LIVE_COLOR,
@@ -815,7 +798,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   buttonsContainerTopRow: {
-    maxHeight: Icons.MUTED_BUTTON.height,
+    maxHeight: 58,
     alignSelf: "stretch",
     paddingRight: 20,
   },
@@ -824,8 +807,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    minWidth: ((Icons.PLAY_BUTTON.width + Icons.STOP_BUTTON.width) * 3.0) / 2.0,
-    maxWidth: ((Icons.PLAY_BUTTON.width + Icons.STOP_BUTTON.width) * 3.0) / 2.0,
+    minWidth: ((34 + 22) * 3.0) / 2.0,
+    maxWidth: ((34 + 22) * 3.0) / 2.0,
   },
   volumeContainer: {
     flex: 1,
@@ -836,11 +819,11 @@ const styles = StyleSheet.create({
     maxWidth: DEVICE_WIDTH / 2.0,
   },
   volumeSlider: {
-    width: DEVICE_WIDTH / 2.0 - Icons.MUTED_BUTTON.width,
+    width: DEVICE_WIDTH / 2.0 - 67,
     marginHorizontal: 0,
   },
   buttonsContainerBottomRow: {
-    maxHeight: Icons.THUMB_1.height,
+    maxHeight: 19,
     alignSelf: "stretch",
     paddingRight: 20,
     paddingLeft: 20,

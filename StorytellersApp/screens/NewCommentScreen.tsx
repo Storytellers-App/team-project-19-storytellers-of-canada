@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-  Platform,
-  Image,
-  Alert,
-} from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
-
-import { Text, View } from '../components/Themed';
 import { AntDesign } from "@expo/vector-icons";
-import Colors from "../constants/Colors";
-import ProfilePicture from "../components/ProfilePicture";
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, UserType } from '../types';
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
+import React, { useState } from 'react';
+import {
+  Alert, Platform, SafeAreaView, StyleSheet,
+
+
+  TextInput, TouchableOpacity
+} from 'react-native';
+import { Text, View } from '../components/Themed';
 import { HOST } from '../config';
+import Colors from "../constants/Colors";
+import { RootStackParamList } from '../types';
+
+
 
 let url = HOST
 

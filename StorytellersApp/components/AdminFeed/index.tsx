@@ -1,18 +1,12 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, FlatList } from 'react-native';
-
-import UserStory from '../UserStory';
-import SavedStory from '../SavedStory';
-import { UserStoryType, UserType, StoryType, StorySaveType, ResponseType, CommentType } from "../../types";
 import axios from 'axios';
 import moment from 'moment';
-import Comment from '../Comment';
-import {
-    Text,
-} from 'react-native-paper';
-
-
+import React, { Component } from 'react';
+import { FlatList } from 'react-native';
 import * as Config from '../../config';
+import { CommentType, ResponseType, StorySaveType, UserStoryType, UserType } from "../../types";
+import Comment from '../Comment';
+import SavedStory from '../SavedStory';
+import UserStory from '../UserStory';
 
 let url = Config.HOST
 
@@ -112,7 +106,7 @@ export default class AdminFeed extends Component<Props, State> {
     };
 
 
-    Response = ({ response }: {response: ResponseType}) => {
+    Response = ({ response }: { response: ResponseType }) => {
         if ((response as StorySaveType).author) {
             return <SavedStory story={response as StorySaveType} admin={true} user={this.user}></SavedStory>;
         }
