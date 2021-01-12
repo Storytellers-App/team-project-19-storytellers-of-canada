@@ -74,7 +74,10 @@ class Stories(Resource):
 
     def put(self):
         story_args = reqparse.RequestParser()
-        story_args.add_argument("username", type=str, default=None)
+        story_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
         story_args.add_argument("author", type=str, default=None)
         # generate new creation time
         creation_time = func.now()
@@ -107,9 +110,20 @@ class Stories(Resource):
         # format: characters only no dot eg. "caf", "3gp"
         story_args.add_argument("extension", type=str, required=True)
         args = story_args.parse_args()
-
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        username = None
+        if args.type == StoryType.SAVED.value:
+            if temp_user.type != UserType.ADMIN.value:
+                return HTTPStatus.FORBIDDEN
+        else:
+            username = temp_user.username
+        if args.title == "":
+            abort(HTTPStatus.BAD_REQUEST, message="Title must not be empty")
         ret = self.s3_service.add_story(
-            username=args.username,
+            username=username,
             author=args.author,
             creationTime=creation_time,
             title=args.title,

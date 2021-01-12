@@ -46,7 +46,8 @@ export default class AdminFeed extends Component<Props, State> {
             axios.get(url + 'admin', {
                 params: {
                     time: sessionStart,
-                    page: page
+                    page: page,
+                    auth_token: this.user?.authToken,
                 }
             })
                 .then(response => {

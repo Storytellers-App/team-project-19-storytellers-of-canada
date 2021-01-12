@@ -4,23 +4,22 @@ import React from 'react';
 import { StyleSheet, TouchableHighlight } from 'react-native';
 import { Text } from '../../components/Themed';
 import Colors from '../../constants/Colors';
-import { ResponseType, RootStackParamList } from '../../types';
+import { ResponseType, RootStackParamList, UserType } from '../../types';
 
 export type Props = {
     recording: string | null;
-    username: string;
-    userType: string;
+    user: UserType,
     parent?: ResponseType;
     time: number | null;
 };
 
-const NewStoryButton = ({ recording, username, parent, userType, time }: Props) => {
+const NewStoryButton = ({ recording, user, parent, time }: Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
 
-        navigation.navigate("NewStory", { 'recording': recording, 'username': username, 'parent': parent, 'userType': userType });
+        navigation.navigate("NewStory", { 'recording': recording, 'user': user, 'parent': parent,});
 
     }
     return (

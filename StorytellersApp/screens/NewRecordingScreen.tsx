@@ -13,7 +13,7 @@ import Slider from '@react-native-community/slider';
 import NewStoryButton from '../components/NewStoryButton';
 import UploadStoryButton from '../components/UploadStoryButton';
 import Colors from '../constants/Colors';
-import { ResponseType as ResponseStory, RootStackParamList } from '../types';
+import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../types';
 
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
@@ -69,8 +69,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
   private isSeeking: boolean;
   private shouldPlayAtEndOfSeek: boolean;
   private readonly recordingSettings: Audio.RecordingOptions;
-  private username: string;
-  private userType: string;
+  private user: UserType;
   private mounted: boolean | null;
   private parentStory: ResponseStory | undefined;
   constructor(props: Props) {
@@ -80,8 +79,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     this.mounted = null;
     this.isSeeking = false;
     this.shouldPlayAtEndOfSeek = false;
-    this.username = props.route.params.username;
-    this.userType = props.route.params.userType;
+    this.user = props.route.params.user;
+
 
     this.parentStory = props.route.params.parent;
     this.state = {
@@ -212,7 +211,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     if (!this.mounted) {
       return;
     }
-    
+
     if (status.canRecord) {
       this.setState({
         isRecording: status.isRecording,
@@ -230,7 +229,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     if (status.durationMillis > 192000) {
       this._stopRecordingAndEnablePlayback();
       Alert.alert("Recording can be 3 miinutes max")
-      
+
     }
   };
 
@@ -494,8 +493,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
           ]}
         >
           <View />
-          
-         
+
+
           <View style={styles.playbackContainer}>
             <Slider
               style={styles.playbackSlider}
@@ -584,10 +583,10 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                     style={styles.text}>
                         Next
                     </Text>
-                </TouchableHighlight> */}  
-                 
-                <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType} time={this.state.recordingDuration}/>             
-            </View>
+                </TouchableHighlight> */}
+
+            <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} user={this.user} parent={this.parentStory} time={this.state.recordingDuration} />
+          </View>
 
           {/* <View
               style={[
@@ -614,9 +613,9 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                   PC: {this.state.shouldCorrectPitch ? "yes" : "no"}
                 </Text>
               </TouchableHighlight>*/}
-            </View> 
-          <View />
-       
+        </View>
+        <View />
+
         <View
           style={[
             styles.halfScreenContainerBottom,
@@ -634,7 +633,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                   styles.recordingTimestamp,
                 ]}
               >
-                {this._getRecordingTimestamp() === "00:00"? '3 Minutes Maximum' : this._getRecordingTimestamp()}
+                {this._getRecordingTimestamp() === "00:00" ? '3 Minutes Maximum' : this._getRecordingTimestamp()}
               </Text>
             </View>
             <View style={styles.recordButton}>
@@ -649,33 +648,33 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
 
               </TouchableHighlight>
             </View>
-        
 
 
 
-              {/* <Text
+
+            {/* <Text
                   style={[styles.liveText, ]}
                 >
                   {this.state.isRecording ? "Stop" : "Record"}
                 </Text> */}
-          {/* <View style={styles.recordingDataContainer}> */}
-          <View />
+            {/* <View style={styles.recordingDataContainer}> */}
+            <View />
 
-          {/* </View> */}
-          <View />
+            {/* </View> */}
+            <View />
 
-          
-          {/* </View> */}
-          <View />
+
+            {/* </View> */}
+            <View />
+
+          </View>
+          <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} user={this.user} parent={this.parentStory} />
 
         </View>
-        <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} username={this.username} parent={this.parentStory} userType={this.userType}/>             
 
       </View>
 
-      </View>
 
-      
     );
   }
 }
@@ -718,7 +717,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     //marginBottom: 50,
     paddingBottom: 50,
-    
+
 
   },
   recordingContainer: {

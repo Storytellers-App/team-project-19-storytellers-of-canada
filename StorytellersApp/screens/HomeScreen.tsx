@@ -103,7 +103,7 @@ export default function HomeScreen({navigation}) {
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
       <Feed key={searchQuery} search={searchQuery} user={user}></Feed>
-      <NewRecordingButton user={user?.username} userType={user?.type}/>
+      <NewRecordingButton user={user}/>
     </View>
   );
 }

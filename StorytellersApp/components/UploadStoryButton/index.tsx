@@ -1,25 +1,19 @@
-import React from 'react';
-import { TouchableOpacity, TouchableHighlight, Alert } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {StyleSheet} from 'react-native';
-import Colors from '../../constants/Colors';
-import * as DocumentPicker from 'expo-document-picker';
-
 import { useNavigation } from '@react-navigation/native';
-import { Audio } from 'expo-av';
-import {Text, View} from '../../components/Themed';
-import { RootStackParamList, ResponseType} from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import NewStoryNavigationProp from '../../screens/NewStoryScreen';
-import AsyncStorage from '@react-native-community/async-storage';
+import * as DocumentPicker from 'expo-document-picker';
+import React from 'react';
+import { Alert, StyleSheet, TouchableHighlight } from 'react-native';
+import { Text } from '../../components/Themed';
+import Colors from '../../constants/Colors';
+import { ResponseType, RootStackParamList, UserType } from '../../types';
+
 export type Props = {
     recording: string | null;
-    username: string;
-    userType: string;
+    user: UserType,
     parent?: ResponseType;
 };
 
-const UploadStoryButton = ({recording, username, parent, userType}:Props) => {
+const UploadStoryButton = ({recording, user, parent}:Props) => {
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -28,7 +22,7 @@ const UploadStoryButton = ({recording, username, parent, userType}:Props) => {
             if (resp.type === 'success'){
                 console.log("Success")
                 recording = resp.uri
-                navigation.navigate("NewStory", { 'recording': recording , 'username': username, 'parent': parent, 'userType': userType});    
+                navigation.navigate("NewStory", { 'recording': recording , 'user': user, 'parent': parent, });    
             }
             else{
                 Alert.alert("There was a problem. Please try again");

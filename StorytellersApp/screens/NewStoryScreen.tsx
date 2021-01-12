@@ -24,8 +24,7 @@ type Props = {
 
 export default function NewStoryScreen({ route, navigation }: Props) {
     const host = Config.HOST;
-    const { parent, recording, username, userType } = route.params;
-    console.log('Usertype: ' + userType);
+    const { parent, recording, user } = route.params;
     const [title, setTitle] = useState("");
     const [image, setImage] = useState("");
     const [author, setAuthor] = useState("");
@@ -90,7 +89,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         setIsLoadingSubmit(true);
         const formData = new FormData();
         let uri = recording
-        formData.append('username', username);
+        formData.append('auth_token', user.authToken);
         // file type: setting mp3 
         if (Platform.OS === 'ios') {
             formData.append('extension', 'm4a');
@@ -156,7 +155,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 <Text style={styles.title}>Submit Your New Story For Review!</Text>
             </View>
             <View>
-                {userType === 'ADMIN' ?
+                {user.type === 'ADMIN' ?
                     <View>
                         <Text style={styles.input}>{' Is this a Story for the Story Save \n Collection?'}</Text>
                         <Picker

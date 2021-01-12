@@ -38,7 +38,7 @@ export default function NewCommentScreen({ route, navigation }: Props) {
     if (isLoading) {
       return;
     }
-    if (parent === undefined || comment === "" || user === undefined) {
+    if (parent === undefined || comment === "" || user === undefined || user === null) {
       return;
     }
 
@@ -48,7 +48,7 @@ export default function NewCommentScreen({ route, navigation }: Props) {
         method: 'post', url: url + 'comment', data: {
           parent: parent.id,
           parentType: parent.type,
-          username: user,
+          auth_token: user.authToken,
           comment: comment,
         }
       })
