@@ -2,12 +2,14 @@ import sqlalchemy
 from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
     marshal
 from http import HTTPStatus
+
+from Services.GetUserService import GetUserService
 from extensions import db
 from models import Story, User, Tag, Comment
 from sqlalchemy.exc import *
 from sqlalchemy import func
 from datetime import datetime
-from common.Enums import StoryType
+from common.Enums import StoryType, UserType
 
 user_fields = {
     'username': fields.String,
@@ -67,7 +69,18 @@ class Admin(Resource):
         get_responses_args.add_argument("time",
                                         type=lambda x: datetime.strptime(x,
                                                                          '%Y-%m-%d %H:%M:%S'))
+        get_responses_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
+
         args = get_responses_args.parse_args()
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        if temp_user.type != UserType.ADMIN.value:
+            return HTTPStatus.FORBIDDEN
         time = None
         if 'time' in args and args['time'] is not None:
             time = args['time']
@@ -208,8 +221,18 @@ class Admin(Resource):
         get_user_stories_args.add_argument("approved", type=bool, default=True)
         get_user_stories_args.add_argument("type", type=str,
                                            default=StoryType.USER.value)
-        args = get_user_stories_args.parse_args()
+        get_user_stories_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
 
+        args = get_user_stories_args.parse_args()
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        if temp_user.type != UserType.ADMIN.value:
+            return HTTPStatus.FORBIDDEN
         try:
             if args['type'] == StoryType.USER.value or args[
                 'type'] == StoryType.SAVED.value:

@@ -39,7 +39,7 @@ const Footer = (props: UserStoryProps) => {
                 method: 'post', url: url + 'stories/addlike', data: {
                     id: props.story.id,
                     type: props.story.type,
-                    username: user?.username,
+                    auth_token: user?.authToken,
                 }
             })
                 .then(response => {
@@ -66,7 +66,7 @@ const Footer = (props: UserStoryProps) => {
                 method: 'post', url: url + 'stories/removelike', data: {
                     id: props.story.id,
                     type: props.story.type,
-                    username: user?.username
+                    auth_token: user?.authToken
                 }
             })
                 .then(response => {
@@ -105,12 +105,12 @@ const Footer = (props: UserStoryProps) => {
         setReplyVisible(false);
         setIsPlaying(false);
         setIsRadioPlaying(false);
-        navigation.navigate("NewRecording", { parent: props.story, username: user?.username });
+        navigation.navigate("NewRecording", { parent: props.story, user: user });
     }
 
     const commentReply = () => {
         setReplyVisible(false);
-        navigation.navigate("NewComment", { parent: props.story, user: user?.username })
+        navigation.navigate("NewComment", { parent: props.story, user: user })
     }
 
     const hideDialog = () => {

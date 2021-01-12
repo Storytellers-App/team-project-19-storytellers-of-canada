@@ -4,23 +4,22 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import { AppContext } from '../../AppContext';
-import { RootStackParamList } from '../../types';
+import { RootStackParamList, UserType } from '../../types';
 import styles from './styles';
 
 
-const NewRecordingButton = ({ user , userType}: { user?: string , userType?: string}) => {
+const NewRecordingButton = ({ user }: { user?: UserType}) => {
     const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-
     const onPress = () => {
         console.log('open recording screen');
-        if (user === undefined || user === null || user === "") {
+        if (user === undefined || user === null || user.username === "") {
             Alert.alert("Please login to record a story");
             return;
         }
         setIsPlaying(false);
         setIsRadioPlaying(false);
-        navigation.navigate("NewRecording", { username: user , userType: userType});
+        navigation.navigate("NewRecording", { user: user});
     }
     return (<TouchableOpacity style={styles.button}
         onPress={onPress}

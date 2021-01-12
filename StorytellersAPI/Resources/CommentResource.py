@@ -15,16 +15,24 @@ class CommentRes(Resource):
         post_comment_args = reqparse.RequestParser()
         post_comment_args.add_argument('parent', type=int, required=True)
         post_comment_args.add_argument("parentType", type=str, required=True)
-        post_comment_args.add_argument("username", type=str, required=True)
         post_comment_args.add_argument("comment", type=str, required=True)
+        post_comment_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
         args = post_comment_args.parse_args()
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        username = temp_user.username
         if args['parentType'] == 'comment':
             story = Comment.query.filter_by(id=args['parent']).first()
         else:
             story = Story.query.filter_by(id=args['parent']).first()
         if not story:
             abort(HTTPStatus.BAD_REQUEST, message='Item no longer exists')
-        comment = Comment(username=args['username'],
+        comment = Comment(username=username,
                           creationTime=func.now(),
                           parent=args['parent'],
                           parentType=args['parentType'],
@@ -48,9 +56,12 @@ class CommentRes(Resource):
         )
         args = comment_args.parse_args()
         user_service = GetUserService()
+
         try:
             comment = Comment.query.filter_by(id=args['id']).first()
             temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+            if temp_user is None:
+                return HTTPStatus.BAD_REQUEST
             if temp_user.type != UserType.ADMIN.value and comment.username.lower() != temp_user.username.lower():
                 return HTTPStatus.FORBIDDEN
             else:

@@ -27,11 +27,11 @@ const AdminFooter = (props: UserStoryProps) => {
             axios({
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
+                    auth_token: user?.authToken,
                     approved: true,
                     parent_type: props.story.parentType === undefined ? null : props.story.parentType,
                     type: props.story.type
                 }
-
             })
                 .then(response => {
                     setApproved(true);
@@ -50,10 +50,10 @@ const AdminFooter = (props: UserStoryProps) => {
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
                     approved: false,
+                    auth_token: user?.authToken,
                     parent_type: props.story.parent === undefined ? null : props.story.parent.type,
                     type: props.story.type
                 }
-
             })
                 .then(response => {
                     setApproved(false);
