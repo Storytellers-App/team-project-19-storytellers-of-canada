@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
-import AsyncStorage from '@react-native-community/async-storage'
+import * as SecureStore from 'expo-secure-store';
 import base64 from 'react-native-base64'
 
 import * as Config from '../config';
@@ -60,13 +60,39 @@ export default class LoginScreen extends Component {
      * Set app-wide user information
      */
     setUserInfo = async () => {
-        await AsyncStorage.setItem("username", this.state.username)
-        await AsyncStorage.setItem("name", this.state.name)
-        await AsyncStorage.setItem("email", this.state.email)
-        await AsyncStorage.setItem("authToken", this.state.authToken)
-        await AsyncStorage.setItem("type", this.state.type)
+        await SecureStore.setItemAsync("authToken", this.state.authToken)
     }
 
+    checkAuth = async (authToken) => {
+          // Submitting a login request
+          fetch(this.host + 'authTokenLogin', {
+            headers: new Headers({
+                'Authorization': authToken
+            })
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(result => {
+                if (result["success"]) {
+                    // Setting app-wide info
+                    this.state.username = result['username']
+                    this.state.authToken = result["authToken"]
+                    this.state.name = result["name"]
+                    this.state.email = result["email"]
+                    this.state.type = result["type"]
+                    let user = { username: result['username'], authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"], image: result["image"] }
+                    this.setUserInfo();
+                    this.goToHome(user);
+                }
+            })
+            .catch((error) => {
+                Alert.alert(
+                    "Connection Error"
+                )
+                console.error(error);
+            });
+    }
     /**
      * Login to the Storytellers app
      */
@@ -128,18 +154,11 @@ export default class LoginScreen extends Component {
         }
     }
     checkPrevLogin = async () => {
-        let username = await AsyncStorage.getItem("username")
-        let name = await AsyncStorage.getItem("name")
-        let email = await AsyncStorage.getItem("email")
-        let authToken = await AsyncStorage.getItem("authToken")
-        let type = await AsyncStorage.getItem("type")
-        if ((username != "" && username != null && username != undefined)
-            && (name != "" && name != null && name != undefined) &&
-            (email != "" && email != null && email != undefined) &&
-            (authToken != "" && authToken != null && authToken != undefined) &&
-            (type != "" && type != null && type != undefined)) {
-            let user = { username: username, authToken: authToken, name: name, email: email, type: type }
-            this.goToHome(user);
+
+        let authToken = await SecureStore.getItemAsync("authToken")
+
+        if (authToken != "" && authToken != null && authToken != undefined) {
+            this.checkAuth(authToken);
             return;
         }
         this.setState({ renderScreen: true });

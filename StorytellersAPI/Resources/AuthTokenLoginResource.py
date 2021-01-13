@@ -18,6 +18,6 @@ class AuthTokenLogin(Resource):
         try:
             user_service = GetUserService()
             user = user_service.getUserWithAuthToken(authInfo)
-            return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email, type=user.type, image=user.image)
+            return jsonify(success=True, username=user.username, authToken=user.authToken, name=user.name, email=user.email, type=user.type, image=user.image)
         except:
             return jsonify(success=False)

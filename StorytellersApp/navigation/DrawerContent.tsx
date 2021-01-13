@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { CommonActions } from '@react-navigation/native';
 import React from 'react';
@@ -17,11 +17,7 @@ export function DrawerContent(props) {
 
     // Signout function
     async function signOut(){
-        await AsyncStorage.setItem("username", "")
-        await AsyncStorage.setItem("name", "")
-        await AsyncStorage.setItem("email", "")
-        await AsyncStorage.setItem("authToken", "")
-        await AsyncStorage.setItem("type", "")
+        await SecureStore.deleteItemAsync("authToken")
         let newUser = undefined;
         setUser(newUser)
         props.navigation.dispatch(

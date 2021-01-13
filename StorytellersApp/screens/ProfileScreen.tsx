@@ -16,7 +16,7 @@ import * as Config from "../config";
 import { UserType } from "../types";
 import { UserContext } from "../UserContext";
 import * as ImagePicker from 'expo-image-picker';
-
+import * as SecureStore from 'expo-secure-store';
 
 export default function ProfileScreen(props) {
   const { user, setUser } = React.useContext(UserContext);
@@ -262,6 +262,7 @@ export default function ProfileScreen(props) {
           // Logging out
           setDeactivateModal(false);
           setConfirmModal(false);
+          SecureStore.deleteItemAsync('authToken');
          let newUser = undefined;
           setUser(newUser);
           props.navigation.dispatch(

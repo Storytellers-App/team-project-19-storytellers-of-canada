@@ -1,27 +1,15 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, FlatList } from 'react-native';
-import {
-    Card,
-    Text,
-    Avatar,
-    Subheading,
-    IconButton,
-    Divider,
-    Appbar,
-} from 'react-native-paper';
-import UserStory from './UserStory';
+import axios from 'axios';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { FlatList, View } from 'react-native';
+import * as Config from '../config';
+import Colors from '../constants/Colors';
+import { CommentType, ResponseType, StorySaveType, UserStoryType, UserType } from "../types";
 import Comment from './Comment';
 import SavedStory from './SavedStory';
-import { UserStoryType, UserType, StoryType, ResponseType, RootStackParamList, StorySaveType, CommentType } from "../types";
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import axios from 'axios';
-import moment from 'moment'
-import Colors from '../constants/Colors';
-import AsyncStorage from '@react-native-community/async-storage';
+import UserStory from './UserStory';
 
 
-import * as Config from '../config';
 
 let url = Config.HOST //local ip address 
 
