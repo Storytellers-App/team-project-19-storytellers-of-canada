@@ -15,6 +15,7 @@ import {
 import * as Config from "../config";
 import { UserType } from "../types";
 import { UserContext } from "../UserContext";
+import * as ImagePicker from 'expo-image-picker';
 
 
 export default function ProfileScreen(props) {
@@ -51,6 +52,7 @@ export default function ProfileScreen(props) {
             type: user?.type,
             email: user?.email,
             authToken: user?.authToken,
+            image: user?.image
           } as UserType;
           setUser(newUser);
           Alert.alert("Name Change Successful");
@@ -107,6 +109,7 @@ export default function ProfileScreen(props) {
               type: user?.type,
               email: newEmail,
               authToken: user?.authToken,
+              image: user?.image
             } as UserType;
             setUser(newUser);
             Alert.alert("Email Change Successful");
@@ -265,6 +268,7 @@ export default function ProfileScreen(props) {
             name: "",
             email: "",
             type: "",
+            image: ""
           };
           setUser(newUser);
           props.navigation.dispatch(
@@ -305,6 +309,52 @@ export default function ProfileScreen(props) {
     uri:
       "https://images.pexels.com/photos/1387022/pexels-photo-1387022.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
   };
+  const [profilePic, setProfilePic] = React.useState("");
+
+    const updatePic = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        }).then((result) => {
+            if (!result.cancelled) {
+                setProfilePic(result.uri)
+                // Sending an API request to update the pic
+                const formData = new FormData();
+                formData.append('image', {
+                    uri: profilePic,
+                    name: profilePic,
+                    type: 'image/*'
+                });
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', Config.HOST + 'updateImage');
+                let auth: string = user?.authToken as string;
+                xhr.setRequestHeader('Authorization', auth);
+                xhr.send(formData);
+                xhr.onreadystatechange = e => {
+                    if (xhr.status === 200) {
+                        if (xhr.readyState == 4) {
+                            let newUser = {
+                                username: user?.username,
+                                name: user?.name,
+                                type: user?.type,
+                                email: user?.email,
+                                authToken: user?.authToken,
+                                image: (JSON.parse(xhr.response))["image"]
+                            } as UserType;
+                            console.log(newUser?.image)
+                            setUser(newUser);
+                        }
+                        Alert.alert("Profile picture has been updated");
+                    } else {
+                        console.log('error', xhr.responseText);
+                        Alert.alert("Sorry something went wrong, please try again");
+                    }
+                };                
+            }
+            else {
+                Alert.alert("Something went wrong, please try again")
+            }
+        });
+    }
 
   return (
     <ScrollView>
@@ -547,18 +597,18 @@ export default function ProfileScreen(props) {
               <Avatar.Image
                 source={{
                   uri:
-                    "https://ui-avatars.com/api/?background=006699&color=fff&name=" +
-                    user?.name,
+                    user?.image
                 }}
                 size={120}
                 style={{ marginTop: 30, marginBottom: 30 }}
               />
-              {/*<Button
+              <Button
                             icon="pencil"
                             labelStyle={{ color: 'white', fontSize: 14 }}
-                            style={{ paddingBottom: 10 }}>
+                            style={{ paddingBottom: 10 }}
+                            onPress={updatePic}>
                             Update Picture
-                        </Button>*/}
+                        </Button>
             </View>
           </ImageBackground>
           <View style={styles.userInfoSection}>

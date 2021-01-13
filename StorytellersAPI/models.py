@@ -9,6 +9,7 @@ class User(db.Model):
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     authToken = db.Column(db.String(255), nullable=False)
+    image = db.Column(db.String(255), nullable=True)
     type = db.Column(db.String(255), nullable=False,
                      default=UserType.MEMBER.value)
     isActive = db.Column(db.Boolean, nullable=False)

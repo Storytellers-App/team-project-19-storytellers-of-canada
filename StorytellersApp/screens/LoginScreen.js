@@ -95,7 +95,7 @@ export default class LoginScreen extends Component {
                         this.state.name = result["name"]
                         this.state.email = result["email"]
                         this.state.type = result["type"]
-                        let user = { username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"] }
+                        let user = { username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"], image: result["image"] }
                         this.setUserInfo();
                         this.goToHome(user);
 

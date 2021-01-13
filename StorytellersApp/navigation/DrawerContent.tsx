@@ -48,7 +48,7 @@ export function DrawerContent(props) {
                         <View style={{ marginTop: 15 }}>
                             <Avatar.Image
                                 source={{
-                                    uri: "https://ui-avatars.com/api/?background=006699&color=fff&name=" + user?.name
+                                    uri: user?.image
                                 }}
                                 size={120}
                             />

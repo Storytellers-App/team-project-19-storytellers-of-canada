@@ -23,6 +23,7 @@ from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
 from Resources.UpdateNameResource import UpdateName
 from Resources.UpdateEmailResource import UpdateEmail
 from Resources.UpdatePasswordResource import UpdatePassword
+from Resources.UpdateImageResource import UpdateImage
 from Resources.PromoteUserResource import PromoteUser
 from Resources.DeactivateResource import Deactivate
 
@@ -75,6 +76,7 @@ api.add_resource(StoryFetch, '/story_fetch')
 api.add_resource(UpdateName, '/updateName')
 api.add_resource(UpdateEmail, '/updateEmail')
 api.add_resource(UpdatePassword, '/updatePassword')
+api.add_resource(UpdateImage, '/updateImage')
 
 # Promote user to Admin
 api.add_resource(PromoteUser, '/promoteUser')
