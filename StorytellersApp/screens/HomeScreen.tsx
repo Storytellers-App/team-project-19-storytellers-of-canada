@@ -53,7 +53,7 @@ export default function HomeScreen({navigation}) {
       <Appbar.Header style={{ backgroundColor: "white" }}>
         <View style={{ marginLeft: 7 }}>
           <TouchableOpacity onPress={openDrawer}>
-          {  user === null || user === undefined ? <IconButton size={25} icon={"menu"} /> : <ProfilePicture
+          {  user === null || user === undefined || user.image === "" ? <IconButton size={25} icon={"menu"} /> : <ProfilePicture
             image={
               user === null || user === undefined
                 ? undefined

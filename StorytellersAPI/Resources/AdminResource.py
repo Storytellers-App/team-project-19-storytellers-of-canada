@@ -14,6 +14,7 @@ from common.Enums import StoryType, UserType
 user_fields = {
     'username': fields.String,
     'name': fields.String,
+    'image': fields.String,
 }
 
 userstory_fields = {
@@ -155,6 +156,8 @@ class Admin(Resource):
             responses = db.session.query(both).with_entities(both.c.id,
                                                              both.c.username,
                                                              User.name,
+                                                             User.image.label(
+                                                                 "userImage"),
                                                              both.c.creationTime,
                                                              both.c.title,
                                                              both.c.description,
@@ -181,8 +184,7 @@ class Admin(Resource):
                     tags = Tag.query.filter_by(storyid=response.id)
                 format_response = {
                     'id': response.id,
-                    'user': {'username': response.username,
-                             'name': response.name},
+                    "user": {"username": response.username, "name": response.name, "image": response.userImage},
                     'creationTime': response.creationTime,
                     'title': response.title,
                     'description': response.description,

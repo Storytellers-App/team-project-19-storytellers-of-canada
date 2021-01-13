@@ -1,29 +1,19 @@
-import sqlalchemy
-from flask_restful import (
-    Resource,
-    reqparse,
-    abort,
-    fields,
-    marshal_with,
-    marshal,
-    inputs,
-)
-from flask import Response
-from http import HTTPStatus
-from extensions import db
-from models import Story, User, Tag, Comment, Like
-from sqlalchemy.exc import *
-from sqlalchemy import func, union_all
 from datetime import datetime
-from common.Enums import StoryType, UserType
+
+import sqlalchemy
 import werkzeug.datastructures
+from flask_restful import (Resource, abort, fields, inputs, marshal, reqparse)
+from sqlalchemy import func
+from sqlalchemy.exc import *
 
 from Services.S3StoryService import *
-import sys
+from common.Enums import StoryType
+from models import Comment, Like, User
 
 user_fields = {
     "username": fields.String,
     "name": fields.String,
+    "image": fields.String,
 }
 
 userstory_fields = {
@@ -187,6 +177,7 @@ class Stories(Resource):
                     Story.id,
                     Story.username,
                     User.name,
+                    User.image.label("userImage"),
                     Story.creationTime,
                     Story.title,
                     Story.description,
@@ -225,6 +216,7 @@ class Stories(Resource):
                     Story.id,
                     Story.username,
                     User.name,
+                    User.image.label("userImage"),
                     Story.creationTime,
                     Story.title,
                     Story.description,
@@ -259,7 +251,9 @@ class Stories(Resource):
                     )
                 format_story = {
                     "id": story.id,
-                    "user": {"username": story.username, "name": story.name},
+                    "user": {"username": story.username,
+                             "name": story.name,
+                             "image": story.userImage},
                     "creationTime": story.creationTime,
                     "title": story.title,
                     "description": story.description,
@@ -353,6 +347,7 @@ class Responses(Resource):
                     both.c.id,
                     both.c.username,
                     User.name,
+                    User.image.label("userImage"),
                     both.c.creationTime,
                     both.c.title,
                     both.c.description,
@@ -396,7 +391,7 @@ class Responses(Resource):
                     )
                 format_response = {
                     "id": response.id,
-                    "user": {"username": response.username, "name": response.name},
+                    "user": {"username": response.username, "name": response.name, "image": response.userImage},
                     "creationTime": response.creationTime,
                     "title": response.title,
                     "description": response.description,
