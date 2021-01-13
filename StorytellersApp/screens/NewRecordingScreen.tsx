@@ -17,7 +17,7 @@ import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../
 
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
-const BACKGROUND_COLOR = "white";
+const BACKGROUND_COLOR = "#f6f6f6";
 const LIVE_COLOR = "red";
 const DISABLED_OPACITY = 0.2;
 const RATE_SCALE = 3.0;
