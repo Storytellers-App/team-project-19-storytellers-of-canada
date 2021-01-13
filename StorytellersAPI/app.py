@@ -26,6 +26,7 @@ from Resources.UpdatePasswordResource import UpdatePassword
 from Resources.UpdateImageResource import UpdateImage
 from Resources.PromoteUserResource import PromoteUser
 from Resources.DeactivateResource import Deactivate
+from Resources.AuthTokenLoginResource import AuthTokenLogin
 
 # test database
 from Resources.TestResource import TestDB
@@ -45,6 +46,9 @@ api.add_resource(TestDB, '/testdb')
 
 # GET /login?username&password
 api.add_resource(Login, '/login')
+
+# GET /authTokenLogin
+api.add_resource(AuthTokenLogin, '/authTokenLogin')
 
 # POST /register?name&email&username&password
 api.add_resource(Register, '/register')
