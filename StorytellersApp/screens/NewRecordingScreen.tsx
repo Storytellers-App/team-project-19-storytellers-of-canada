@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import NewStoryButton from '../components/NewStoryButton';
-import UploadStoryButton from '../components/UploadStoryButton';
 import Colors from '../constants/Colors';
 import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../types';
 
