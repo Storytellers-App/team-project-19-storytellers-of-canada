@@ -46,7 +46,7 @@ function Comment(props: CommentProps) {
             <TouchableWithoutFeedback disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.comment) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.comment.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.comment.user.name : props.comment.user.image} size={42} />
+                        <ProfilePicture image={props.comment.user.image === undefined || props.comment.user.image === null || props.comment.user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.comment.user.name : props.comment.user.image} size={42} />
                         <View>
                             <View style={styles.userRow}>
                                 <Text style={styles.name}>{props.comment.user.name}</Text>

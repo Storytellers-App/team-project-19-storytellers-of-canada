@@ -94,9 +94,6 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 setImage(result.uri);
                 Alert.alert("Image has been selected");
             }
-            else {
-                Alert.alert("Something went wrong, please try again")
-            }
             setIsLoadingImage(false);
         });
         setIsLoadingImage(false);

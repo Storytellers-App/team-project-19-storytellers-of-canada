@@ -262,14 +262,7 @@ export default function ProfileScreen(props) {
           // Logging out
           setDeactivateModal(false);
           setConfirmModal(false);
-          let newUser = {
-            username: "",
-            authToken: "",
-            name: "",
-            email: "",
-            type: "",
-            image: ""
-          };
+         let newUser = undefined;
           setUser(newUser);
           props.navigation.dispatch(
             CommonActions.reset({
@@ -320,8 +313,8 @@ export default function ProfileScreen(props) {
                 // Sending an API request to update the pic
                 const formData = new FormData();
                 formData.append('image', {
-                    uri: profilePic,
-                    name: profilePic,
+                    uri: result.uri,
+                    name: result.uri,
                     type: 'image/*'
                 });
                 const xhr = new XMLHttpRequest();
@@ -349,9 +342,6 @@ export default function ProfileScreen(props) {
                         Alert.alert("Sorry something went wrong, please try again");
                     }
                 };                
-            }
-            else {
-                Alert.alert("Something went wrong, please try again")
             }
         });
     }
@@ -597,7 +587,7 @@ export default function ProfileScreen(props) {
               <Avatar.Image
                 source={{
                   uri:
-                    user?.image
+                  user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
                 }}
                 size={120}
                 style={{ marginTop: 30, marginBottom: 30 }}
