@@ -24,10 +24,10 @@ const UploadStoryButton = ({recording, user, parent}:Props) => {
                 recording = resp.uri
                 navigation.navigate("NewStory", { 'recording': recording , 'user': user, 'parent': parent, });    
             }
-            else{
-                Alert.alert("There was a problem. Please try again");
+            // else{
+            //     Alert.alert("There was a problem. Please try again");
 
-            }
+            // }
         })
     }
     return (

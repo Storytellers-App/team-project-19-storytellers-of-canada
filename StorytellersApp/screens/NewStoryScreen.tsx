@@ -54,8 +54,6 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 { uri: recording },
                 { shouldPlay: false }
             );
-    
-            playbackObject.loadAsync({ uri: recording });
             playbackObject.getStatusAsync().then((status) => {
                 if (status.isLoaded) {
                     try {
