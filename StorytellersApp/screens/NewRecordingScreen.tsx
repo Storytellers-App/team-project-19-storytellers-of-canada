@@ -6,6 +6,7 @@ import * as FileSystem from "expo-file-system";
 import * as Font from "expo-font";
 import * as Permissions from "expo-permissions";
 import * as React from 'react';
+import * as DocumentPicker from 'expo-document-picker';
 import {
   Alert, Dimensions, StyleSheet, Text, TouchableHighlight, View
 } from 'react-native';
@@ -72,6 +73,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
   private user: UserType;
   private mounted: boolean | null;
   private parentStory: ResponseStory | undefined;
+  private uri: string | null;
   constructor(props: Props) {
     super(props);
     this.recording = null;
@@ -80,6 +82,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     this.isSeeking = false;
     this.shouldPlayAtEndOfSeek = false;
     this.user = props.route.params.user;
+    this.uri = null;
 
 
     this.parentStory = props.route.params.parent;
@@ -163,9 +166,10 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       this.sound.stopAsync();
       this.sound.unloadAsync();
     }
-    if (this.recording && this.state.isRecording) {
-      if (this.recording)
+    if (this.recording) {
+      if(this.state.isRecording){
         this.recording.stopAndUnloadAsync();
+      }
     }
   }
 
@@ -228,7 +232,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     }
     if (status.durationMillis > 192000) {
       this._stopRecordingAndEnablePlayback();
-      Alert.alert("Recording can be 3 miinutes max")
+      Alert.alert("Recording can be 3 minutes max")
 
     }
   };
@@ -264,6 +268,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     recording.setOnRecordingStatusUpdate(this._updateScreenForRecordingStatus);
 
     this.recording = recording;
+    this.uri = null;
     await this.recording.startAsync(); // Will call this._updateScreenForRecordingStatus to update the screen.
     this.setState({
       isLoading: false,
@@ -320,6 +325,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       this._updateScreenForSoundStatus
     );
     this.sound = sound;
+    this.uri = this.recording.getURI();
     this.setState({
       isLoading: false,
     });
@@ -453,7 +459,60 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
   //     console.warn('Next Up')
 
   // }
+  private setPlaybackUpload = async (audioUri: string) => {
+    if (!this.mounted) {
+      return;
+    }
+    this.setState({
+      isLoading: true,
+    });
+    if(this.sound){
+      await this.sound.unloadAsync();
+    }
+    if (audioUri === null || audioUri === undefined || audioUri === "") {
+      return;
+    }
+    if (this.recording !== null) {
+      this.recording.setOnRecordingStatusUpdate(null);
+      this.setState({recordingDuration: 0});
+      this.recording = null;
+    }
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      playThroughEarpieceAndroid: false,
+      staysActiveInBackground: true,
+    });
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      { uri: audioUri },
+      { isLooping: true,
+        isMuted: this.state.muted,
+        volume: this.state.volume,
+        rate: this.state.rate,
+        shouldCorrectPitch: this.state.shouldCorrectPitch, },
+        this._updateScreenForSoundStatus
+    )
+    this.sound = newSound;
+    this.uri = audioUri;
+    this.setState({
+      isLoading: false,
+    });
+  }
+  
+  private onUploadPress = async () => {
+    await DocumentPicker.getDocumentAsync({ type: 'audio/*' }).then(resp => {
+      if (resp.type === 'success') {
+        this.setPlaybackUpload(resp.uri)
+      }
+      // else{
+      //     Alert.alert("There was a problem. Please try again");
 
+      // }
+    })
+  }
   render() {
 
     if (!this.state.fontLoaded) {
@@ -585,7 +644,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                     </Text>
                 </TouchableHighlight> */}
 
-            <NewStoryButton recording={this.recording === null ? null : this.recording.getURI()} user={this.user} parent={this.parentStory} time={this.state.recordingDuration} />
+            <NewStoryButton recording={this.uri} user={this.user} parent={this.parentStory} time={this.state.recordingDuration} />
           </View>
 
           {/* <View
@@ -649,9 +708,6 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
               </TouchableHighlight>
             </View>
 
-
-
-
             {/* <Text
                   style={[styles.liveText, ]}
                 >
@@ -668,7 +724,28 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             <View />
 
           </View>
-          <UploadStoryButton recording={this.recording === null ? null : this.recording.getURI()} user={this.user} parent={this.parentStory} />
+
+          <TouchableHighlight style={{
+            backgroundColor: Colors.light.tint,
+            borderRadius: 30,
+            alignItems: 'center',
+            opacity: this.state.isLoading || this.state.isRecording ? DISABLED_OPACITY : 1.0,
+          }}
+            disabled={this.state.isLoading || this.state.isRecording}
+            onPress={this.onUploadPress}
+          >
+            <Text
+              style={{
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 15,
+              }}>
+              Upload an audio file from your device
+                    </Text>
+          </TouchableHighlight>
+
 
         </View>
 
