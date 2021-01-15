@@ -21,7 +21,6 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera roll to let users upload profile images and thumbnail images",
         "NSMicrophoneUsageDescription": "This app uses the microphone to let users record stories",
         "NSPhotoLibraryUsageDescription": "This app uses the media library to allow users to upload or download recorded stories"
       }
