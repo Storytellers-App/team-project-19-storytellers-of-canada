@@ -44,12 +44,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
 
     useEffect(() => {
         (async () => {
-            if (Platform.OS !== 'web') {
-                const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-                if (status !== 'granted') {
-                    alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
-                }
-            }
+
             const { sound: playbackObject } = await Audio.Sound.createAsync(
                 { uri: recording },
                 { shouldPlay: false }
@@ -62,7 +57,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                             setLong(true);
                         }
                     }
-    
+
                     catch (e) {
                         console.log(e);
                     }
@@ -83,6 +78,12 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     }
 
     const onImagePickerPress = async () => {
+        if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
+            }
+        }
         setIsLoadingImage(true);
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -98,20 +99,20 @@ export default function NewStoryScreen({ route, navigation }: Props) {
 
     }
     const handleSubmit = async () => {
-        
+
         if (recording === null) {
             return;
         }
-        if (isLoadingSubmit){
+        if (isLoadingSubmit) {
             return;
         }
 
-        if (title === ""){
+        if (title === "") {
             Alert.alert("Please give your story a title!");
             return;
         }
 
-        if (isStoredStory && author===""){
+        if (isStoredStory && author === "") {
             Alert.alert("Please give the story an author!");
             return;
         }
@@ -156,34 +157,34 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         }
         console.log(long);
 
-        if (!isStoredStory && long){
+        if (!isStoredStory && long) {
             Alert.alert("Stories must be maximum 3 minutes in length");
             setIsLoadingSubmit(false);
             return;
         }
         else {
             const xhr = new XMLHttpRequest();
-        xhr.open('PUT', host + 'stories');
-        xhr.send(formData);
-        xhr.onreadystatechange = e => {
-            console.log('GOT HERE');
-            if (xhr.readyState !== 4) {
-                setIsLoadingSubmit(false);
+            xhr.open('PUT', host + 'stories');
+            xhr.send(formData);
+            xhr.onreadystatechange = e => {
+                console.log('GOT HERE');
+                if (xhr.readyState !== 4) {
+                    setIsLoadingSubmit(false);
 
-                return;
-            }
-            if (xhr.status === 200) {
-                navigation.navigate('HomeScreen')
-                setIsLoadingSubmit(false);
-                Alert.alert("Your submission is under review!")
-            } else {
-                setIsLoadingSubmit(false);
-                console.log('error', xhr.responseText);
-                Alert.alert("Sorry something went wrong, please try again");
-            }
-        };
+                    return;
+                }
+                if (xhr.status === 200) {
+                    navigation.navigate('HomeScreen')
+                    setIsLoadingSubmit(false);
+                    Alert.alert("Your submission is under review!")
+                } else {
+                    setIsLoadingSubmit(false);
+                    console.log('error', xhr.responseText);
+                    Alert.alert("Sorry something went wrong, please try again");
+                }
+            };
         }
-        
+
     }
 
     return (
@@ -252,7 +253,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                         uri: image,
                     }}
                 /> : null}
-                
+
             </View>
             <View>
                 <View style={styles.loading}>
@@ -293,7 +294,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                         Submit
                     </Text>
                 </TouchableHighlight>
-                
+
 
             </View>
 
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
         height: 150,
         marginVertical: 10,
         resizeMode: 'contain',
-      },
+    },
     input: {
         fontSize: 16,
     },

@@ -1,7 +1,7 @@
 import { CommonActions } from "@react-navigation/native";
 import React from "react";
 import {
-  Alert, ImageBackground, StyleSheet, View
+  Alert, ImageBackground, Platform, StyleSheet, View
 } from "react-native";
 import base64 from "react-native-base64";
 import { Button as UpdateButton, Input } from "react-native-elements";
@@ -263,7 +263,7 @@ export default function ProfileScreen(props) {
           setDeactivateModal(false);
           setConfirmModal(false);
           SecureStore.deleteItemAsync('authToken');
-         let newUser = undefined;
+          let newUser = undefined;
           setUser(newUser);
           props.navigation.dispatch(
             CommonActions.reset({
@@ -305,47 +305,53 @@ export default function ProfileScreen(props) {
   };
   const [profilePic, setProfilePic] = React.useState("");
 
-    const updatePic = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        }).then((result) => {
-            if (!result.cancelled) {
-                setProfilePic(result.uri)
-                // Sending an API request to update the pic
-                const formData = new FormData();
-                formData.append('image', {
-                    uri: result.uri,
-                    name: result.uri,
-                    type: 'image/*'
-                });
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', Config.HOST + 'updateImage');
-                let auth: string = user?.authToken as string;
-                xhr.setRequestHeader('Authorization', auth);
-                xhr.send(formData);
-                xhr.onreadystatechange = e => {
-                    if (xhr.status === 200) {
-                        if (xhr.readyState == 4) {
-                            let newUser = {
-                                username: user?.username,
-                                name: user?.name,
-                                type: user?.type,
-                                email: user?.email,
-                                authToken: user?.authToken,
-                                image: (JSON.parse(xhr.response))["image"]
-                            } as UserType;
-                            console.log(newUser?.image)
-                            setUser(newUser);
-                        }
-                        Alert.alert("Profile picture has been updated");
-                    } else {
-                        console.log('error', xhr.responseText);
-                        Alert.alert("Sorry something went wrong, please try again");
-                    }
-                };                
-            }
-        });
+  const updatePic = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
+      }
     }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    }).then((result) => {
+      if (!result.cancelled) {
+        setProfilePic(result.uri)
+        // Sending an API request to update the pic
+        const formData = new FormData();
+        formData.append('image', {
+          uri: result.uri,
+          name: result.uri,
+          type: 'image/*'
+        });
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', Config.HOST + 'updateImage');
+        let auth: string = user?.authToken as string;
+        xhr.setRequestHeader('Authorization', auth);
+        xhr.send(formData);
+        xhr.onreadystatechange = e => {
+          if (xhr.status === 200) {
+            if (xhr.readyState == 4) {
+              let newUser = {
+                username: user?.username,
+                name: user?.name,
+                type: user?.type,
+                email: user?.email,
+                authToken: user?.authToken,
+                image: (JSON.parse(xhr.response))["image"]
+              } as UserType;
+              console.log(newUser?.image)
+              setUser(newUser);
+            }
+            Alert.alert("Profile picture has been updated");
+          } else {
+            console.log('error', xhr.responseText);
+            Alert.alert("Sorry something went wrong, please try again");
+          }
+        };
+      }
+    });
+  }
 
   return (
     <ScrollView>
@@ -588,17 +594,17 @@ export default function ProfileScreen(props) {
               <Avatar.Image
                 source={{
                   uri:
-                  user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
+                    user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
                 }}
                 size={120}
                 style={{ marginTop: 30, marginBottom: 30 }}
               />
               <Button
-                            icon="pencil"
-                            labelStyle={{ color: 'white', fontSize: 14 }}
-                            style={{ paddingBottom: 10 }}
-                            onPress={updatePic}>
-                            Update Picture
+                icon="pencil"
+                labelStyle={{ color: 'white', fontSize: 14 }}
+                style={{ paddingBottom: 10 }}
+                onPress={updatePic}>
+                Update Picture
                         </Button>
             </View>
           </ImageBackground>

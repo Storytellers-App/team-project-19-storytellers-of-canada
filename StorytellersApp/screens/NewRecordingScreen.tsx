@@ -14,7 +14,8 @@ import Slider from '@react-native-community/slider';
 import NewStoryButton from '../components/NewStoryButton';
 import Colors from '../constants/Colors';
 import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../types';
-
+import * as MediaLibrary from 'expo-media-library';
+import { ActivityIndicator } from 'react-native-paper';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "#f6f6f6";
@@ -48,6 +49,7 @@ type State = {
   shouldCorrectPitch: boolean;
   volume: number;
   rate: number;
+  isDownloading: boolean;
 };
 
 function StopAudio({ sound }: { sound: Audio.Sound | null }) {
@@ -100,6 +102,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       shouldCorrectPitch: true,
       volume: 1.0,
       rate: 1.0,
+      isDownloading: false
 
     };
 
@@ -166,7 +169,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       this.sound.unloadAsync();
     }
     if (this.recording) {
-      if(this.state.isRecording){
+      if (this.state.isRecording) {
         this.recording.stopAndUnloadAsync();
       }
     }
@@ -465,7 +468,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     this.setState({
       isLoading: true,
     });
-    if(this.sound){
+    if (this.sound) {
       await this.sound.unloadAsync();
     }
     if (audioUri === null || audioUri === undefined || audioUri === "") {
@@ -473,7 +476,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     }
     if (this.recording !== null) {
       this.recording.setOnRecordingStatusUpdate(null);
-      this.setState({recordingDuration: 0});
+      this.setState({ recordingDuration: 0 });
       this.recording = null;
     }
     await Audio.setAudioModeAsync({
@@ -487,12 +490,14 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     });
     const { sound: newSound } = await Audio.Sound.createAsync(
       { uri: audioUri },
-      { isLooping: true,
+      {
+        isLooping: true,
         isMuted: this.state.muted,
         volume: this.state.volume,
         rate: this.state.rate,
-        shouldCorrectPitch: this.state.shouldCorrectPitch, },
-        this._updateScreenForSoundStatus
+        shouldCorrectPitch: this.state.shouldCorrectPitch,
+      },
+      this._updateScreenForSoundStatus
     )
     this.sound = newSound;
     this.uri = audioUri;
@@ -500,7 +505,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       isLoading: false,
     });
   }
-  
+
   private onUploadPress = async () => {
     await DocumentPicker.getDocumentAsync({ type: 'audio/*' }).then(resp => {
       if (resp.type === 'success') {
@@ -512,6 +517,33 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
       // }
     })
   }
+  private onDownloadPress = async () => {
+    this.setState({isDownloading: true})
+    const perm = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (perm.status != 'granted') {
+      Alert.alert("This permission is required in order to download audio files");
+      this.setState({isDownloading: false})
+      return;
+    }
+    try {
+      if (this.uri) {
+        const asset = await MediaLibrary.createAssetAsync(this.uri);
+        const album = await MediaLibrary.getAlbumAsync('Download');
+        if (album == null) {
+          await MediaLibrary.createAlbumAsync('Download', asset, false);
+        } else {
+          await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+        }
+      }
+      this.setState({isDownloading: false})
+      Alert.alert("File has been successfully added to Downloads folder");
+    }
+    catch (e) {
+      this.setState({isDownloading: false})
+      Alert.alert("Something went wrong during saving");
+    }
+  }
+
   render() {
 
     if (!this.state.fontLoaded) {
@@ -604,7 +636,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             <View style={styles.playStopContainer}>
               <TouchableHighlight
                 underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
+                style={{ paddingLeft: 10 }}
                 onPress={this._onPlayPausePressed}
                 disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
               >
@@ -628,6 +660,15 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                 {/* <Image style={styles.image} source={Icons.STOP_BUTTON.module} /> */}
                 <MaterialIcons name="replay" size={34} color="black" />
               </TouchableHighlight>
+              {this.state.isDownloading ? <ActivityIndicator size="large" color='red' /> :  <TouchableHighlight
+                underlayColor={BACKGROUND_COLOR}
+                style={styles.wrapper}
+                onPress={this.onDownloadPress}
+                disabled={!this.state.isPlaybackAllowed || this.state.isLoading}
+              >
+                {/* <Image style={styles.image} source={Icons.STOP_BUTTON.module} /> */}
+                <MaterialIcons name="file-download" size={34} color="black" />
+              </TouchableHighlight> }
             </View>
             <View />
           </View>
@@ -733,16 +774,20 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             disabled={this.state.isLoading || this.state.isRecording}
             onPress={this.onUploadPress}
           >
-            <Text
-              style={{
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: 15,
-              }}>
-              Upload an audio file from your device
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+              <MaterialIcons style={{ paddingLeft: 10 }} name="file-upload" size={30} color="white" />
+              <Text
+                style={{
+                  paddingRight: 20,
+                  paddingVertical: 10,
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: 15,
+                }}>
+                Upload Existing File
                     </Text>
+            </View>
           </TouchableHighlight>
 
 
@@ -881,16 +926,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    paddingLeft: 30,
     justifyContent: "space-between",
-    minWidth: ((34 + 22) * 3.0) / 2.0,
-    maxWidth: ((34 + 22) * 3.0) / 2.0,
+    //minWidth: ((34 + 22) * 3.0) / 2.0,
+    //maxWidth: ((34 + 22) * 3.0) / 2.0,
   },
   volumeContainer: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    minWidth: DEVICE_WIDTH / 2.0,
+    //minWidth: DEVICE_WIDTH / 2.0,
     maxWidth: DEVICE_WIDTH / 2.0,
   },
   volumeSlider: {
