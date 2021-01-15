@@ -19,9 +19,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera roll to let users upload profile images and thumbnail images",
+        "NSMicrophoneUsageDescription": "This app uses the microphone to let users record stories",
+        "NSPhotoLibraryUsageDescription": "This app uses the media library to allow users to upload or download recorded stories"
+      }
     },
     "android": {
+      "permissions":["RECORD_AUDIO", "READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/SCCC_logo.png",
         "backgroundColor": "#FFFFFF"
