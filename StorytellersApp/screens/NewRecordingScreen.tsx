@@ -15,7 +15,7 @@ import NewStoryButton from '../components/NewStoryButton';
 import Colors from '../constants/Colors';
 import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../types';
 import * as MediaLibrary from 'expo-media-library';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Appbar } from 'react-native-paper';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "#f6f6f6";
@@ -75,6 +75,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
   private mounted: boolean | null;
   private parentStory: ResponseStory | undefined;
   private uri: string | null;
+  private navigation: NewRecordingNavigationProp;
   constructor(props: Props) {
     super(props);
     this.recording = null;
@@ -84,7 +85,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     this.shouldPlayAtEndOfSeek = false;
     this.user = props.route.params.user;
     this.uri = null;
-
+    this.navigation = props.navigation;
 
     this.parentStory = props.route.params.parent;
     this.state = {
@@ -569,6 +570,10 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     }
 
     return (
+      <View style={{ flex: 1 }}>
+      <Appbar.Header style={{ backgroundColor:  BACKGROUND_COLOR}}>
+      <Appbar.BackAction onPress={() => this.navigation.goBack()} />
+      </Appbar.Header>
       <View style={styles.container}>
         <StopAudio sound={this.sound}></StopAudio>
         <View
@@ -794,6 +799,8 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         </View>
 
       </View>
+      </View>
+      
 
 
     );
