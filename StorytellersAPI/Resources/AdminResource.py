@@ -2,16 +2,19 @@ import sqlalchemy
 from flask_restful import Resource, reqparse, abort, fields, marshal_with, \
     marshal
 from http import HTTPStatus
+
+from Services.GetUserService import GetUserService
 from extensions import db
 from models import Story, User, Tag, Comment
 from sqlalchemy.exc import *
 from sqlalchemy import func
 from datetime import datetime
-from common.Enums import StoryType
+from common.Enums import StoryType, UserType
 
 user_fields = {
     'username': fields.String,
     'name': fields.String,
+    'image': fields.String,
 }
 
 userstory_fields = {
@@ -21,6 +24,7 @@ userstory_fields = {
     'title': fields.String,
     'description': fields.String,
     'recording': fields.String,
+    'image': fields.String,
     'parent': fields.Integer,
     'parentType': fields.String,
     'numLikes': fields.Integer,
@@ -35,6 +39,7 @@ storysave_fields = {
     'creationTime': fields.DateTime,
     'title': fields.String,
     'description': fields.String,
+    'image': fields.String,
     'recording': fields.String,
     'numLikes': fields.Integer,
     'numReplies': fields.Integer,
@@ -65,7 +70,18 @@ class Admin(Resource):
         get_responses_args.add_argument("time",
                                         type=lambda x: datetime.strptime(x,
                                                                          '%Y-%m-%d %H:%M:%S'))
+        get_responses_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
+
         args = get_responses_args.parse_args()
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        if temp_user.type != UserType.ADMIN.value:
+            return HTTPStatus.FORBIDDEN
         time = None
         if 'time' in args and args['time'] is not None:
             time = args['time']
@@ -97,8 +113,10 @@ class Admin(Resource):
                                                 Story.approvedTime.label(
                                                     'approvedTime'),
                                                 sqlalchemy.sql.null().label(
-                                                    'comment')
+                                                    'comment'),
+                                                Story.deleted.label('deleted'),
                                                 )
+
             comments = Comment.query.with_entities(Comment.id.label('id'),
                                                    Comment.username.label(
                                                        'username'),
@@ -128,13 +146,18 @@ class Admin(Resource):
                                                    Comment.approvedTime.label(
                                                        'approvedTime'),
                                                    Comment.comment.label(
-                                                       'comment'))
+                                                       'comment'),
+                                                   Comment.deleted.label(
+                                                       'deleted'),
+                                                   )
 
             both = stories.union(comments).subquery()
 
             responses = db.session.query(both).with_entities(both.c.id,
                                                              both.c.username,
                                                              User.name,
+                                                             User.image.label(
+                                                                 "userImage"),
                                                              both.c.creationTime,
                                                              both.c.title,
                                                              both.c.description,
@@ -151,7 +174,8 @@ class Admin(Resource):
                 User, User.username == both.c.username).order_by(
                 both.c.creationTime.desc(), both.c.id.desc()).filter(
                 both.c.approved.is_(False)).filter(
-                both.c.creationTime < time).paginate(
+                both.c.creationTime < time).filter(
+                both.c.deleted.is_(False)).paginate(
                 args['page'], args['per_page'], False).items
             marshal_list = []
             for response in responses:
@@ -160,8 +184,7 @@ class Admin(Resource):
                     tags = Tag.query.filter_by(storyid=response.id)
                 format_response = {
                     'id': response.id,
-                    'user': {'username': response.username,
-                             'name': response.name},
+                    "user": {"username": response.username, "name": response.name, "image": response.userImage},
                     'creationTime': response.creationTime,
                     'title': response.title,
                     'description': response.description,
@@ -200,8 +223,18 @@ class Admin(Resource):
         get_user_stories_args.add_argument("approved", type=bool, default=True)
         get_user_stories_args.add_argument("type", type=str,
                                            default=StoryType.USER.value)
-        args = get_user_stories_args.parse_args()
+        get_user_stories_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
 
+        args = get_user_stories_args.parse_args()
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        if temp_user.type != UserType.ADMIN.value:
+            return HTTPStatus.FORBIDDEN
         try:
             if args['type'] == StoryType.USER.value or args[
                 'type'] == StoryType.SAVED.value:

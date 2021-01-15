@@ -1,23 +1,25 @@
-import React from 'react';
-import { TouchableOpacity } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { RootStackParamList } from '../../types';
-
-import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useContext } from 'react';
+import { Alert, TouchableOpacity } from 'react-native';
+import { AppContext } from '../../AppContext';
+import { RootStackParamList, UserType } from '../../types';
+import styles from './styles';
 
 
-const NewRecordingButton = ({user}: {user?: string}) => {
-
+const NewRecordingButton = ({ user }: { user?: UserType}) => {
+    const { setIsPlaying, setIsRadioPlaying } = useContext(AppContext);
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-
     const onPress = () => {
         console.log('open recording screen');
-        if (user === undefined){
+        if (user === undefined || user === null || user.username === "") {
+            Alert.alert("Please login to record a story");
             return;
         }
-        navigation.navigate("NewRecording", {username: user});  
+        setIsPlaying(false);
+        setIsRadioPlaying(false);
+        navigation.navigate("NewRecording", { user: user});
     }
     return (<TouchableOpacity style={styles.button}
         onPress={onPress}

@@ -4,7 +4,7 @@
     "slug": "StorytellersApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/storytellericon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -19,11 +19,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app uses the microphone to let users record stories",
+        "NSPhotoLibraryUsageDescription": "This app uses the media library to allow users to upload or download recorded stories"
+      }
     },
     "android": {
+      "permissions":["RECORD_AUDIO", "READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/SCCC_logo.png",
         "backgroundColor": "#FFFFFF"
       }
     },

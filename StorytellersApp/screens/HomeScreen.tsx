@@ -1,96 +1,70 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useContext, useEffect } from 'react';
 import {
-  View,
-  TextInput,
-  Image,
-  ScrollView,
-  StyleSheet,
-  ScrollViewProps,
-} from "react-native";
-import { useScrollToTop, useTheme } from "@react-navigation/native";
+  StyleSheet, TextInput, View
+} from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import {
-  Card,
-  Text,
-  Avatar,
-  Subheading,
-  IconButton,
-  Divider,
-  Searchbar,
   Appbar,
   Button,
-  Portal,
-} from "react-native-paper";
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
-import ProfilePicture from "../components/ProfilePicture";
-import UserStory from "../components/UserStory";
-import Feed from "../components/Feed";
-import NewRecordingButton from "../components/NewRecordingButton";
-import { UserType } from "../types";
-import AsyncStorage from "@react-native-community/async-storage";
-import { Icon } from "react-native-paper/lib/typescript/src/components/Avatar/Avatar";
-import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { SearchBar } from "react-native-elements";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import RecentPosts from "../components/RecentPosts";
+  IconButton,
+  Portal, Searchbar, Text
+} from 'react-native-paper';
+import Feed from '../components/Feed';
+import NewRecordingButton from '../components/NewRecordingButton';
+import ProfilePicture from '../components/ProfilePicture';
+import useColorScheme from '../hooks/useColorScheme';
+import { UserContext } from '../UserContext';
+import { useScrollToTop } from '@react-navigation/native';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
+  
   const ref = React.useRef<TextInput>(null);
-  const [user, setUser] = useState<UserType | null>(null);
-  const [searchText, setSearchText] = React.useState("");
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const scrollRef = React.useRef(null);
+  useScrollToTop(scrollRef);
+  const {user} = useContext(UserContext);
+  const [searchText, setSearchText] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [focus, setFocus] = React.useState(false);
   const [helpOpen, setHelpOpen] = React.useState(false);
-  const [notificationsOpen, setNotificationsOpen] = React.useState(false);
+  
   const colorScheme = useColorScheme();
 
-  const getUser = async () => {
-    const username = await AsyncStorage.getItem("username");
-    const name = await AsyncStorage.getItem("name");
-    const type = await AsyncStorage.getItem("image");
-    const image = await AsyncStorage.getItem("image");
-    let user = {
-      username: username,
-      name: name,
-      type: type,
-      image: image,
-    } as UserType;
-    setUser(user);
-  };
 
   const onChangeSearch = (query: string) => {
     setSearchText(query);
-  };
+  }
 
   const onSubmit = () => {
     setSearchQuery(searchText);
-  };
+  }
 
   useEffect(() => {
-    if (searchText == "" && !ref.current?.isFocused()) {
+    if (searchText == '' && !ref.current?.isFocused()) {
       setSearchQuery(searchText);
     }
-  }, [searchText, focus]);
+  }, [searchText, focus])
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
+  
+  const openDrawer = () => {
+    navigation.toggleDrawer();
+  }
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header style={{ backgroundColor: "white" }}>
         <View style={{ marginLeft: 7 }}>
-          <ProfilePicture
+          <TouchableOpacity onPress={openDrawer}>
+          {  user === null || user === undefined || user.image === "" ? <IconButton size={25} icon={"menu"} /> : <ProfilePicture
             image={
-              user === null
+              user === null || user === undefined
                 ? undefined
-                : user.image === null
+                : user.image === null || user.image === undefined 
                 ? "https://ui-avatars.com/api/?background=006699&color=fff&name=" +
                   user.name
                 : user.image
             }
-            size={42}
-          />
+            size={45}
+          />}
+          </TouchableOpacity>
         </View>
         {/* <Appbar.Content title="Home" /> */}
         <View style={{ flex: 1, marginLeft: 10 }}>
@@ -116,23 +90,12 @@ export default function HomeScreen() {
           <Portal>
             <View style={styles.faded}>
               <View style={styles.message}>
-                <Text style={styles.messageTextLoud}>
-                  This is the Home Screen
-                </Text>
-                <Text style={styles.messageText}>
-                  All of the stories made by users will appear here. You can
-                  scroll through them, or click on any story to view its
-                  comments.
-                </Text>
-                <Text style={styles.messageText}>
-                  If you want to "like" a story, tap the heart. If you want to
-                  comment on a story, tap the speech bubble.
-                </Text>
+                <Text style={styles.messageTextLoud}>This is the Home Screen</Text>
+                <Text style={styles.messageText}>All of the stories made by users will appear here. You can scroll through them, or click on any story to view its comments.</Text>
+                <Text style={styles.messageText}>If you want to "like" a story, tap the heart. If you want to comment on a story, tap the speech bubble.</Text>
               </View>
               <View style={styles.message2}>
-                <Text style={styles.messageText}>
-                  Tap the blue microphone button to record your own story!
-                </Text>
+              <Text style={styles.messageText}>Tap the blue microphone button to record your own story!</Text>
               </View>
             </View>
             <TouchableOpacity
@@ -141,32 +104,10 @@ export default function HomeScreen() {
             />
           </Portal>
         )}
-        <Button
-          onPress={() => {
-            setNotificationsOpen(!notificationsOpen);
-          }}
-        >
-          &#x24D8;
-        </Button>
-        {notificationsOpen && (
-          <Portal>
-            <View style={styles.faded}>
-              <View style={styles.message}>
-                <Text style={styles.messageTextLoud}>Recent Post Activity</Text>
-                <Text></Text>
-                <RecentPosts />
-              </View>
-            </View>
-            <TouchableOpacity
-              style={{ height: "100%" }}
-              onPress={() => setNotificationsOpen(false)}
-            />
-          </Portal>
-        )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <Feed key={searchQuery} search={searchQuery}></Feed>
-      <NewRecordingButton user={user?.username} />
+      <Feed scrollRef={scrollRef} key={searchQuery} search={searchQuery} user={user}></Feed>
+      <NewRecordingButton user={user}/>
     </View>
   );
 }

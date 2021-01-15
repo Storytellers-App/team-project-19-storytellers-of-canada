@@ -61,6 +61,15 @@ const styles = StyleSheet.create({
         marginRight: 5,
         color: 'grey',
     },
+    topImage: {
+        flex: 1,
+        resizeMode: 'contain',
+        width: '100%',
+        height: 175,
+        borderRadius: 10,
+        marginBottom: 5,
+        overflow: 'hidden',
+    },
 });
 
 export default styles;

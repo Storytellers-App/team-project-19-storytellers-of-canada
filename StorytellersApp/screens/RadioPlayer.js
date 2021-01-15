@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox, TouchableOpacity } from 'react-native';
+import React, { Component, useContext } from 'react';
+import { Text, View, StyleSheet, Image, TouchableWithoutFeedback, LogBox, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Appbar, Button, Portal } from 'react-native-paper';
 import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { Audio } from 'expo-av';
 import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
-
+import { AppContext } from '../AppContext';
+let loading = false;
 export default class RadioPlayer extends React.Component {
-
-
+    static contextType = AppContext
     constructor() {
         super();
         this.state = {
@@ -16,10 +16,11 @@ export default class RadioPlayer extends React.Component {
             audioState: 'notLoaded',
             nowPlaying: ''
         };
-        this.updateNowPlaying();
+        this.timer = setInterval(() => this.updateNowPlaying(), 5000);
     }
-
     async componentDidMount() {
+        this.mounted = true;
+        this.updateNowPlaying();
         // await Audio.setAudioModeAsync({
         //     playsInSilentModeIOS: true,
         //     allowsRecordingIOS: false,
@@ -36,8 +37,15 @@ export default class RadioPlayer extends React.Component {
             playThroughEarpieceAndroid: false,
         });
     }
+    componentWillUnmount() {
+        this.mounted = false;
+        clearInterval(this.timer);
+    }
 
     _onPlaybackStatusUpdate = playbackStatus => {
+        if (!this.mounted) {
+            return;
+        }
         if (!playbackStatus.isLoaded) {
             // Not loaded
             if (playbackStatus.error) {
@@ -49,6 +57,15 @@ export default class RadioPlayer extends React.Component {
             }
         } else {
             if (playbackStatus.isPlaying) {
+                if (!this.context.isRadioPlaying) {
+                    this.state.sound.stopAsync();
+                    this.state.sound = new Audio.Sound();
+                    this.context.setIsRadioPlaying(false);
+                    this.setState((state) => {
+                        return { audioState: 'audioStopped' }
+                    });
+                    return;
+                }
                 // Update the state
                 this.setState((state) => {
                     return { audioState: 'audioPlaying' }
@@ -68,10 +85,20 @@ export default class RadioPlayer extends React.Component {
     }
 
     toggleAudio = async () => {
+        if (loading || !this.mounted) {
+            return;
+        }
         if (this.state.audioState === 'notLoaded' || this.state.audioState === 'errorLoading' ||
             this.state.audioState === 'audioStopped') {
+            loading = true;
+            if (this.state.sound != null) {
+                await this.state.sound.unloadAsync();
+            }
+            this.setState({ audioState: "audioLoading" });
+            this.context.setIsRadioPlaying(true);
+            this.context.setIsPlaying(false);
             this.state.sound.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
-            this.state.sound.loadAsync(
+            await this.state.sound.loadAsync(
                 { uri: 'https://streams.radio.co/s8d7990b82/listen' },
                 {
                     shouldPlay: true,
@@ -79,12 +106,16 @@ export default class RadioPlayer extends React.Component {
                 },
                 // downloadFirst = false // This parameter is needed for stories, otherwise it downloads it all before playing
             );
+            loading = false;
         } else if (this.state.audioState === 'audioPlaying') {
             // It's a stop button
             // Stop the stream completely
             this.state.sound.stopAsync();
             this.state.sound = new Audio.Sound();
+            this.context.setIsRadioPlaying(false);
         } else if (this.state.audioState === 'audioStopped') {
+            this.context.setIsRadioPlaying(true);
+            this.context.setIsPlaying(false);
             // It's a play button, maybe just clicking play works...
 
         } else if (this.state.audioState === 'audioBuffering') {
@@ -100,6 +131,9 @@ export default class RadioPlayer extends React.Component {
     }
 
     updateNowPlaying = async () => {
+        if (!this.mounted) {
+            return;
+        }
         fetch("https://public.radio.co/api/v2/s8d7990b82/track/current", {
             headers: new Headers({
                 'pragma': 'no-cache',
@@ -108,9 +142,11 @@ export default class RadioPlayer extends React.Component {
         })
             .then(response => response.json())
             .then((responseData) => {
-                this.setState({
-                    nowPlaying: responseData.data.title
-                })
+                if (this.mounted) {
+                    this.setState({
+                        nowPlaying: responseData.data.title
+                    })
+                }
             })
             .catch((error) => {
                 console.error(error);
@@ -120,54 +156,54 @@ export default class RadioPlayer extends React.Component {
     render() {
         return (
 
-          <View style={{ flex: 1 }}>
-            <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display:'flex' }}>
-                <Text style={{fontSize: 20}}>SC-Radio-CC</Text>
-                <Button
-                  style={{marginLeft: "auto"}}
-                  onPress={() => {
-                    this.setState({ helpOpen: !this.state.helpOpen });
-                  }}
-                >
-                  HELP
+            <View style={{ flex: 1 }}>
+                <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display: 'flex' }}>
+                    <Text style={{ fontSize: 20 }}>SC-Radio-CC</Text>
+                    <Button
+                        style={{ marginLeft: "auto" }}
+                        onPress={() => {
+                            this.setState({ helpOpen: !this.state.helpOpen });
+                        }}
+                    >
+                        HELP
                 </Button>
                 </Appbar.Header>
                 {this.state.helpOpen && (
-                  <Portal>
-                    <View style={styles.faded}>
-                      <View style={styles.message}>
-                        <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
-                        <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
-                      </View>
-                    </View>
-                    <TouchableOpacity
-                      style={{ height: "100%" }}
-                      onPress={() => this.setState({ helpOpen: false })}
-                    />
-                  </Portal>
+                    <Portal>
+                        <View style={styles.faded}>
+                            <View style={styles.message}>
+                                <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
+                                <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity
+                            style={{ height: "100%" }}
+                            onPress={() => this.setState({ helpOpen: false })}
+                        />
+                    </Portal>
                 )}
 
-            <View style={styles.container}>
-                <Image
-                    style={styles.logo}
-                    source={require('../assets/images/SCCC_logo.png')}
-                />
-                <Text style={styles.nowPlayingText} numberOfLines={2}>
-                    {this.state.nowPlaying}
-                </Text>
-                <Text style={styles.liveText}>Live</Text>
-                <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                <View style={styles.container}>
                     <Image
-                        style={styles.playButton}
-                        source={
-                            this.state.audioState === 'audioPlaying' || this.state.audioState === 'audioBuffering' ?
-                                require('../assets/images/Stop.png') :
-                                require('../assets/images/Play.png')
-                        }
+                        style={styles.logo}
+                        source={require('../assets/images/SCCC_logo.png')}
                     />
-                </TouchableWithoutFeedback>
+                    <Text style={styles.nowPlayingText} numberOfLines={2}>
+                        {this.state.nowPlaying}
+                    </Text>
+                    <Text style={styles.liveText}>Live</Text>
+                    {loading || this.state.audioState === 'audioBuffering' || this.state.audioState === 'audioLoading' ? <ActivityIndicator size="large" color='red' /> : <TouchableWithoutFeedback onPress={this.toggleAudio}>
+                        <Image
+                            style={styles.playButton}
+                            source={
+                                this.state.audioState === 'audioPlaying' ?
+                                    require('../assets/images/Stop.png') :
+                                    require('../assets/images/Play.png')
+                            }
+                        />
+                    </TouchableWithoutFeedback>}
+                </View>
             </View>
-          </View>
         );
     }
 }
@@ -204,11 +240,11 @@ const styles = StyleSheet.create({
         color: 'red'
     },
     faded: {
-      backgroundColor: '#00000099',
-      position: 'absolute',
-      zIndex: 0,
-      height: '100%',
-      width: '100%',
+        backgroundColor: '#00000099',
+        position: 'absolute',
+        zIndex: 0,
+        height: '100%',
+        width: '100%',
     },
     message: {
         top: '15%',
@@ -228,5 +264,5 @@ const styles = StyleSheet.create({
         padding: 3,
         fontSize: 16,
     },
-  });
+});
 

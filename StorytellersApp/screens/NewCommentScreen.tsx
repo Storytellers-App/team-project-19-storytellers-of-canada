@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-  Platform,
-  Image,
-  Alert,
-} from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
-
-import { Text, View } from '../components/Themed';
 import { AntDesign } from "@expo/vector-icons";
-import Colors from "../constants/Colors";
-import ProfilePicture from "../components/ProfilePicture";
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, UserType } from '../types';
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
+import React, { useState } from 'react';
+import {
+  Alert, Platform, SafeAreaView, StyleSheet,
+
+
+  TextInput, TouchableOpacity
+} from 'react-native';
+import { Text, View } from '../components/Themed';
 import { HOST } from '../config';
+import Colors from "../constants/Colors";
+import { RootStackParamList } from '../types';
+
+
 
 let url = HOST
 
@@ -37,29 +32,41 @@ export default function NewCommentScreen({ route, navigation }: Props) {
   const [comment, setComment] = useState("");
   const parent = route.params.parent;
   const user = route.params.user;
+  const [isLoading, setIsLoading] = useState(false);
 
   const onPostComment = async () => {
-    if (parent === undefined || comment === "" || user === undefined) {
+    if (isLoading) {
       return;
     }
+    if (parent === undefined || comment === "" || user === undefined || user === null) {
+      return;
+    }
+
+    setIsLoading(true);
     try {
       axios({
         method: 'post', url: url + 'comment', data: {
           parent: parent.id,
           parentType: parent.type,
-          username: user,
+          auth_token: user.authToken,
           comment: comment,
         }
       })
         .then(response => {
+          setIsLoading(false);
+
           Alert.alert("Your submission is under review!")
           navigation.goBack();
         })
         .catch((error) => {
           console.error(error);
+          setIsLoading(false);
+          Alert.alert("Sorry something went wrong, please try again.");
         });
     } catch (e) {
       console.log(e);
+      setIsLoading(false);
+      Alert.alert("Sorry something went wrong, please try again.");
     }
 
 

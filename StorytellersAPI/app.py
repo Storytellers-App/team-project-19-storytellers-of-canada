@@ -20,7 +20,16 @@ from Resources.StoryUploadResource import StoryUpload
 from Resources.EmailVerificationWithUsername import EmailVerificationWithUsername
 from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
 from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
+
+from Resources.UpdateNameResource import UpdateName
+from Resources.UpdateEmailResource import UpdateEmail
+from Resources.UpdatePasswordResource import UpdatePassword
+from Resources.UpdateImageResource import UpdateImage
+from Resources.PromoteUserResource import PromoteUser
+from Resources.DeactivateResource import Deactivate
+from Resources.AuthTokenLoginResource import AuthTokenLogin
 from Resources.GDPRResource import GDPRResource
+
 
 # test database
 from Resources.TestResource import TestDB
@@ -47,6 +56,9 @@ api.add_resource(TestDB, '/testdb')
 # GET /login?username&password
 api.add_resource(Login, '/login')
 
+# GET /authTokenLogin
+api.add_resource(AuthTokenLogin, '/authTokenLogin')
+
 # POST /register?name&email&username&password
 api.add_resource(Register, '/register')
 api.add_resource(Stories, '/stories')
@@ -56,7 +68,8 @@ api.add_resource(RemoveLikes, '/stories/removelike')
 api.add_resource(Admin, '/admin')
 api.add_resource(CommentRes, '/comment')
 api.add_resource(EmailVerification, '/emailVerification')
-api.add_resource(EmailVerificationWithUsername, '/emailVerification/noUsername')
+api.add_resource(EmailVerificationWithUsername,
+                 '/emailVerification/noUsername')
 api.add_resource(SendForgotPasswordEmailResource, '/sendForgotPasswordEmail')
 api.add_resource(ResetForgotPasswordResource, '/resetForgotPassword')
 api.add_resource(GDPRResource, '/gdpr')
@@ -72,6 +85,18 @@ api.add_resource(StoryUpload, '/story_upload')
 
 # GET /story_fetch?key&bucket
 api.add_resource(StoryFetch, '/story_fetch')
+
+# Update user info resources
+api.add_resource(UpdateName, '/updateName')
+api.add_resource(UpdateEmail, '/updateEmail')
+api.add_resource(UpdatePassword, '/updatePassword')
+api.add_resource(UpdateImage, '/updateImage')
+
+# Promote user to Admin
+api.add_resource(PromoteUser, '/promoteUser')
+
+# POST /deactivate
+api.add_resource(Deactivate, '/deactivate')
 
 if __name__ == '__main__':
     # host = ''  # ip host address

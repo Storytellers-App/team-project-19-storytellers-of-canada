@@ -1,32 +1,39 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, FlatList } from 'react-native';
-
-import UserStory from '../UserStory';
-import SavedStory from '../SavedStory';
-import { UserStoryType, UserType, StoryType, StorySaveType, ResponseType, CommentType } from "../../types";
 import axios from 'axios';
 import moment from 'moment';
-import Comment from '../Comment';
-import {
-    Text,
-} from 'react-native-paper';
-
-
+import React, { Component } from 'react';
+import { FlatList } from 'react-native';
 import * as Config from '../../config';
+import { CommentType, ResponseType, StorySaveType, UserStoryType, UserType } from "../../types";
+import Comment from '../Comment';
+import SavedStory from '../SavedStory';
+import UserStory from '../UserStory';
 
 let url = Config.HOST
 
 type Props = {
-    response: ResponseType;
+    user: UserType | undefined | null;
+    scrollRef: any;
 }
+type State = {
+    posts: ResponseType[],
+    page: number,
+    loading: boolean,
+    sessionStart: string
+};
 
-export default class AdminFeed extends Component {
-
-    state = {
-        posts: [] as ResponseType[],
-        page: 1,
-        loading: true,
-        sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+export default class AdminFeed extends Component<Props, State> {
+    private user: UserType | null | undefined;
+    private scrollRef: any;
+    constructor(props: Props) {
+        super(props);
+        this.user = props.user;
+        this.scrollRef = props.scrollRef;
+        this.state = {
+            posts: [] as ResponseType[],
+            page: 1,
+            loading: true,
+            sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
+        };
     };
 
     fetchStories = async () => {
@@ -42,7 +49,8 @@ export default class AdminFeed extends Component {
             axios.get(url + 'admin', {
                 params: {
                     time: sessionStart,
-                    page: page
+                    page: page,
+                    auth_token: this.user?.authToken,
                 }
             })
                 .then(response => {
@@ -102,19 +110,18 @@ export default class AdminFeed extends Component {
     };
 
 
-
-    Response = ({ response }: Props) => {
+    Response = ({ response }: { response: ResponseType }) => {
         if ((response as StorySaveType).author) {
-            return <SavedStory story={response as StorySaveType} admin={true}></SavedStory>;
+            return <SavedStory story={response as StorySaveType} admin={true} user={this.user}></SavedStory>;
         }
         else if ((response as CommentType).comment) {
             return (
-                <Comment comment={response as CommentType} admin={true}></Comment>
+                <Comment comment={response as CommentType} admin={true} user={this.user}></Comment>
             );
         }
         else {
             return (
-                <UserStory story={response as UserStoryType} admin={true}></UserStory>
+                <UserStory story={response as UserStoryType} admin={true} user={this.user}></UserStory>
             );
         }
     }
@@ -125,6 +132,7 @@ export default class AdminFeed extends Component {
 
             <FlatList
                 data={posts}
+                ref={this.scrollRef}
                 renderItem={({ item }) => <this.Response response={item} />}
                 keyExtractor={item => item.id.toString()}
                 refreshing={this.state.loading}

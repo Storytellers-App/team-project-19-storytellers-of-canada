@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
-import AsyncStorage from '@react-native-community/async-storage'
+import * as SecureStore from 'expo-secure-store';
 import base64 from 'react-native-base64'
 
 import * as Config from '../config';
@@ -11,15 +11,15 @@ import * as Config from '../config';
  * Class for the login screen component
  */
 export default class LoginScreen extends Component {
-
     /**
      * Constructor
      */
     constructor() {
         super()
-        this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "" }
+        this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "", renderScreen: false }
         this.login = this.login.bind(this)
         this.host = Config.HOST
+        this.checkPrevLogin();
     }
 
     /**
@@ -32,14 +32,14 @@ export default class LoginScreen extends Component {
     /**
      * Redirect to the main page
      */
-    goToHome(isAdmin) {
-        Actions.HomeScreen({admin: isAdmin});
+    goToHome(user = null) {
+        Actions.reset("HomeScreen", { user: user });
     }
 
     /**
      * Redirect to the admin page
      */
-    goToAdmin(){
+    goToAdmin() {
         Actions.AdminScreen();
     }
 
@@ -47,7 +47,7 @@ export default class LoginScreen extends Component {
      * Redirect to the email verification page
      */
     goToEmailVerification() {
-        Actions.EmailVerification({email: "", code: "", username: this.state.username});
+        Actions.EmailVerification({ email: "", code: "", username: this.state.username });
     }
 
     /**
@@ -60,18 +60,44 @@ export default class LoginScreen extends Component {
      * Set app-wide user information
      */
     setUserInfo = async () => {
-        await AsyncStorage.setItem("username", this.state.username)
-        await AsyncStorage.setItem("name", this.state.name)
-        await AsyncStorage.setItem("email", this.state.email)
-        await AsyncStorage.setItem("authToken", this.state.authToken)
-        await AsyncStorage.setItem("type", this.state.type)
+        await SecureStore.setItemAsync("authToken", this.state.authToken)
     }
 
+    checkAuth = async (authToken) => {
+          // Submitting a login request
+          fetch(this.host + 'authTokenLogin', {
+            headers: new Headers({
+                'Authorization': authToken
+            })
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(result => {
+                if (result["success"]) {
+                    // Setting app-wide info
+                    this.state.username = result['username']
+                    this.state.authToken = result["authToken"]
+                    this.state.name = result["name"]
+                    this.state.email = result["email"]
+                    this.state.type = result["type"]
+                    let user = { username: result['username'], authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"], image: result["image"] }
+                    this.setUserInfo();
+                    this.goToHome(user);
+                }
+            })
+            .catch((error) => {
+                Alert.alert(
+                    "Connection Error"
+                )
+                console.error(error);
+            });
+    }
     /**
      * Login to the Storytellers app
      */
     login = async () => {
-        
+
         if (this.state.username === "" || this.state.password === "") {
             Alert.alert(
                 "Missing Login Information",
@@ -80,10 +106,10 @@ export default class LoginScreen extends Component {
         } else {
             // Submitting a login request
             fetch(this.host + 'login', {
-                    headers: new Headers({
-                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
-                    })
+                headers: new Headers({
+                    'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
                 })
+            })
                 .then(response => {
                     return response.json()
                 })
@@ -95,20 +121,15 @@ export default class LoginScreen extends Component {
                         this.state.name = result["name"]
                         this.state.email = result["email"]
                         this.state.type = result["type"]
-                        this.setUserInfo()
-                        if (this.state.type === "ADMIN"){
-                            // Going to the admin screen
-                            this.goToHome(true);
-                        } else {
-                            // Going to the home screen
-                            this.goToHome(false);
-                        }
-                        
+                        let user = { username: this.state.username, authToken: result["authToken"], name: result["name"], email: result["email"], type: result["type"], image: result["image"] }
+                        this.setUserInfo();
+                        this.goToHome(user);
+
                     } else {
                         console.log(result);
                         console.log(result["active"]);
                         console.log(!result["active"]);
-                        console.log(result["active"] === undefined); 
+                        console.log(result["active"] === undefined);
                         if (result["active"] === undefined) {
                             // Invalid login information
                             Alert.alert(
@@ -121,7 +142,7 @@ export default class LoginScreen extends Component {
                                 this.goToEmailVerification();
                             }
                         }
-                        
+
                     }
                 })
                 .catch((error) => {
@@ -132,11 +153,24 @@ export default class LoginScreen extends Component {
                 });
         }
     }
+    checkPrevLogin = async () => {
+
+        let authToken = await SecureStore.getItemAsync("authToken")
+
+        if (authToken != "" && authToken != null && authToken != undefined) {
+            this.checkAuth(authToken);
+            return;
+        }
+        this.setState({ renderScreen: true });
+    }
 
     /**
      * Render the login screen
      */
     render() {
+        if (!this.state.renderScreen) {
+            return null;
+        }
         return (
             <View style={styles.container}>
                 {/* Storytellers of Canada logo */}
@@ -154,14 +188,14 @@ export default class LoginScreen extends Component {
                     <Input
                         style={styles.input}
                         placeholder="Username"
-                        autoCapitalize = 'none'
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
                         style={styles.input}
                         secureTextEntry={true}
                         placeholder="Password"
-                        autoCapitalize = 'none'
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
                 </View>
@@ -187,7 +221,7 @@ export default class LoginScreen extends Component {
                 {/* Option to enter the app as a guest */}
                 <View style={styles.guestButtonText}>
                     <Text style={styles.text}>Don't want an account?</Text>
-                    <TouchableOpacity onPress={this.goToHome}>
+                    <TouchableOpacity onPress={() => { this.goToHome() }}>
                         <Text style={styles.buttonText}> Login as a Guest</Text>
                     </TouchableOpacity>
                 </View>

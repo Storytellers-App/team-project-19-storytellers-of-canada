@@ -31,4 +31,6 @@ class Login(Resource):
             return jsonify(success=False, active=False)
 
         # Returning the authToken is successful
-        return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email, type=user.type)
+        if user.image is None:
+            user.image = "https://ui-avatars.com/api/?background=006699&color=fff&name=" + user.name
+        return jsonify(success=True, authToken=user.authToken, name=user.name, email=user.email, type=user.type, image=user.image)

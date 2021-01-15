@@ -1,14 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
 import Routes from './Routes';
-import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-
-
 
 declare global {
   namespace ReactNativePaper {
@@ -28,26 +24,25 @@ const theme = {
   dark: false,
   roundness: 2,
   colors: {
-     ...DefaultTheme.colors,
+    ...DefaultTheme.colors,
     primary: '#3498db',
     accent: '#f1c40f',
-    
+
   }
 };
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-
   if (!isLoadingComplete) {
     return null;
   } else {
     return (
-       /*@ts-ignore*/
+      /*@ts-ignore*/
       <PaperProvider theme={theme}>
         <SafeAreaProvider>
           <Routes />
-          <StatusBar style='dark'/>
+          <StatusBar style='dark' />
         </SafeAreaProvider>
       </PaperProvider>
     );

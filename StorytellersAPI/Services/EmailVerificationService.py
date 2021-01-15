@@ -24,7 +24,12 @@ class EmailVerificationService:
         try:
             code = VerificationCode.query.filter_by(email=emailInput).first()
             valid = code.code == validationTokenInput
-
+            if code.attempts >= 5:
+                # Delete and resend the code
+                VerificationCode.query.filter_by(email=emailInput).delete()
+                db.session.commit()
+                self.validate_new_email(emailInput, "")
+                return False
             if valid:
                 # Delete the code
                 try:
@@ -35,6 +40,8 @@ class EmailVerificationService:
                     print(e)
                     return False
             else:
+                code.attempts = code.attempts + 1
+                db.session.commit()
                 return False
 
         except Exception as e:
@@ -96,7 +103,6 @@ Thanks,
 
 Storytellers of Canada
 """
-        print("Validation code is" + str(code))
         self.send_email(email, code, email_message)
 
     def send_password_reset_email(self, email):
@@ -108,6 +114,8 @@ Storytellers of Canada
         user = user_service.getUserWithEmail(email)
         if user is None:
             return False
+
+        self._delete_previous_verification_codes(email)
 
         # User is valid, generate the email then send it
         code = randint(100000, 999999)
@@ -124,10 +132,25 @@ Storytellers of Canada
         self.send_email(email, code, email_message)
         return True
 
+    def _delete_previous_verification_codes(self, email: str):
+        """
+        Delete any previous verification codes that exist
+        """
+        try:
+            # Delete anything previous codes if they exist
+            VerificationCode.query.filter_by(email=email).delete()
+            db.session.commit()
+        except Exception as e:
+            print(e)
+
     def send_email(self, reciever, code, email_message):
         try:
+
+            self._delete_previous_verification_codes(reciever)
+
             verification_code = VerificationCode(email=reciever,
-                                                 code=str(code))
+                                                 code=str(code),
+                                                 attempts=0)
             db.session.add(verification_code)
             db.session.commit()
 

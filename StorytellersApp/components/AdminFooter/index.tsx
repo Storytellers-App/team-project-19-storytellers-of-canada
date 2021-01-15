@@ -1,31 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import {
-    View,
-    TextInput,
-    Image,
-    ScrollView,
-    StyleSheet,
-    ScrollViewProps,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-} from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
-import {
-    Card,
-    Text,
-    Avatar,
-    Subheading,
-    IconButton,
-    Divider,
-} from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { UserStoryType, ResponseType } from '../../types';
-import styles from './styles';
-import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import { HOST } from '../../config'
+import React, { useState } from 'react';
+import {
+    View
+} from 'react-native';
+import {
+    IconButton
+} from 'react-native-paper';
+import { HOST } from '../../config';
+import { ResponseType, UserType } from '../../types';
+import styles from './styles';
 export type UserStoryProps = {
     story: ResponseType,
+    user: UserType | undefined | null,
 }
 let url = HOST
 
@@ -33,7 +19,7 @@ const AdminFooter = (props: UserStoryProps) => {
 
 
     const [approved, setApproved] = useState<boolean | null>(null);
-
+    const { user } = props;
 
 
     const approve = async () => {
@@ -41,11 +27,11 @@ const AdminFooter = (props: UserStoryProps) => {
             axios({
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
+                    auth_token: user?.authToken,
                     approved: true,
                     parent_type: props.story.parentType === undefined ? null : props.story.parentType,
                     type: props.story.type
                 }
-
             })
                 .then(response => {
                     setApproved(true);
@@ -64,10 +50,10 @@ const AdminFooter = (props: UserStoryProps) => {
                 method: 'post', url: url + 'admin', data: {
                     id: props.story.id,
                     approved: false,
+                    auth_token: user?.authToken,
                     parent_type: props.story.parent === undefined ? null : props.story.parent.type,
                     type: props.story.type
                 }
-
             })
                 .then(response => {
                     setApproved(false);

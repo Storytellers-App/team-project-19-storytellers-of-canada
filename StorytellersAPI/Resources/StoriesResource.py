@@ -1,28 +1,19 @@
-import sqlalchemy
-from flask_restful import (
-    Resource,
-    reqparse,
-    abort,
-    fields,
-    marshal_with,
-    marshal,
-    inputs,
-)
-from flask import Response
-from http import HTTPStatus
-from extensions import db
-from models import Story, User, Tag, Comment, Like
-from sqlalchemy.exc import *
-from sqlalchemy import func, union_all
 from datetime import datetime
-from common.Enums import StoryType
+
+import sqlalchemy
 import werkzeug.datastructures
+from flask_restful import (Resource, abort, fields, inputs, marshal, reqparse)
+from sqlalchemy import func
+from sqlalchemy.exc import *
+
 from Services.S3StoryService import *
-import sys
+from common.Enums import StoryType
+from models import Comment, Like, User
 
 user_fields = {
     "username": fields.String,
     "name": fields.String,
+    "image": fields.String,
 }
 
 userstory_fields = {
@@ -32,6 +23,7 @@ userstory_fields = {
     "title": fields.String,
     "description": fields.String,
     "recording": fields.String,
+    'image': fields.String,
     "parent": fields.Integer,
     "numLikes": fields.Integer,
     "numReplies": fields.Integer,
@@ -72,7 +64,10 @@ class Stories(Resource):
 
     def put(self):
         story_args = reqparse.RequestParser()
-        story_args.add_argument("username", type=str, default=None)
+        story_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
+        )
         story_args.add_argument("author", type=str, default=None)
         # generate new creation time
         creation_time = func.now()
@@ -105,9 +100,20 @@ class Stories(Resource):
         # format: characters only no dot eg. "caf", "3gp"
         story_args.add_argument("extension", type=str, required=True)
         args = story_args.parse_args()
-
+        user_service = GetUserService()
+        temp_user = user_service.getUserWithAuthToken(args['auth_token'])
+        if temp_user is None:
+            return HTTPStatus.BAD_REQUEST
+        username = None
+        if args.type == StoryType.SAVED.value:
+            if temp_user.type != UserType.ADMIN.value:
+                return HTTPStatus.FORBIDDEN
+        else:
+            username = temp_user.username
+        if args.title == "":
+            abort(HTTPStatus.BAD_REQUEST, message="Title must not be empty")
         ret = self.s3_service.add_story(
-            username=args.username,
+            username=username,
             author=args.author,
             creationTime=creation_time,
             title=args.title,
@@ -132,10 +138,14 @@ class Stories(Resource):
     def delete(self):
         story_args = reqparse.RequestParser()
         story_args.add_argument(
-            "story_id", type=str, required=True, help="ID of story not specified!"
+            "id", type=str, required=True, help="ID of story not specified!"
+        )
+        story_args.add_argument(
+            "auth_token", type=str, required=True,
+            help="user authentication token required"
         )
         args = story_args.parse_args()
-        ret = self.s3_service.delete_story(args.story_id)
+        ret = self.s3_service.delete_story(args.id, args.auth_token)
         if not ret:
             return abort(500, description="Error in add_story in S3StoriesResource.")
         else:
@@ -167,6 +177,7 @@ class Stories(Resource):
                     Story.id,
                     Story.username,
                     User.name,
+                    User.image.label("userImage"),
                     Story.creationTime,
                     Story.title,
                     Story.description,
@@ -184,7 +195,7 @@ class Stories(Resource):
                 .filter(Story.type == story_args["type"])
                 .filter(Story.parent.is_(None))
                 .filter(Story.approved.is_(True))
-                .filter(Story.approvedTime < time)
+                .filter(Story.approvedTime < time).filter(Story.deleted.is_(False))
             )
 
             if story_args["filter"] is not None:
@@ -205,6 +216,7 @@ class Stories(Resource):
                     Story.id,
                     Story.username,
                     User.name,
+                    User.image.label("userImage"),
                     Story.creationTime,
                     Story.title,
                     Story.description,
@@ -217,7 +229,7 @@ class Stories(Resource):
                     Story.type,
                     Story.approvedTime,
                 ).join(matched_tags, Story.id == matched_tags.c.storyid)
-                query = matched_stories.union(joined)
+                query = matched_stories.union(joined).order_by(Story.creationTime.desc(), Story.id.desc())
                 pass
 
             stories = query.paginate(
@@ -239,7 +251,9 @@ class Stories(Resource):
                     )
                 format_story = {
                     "id": story.id,
-                    "user": {"username": story.username, "name": story.name},
+                    "user": {"username": story.username,
+                             "name": story.name,
+                             "image": story.userImage},
                     "creationTime": story.creationTime,
                     "title": story.title,
                     "description": story.description,
@@ -302,6 +316,7 @@ class Responses(Resource):
                 Story.numLikes.label("numLikes"),
                 Story.numReplies.label("numReplies"),
                 Story.approvedTime.label("approvedTime"),
+                Story.deleted.label("deleted"),
                 sqlalchemy.sql.null().label("comment"),
             )
             comments = Comment.query.with_entities(
@@ -320,6 +335,7 @@ class Responses(Resource):
                 Comment.numLikes.label("numLikes"),
                 Comment.numReplies.label("numReplies"),
                 Comment.approvedTime.label("approvedTime"),
+                Comment.deleted.label("deleted"),
                 Comment.comment.label("comment"),
             )
 
@@ -331,6 +347,7 @@ class Responses(Resource):
                     both.c.id,
                     both.c.username,
                     User.name,
+                    User.image.label("userImage"),
                     both.c.creationTime,
                     both.c.title,
                     both.c.description,
@@ -350,7 +367,7 @@ class Responses(Resource):
                 .filter(both.c.approved.is_(True))
                 .filter(both.c.approvedTime < time)
                 .filter(both.c.parentType == args["type"])
-                .filter(both.c.parent == args["id"])
+                .filter(both.c.parent == args["id"]).filter(both.c.deleted.is_(False))
                 .paginate(args["page"], args["per_page"], False)
                 .items
             )
@@ -374,7 +391,7 @@ class Responses(Resource):
                     )
                 format_response = {
                     "id": response.id,
-                    "user": {"username": response.username, "name": response.name},
+                    "user": {"username": response.username, "name": response.name, "image": response.userImage},
                     "creationTime": response.creationTime,
                     "title": response.title,
                     "description": response.description,

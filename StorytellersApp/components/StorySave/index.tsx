@@ -1,23 +1,22 @@
-import React, { Component, useEffect, useState } from 'react'
-import { View, FlatList, Image, Text } from 'react-native';
-import styles from "./styles";
-import SavedStory from './SavedStory';
-import { UserStoryType, StorySaveType, UserType } from "../types";
 import axios from 'axios';
 import moment from 'moment';
-import AsyncStorage from '@react-native-community/async-storage';
+import React, { Component } from 'react';
+import { FlatList, Image, Text, View } from 'react-native';
+import * as Config from '../../config';
+import { StorySaveType, UserType } from "../../types";
+import SavedStory from '../SavedStory';
+import styles from "./styles";
 
-import * as Config from '../config';
-import { Header } from 'react-native/Libraries/NewAppScreen';
 
 let url = Config.HOST
 type Props = {
   key: string;
   search: string;
+  scrollRef: any;
+  user: UserType | null | undefined;
 }
 type State = {
   stories: StorySaveType[],
-  user: string | null,
   page: number,
   loading: boolean,
   sessionStart: string
@@ -25,12 +24,15 @@ type State = {
 export default class StorySave extends Component<Props, State> {
 
   private search: string;
+  private user: UserType | null | undefined;
+  private scrollRef: any;
   constructor(props: Props) {
       super(props);
       this.search = props.search;
+      this.user = props.user;
+      this.scrollRef = props.scrollRef;
       this.state = {
           stories: [] as StorySaveType[],
-          user: null,
           page: 1,
           loading: true,
           sessionStart: moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -42,7 +44,7 @@ export default class StorySave extends Component<Props, State> {
     const { page } = this.state;
     const { stories } = this.state;
     const { sessionStart } = this.state;
-    const { user } = this.state;
+    const username = this.user === null || this.user === undefined ? undefined : this.props.user?.username;
     this.setState({
       loading: true
     });
@@ -55,7 +57,7 @@ export default class StorySave extends Component<Props, State> {
           time: sessionStart,
           type: 'storysave',
           filter: this.search == '' || this.search == null || this.search == undefined ? null : this.search,
-          username: user,
+          username: username,
           page: page
         }
       })
@@ -129,15 +131,10 @@ export default class StorySave extends Component<Props, State> {
     );
   }
 
-  getUserandFetch = async () => {
-    const currentUser = await AsyncStorage.getItem("username");
-    this.setState({ user: currentUser },
-      () => { this.fetchStories() })
-  };
-
   componentDidMount() {
-    this.getUserandFetch()
+    this.fetchStories()
   };
+  renderItem = ({ item }) => <SavedStory story={item} user={this.user}/>;
   render() {
     const { stories } = this.state;
     return (
@@ -145,7 +142,8 @@ export default class StorySave extends Component<Props, State> {
       <FlatList
         ListHeaderComponent={<this.Header></this.Header>}
         data={stories}
-        renderItem={({ item }) => <SavedStory story={item} />}
+        ref={this.scrollRef}
+        renderItem={this.renderItem}
         keyExtractor={item => item.id.toString()}
         refreshing={this.state.loading}
         onRefresh={this.refresh}

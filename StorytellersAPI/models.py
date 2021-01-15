@@ -9,6 +9,7 @@ class User(db.Model):
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     authToken = db.Column(db.String(255), nullable=False)
+    image = db.Column(db.String(255), nullable=True)
     type = db.Column(db.String(255), nullable=False,
                      default=UserType.MEMBER.value)
     isActive = db.Column(db.Boolean, nullable=False)
@@ -18,7 +19,7 @@ class VerificationCode(db.Model):
     __tablename__ = 'VerificationCodes'
     email = db.Column(db.String(255), primary_key=True, nullable=False)
     code = db.Column(db.String(255), primary_key=False, nullable=False)
-
+    attempts = db.Column(db.Integer, nullable=False)
 
 class Story(db.Model):
     __tablename__ = 'Stories'
@@ -61,6 +62,7 @@ class Comment(db.Model):
     numLikes = db.Column(db.Integer, default=0)
     numReplies = db.Column(db.Integer, default=0)
     approvedTime = db.Column(db.DateTime)
+    deleted = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Like(db.Model):

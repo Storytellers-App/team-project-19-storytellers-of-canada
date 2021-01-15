@@ -1,6 +1,8 @@
 # Add, edit, delete stories
 # files should be transcoded to mp3 128kb
 # https://stackoverflow.com/questions/42809096/difference-in-boto3-between-resource-client-and-session
+from http import HTTPStatus
+
 import boto3
 import botocore.exceptions
 from pathlib import Path
@@ -8,12 +10,15 @@ from botocore.errorfactory import ClientError
 from botocore.client import Config
 from Services.instance.config import *
 import logging
+
+from common.Enums import UserType
 from models import Story, Tag
 from extensions import *
 import os
 import sys
 from pydub import AudioSegment
 import pathlib
+from Services.GetUserService import GetUserService
 
 # TODO: linux may not like this
 FILE_PATH = pathlib.Path(__file__).parent.absolute().__str__() + "/Temp/"
@@ -284,13 +289,20 @@ class S3StoryService:
             logging.exception("message")
             return False
 
-    def delete_story(self, story_id):
+    def delete_story(self, story_id, auth_token):
         try:
+            user_service = GetUserService()
+            temp_user = user_service.getUserWithAuthToken(auth_token)
             # pycharm says query doesn't exist; it does
             # get all just to be safe in case of duplicates
             story_array = Story.query.filter_by(id=story_id).all()
             if story_array is not None:
                 for story in story_array:
+                    if temp_user.type != UserType.ADMIN.value and story.username.lower() != temp_user.username.lower():
+                        return HTTPStatus.FORBIDDEN
+                    if story.parent is not None:
+                        parent_story = Story.query.filter_by(id=story.parent).first()
+                        parent_story.numReplies -= 1
                     story.deleted = True
                     self.db.session.merge(story)
                     self.db.session.commit()

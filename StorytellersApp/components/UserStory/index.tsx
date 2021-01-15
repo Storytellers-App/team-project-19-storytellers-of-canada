@@ -24,50 +24,50 @@ import ProfilePicture from '../ProfilePicture';
 import { Entypo } from '@expo/vector-icons';
 import styles from './styles';
 import moment from 'moment';
-import { UserStoryType, RootStackParamList, ResponseType } from '../../types';
+import { UserStoryType, RootStackParamList, ResponseType, currentStory, UserType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { memo } from 'react';
-import AudioSlider from '../StoryPlayer/AudioSlider';
+import { memo, useContext, useState, useEffect } from 'react';
+import AudioPlayer from '../AudioPlayer';
 import Tags from '../Tags';
 export type UserStoryProps = {
     story: UserStoryType,
     admin?: boolean,
-     disableResponse?: boolean;
+    user: UserType | undefined | null,
+    disableResponse?: boolean;
 }
 import Footer from '../CardFooter';
 import AdminFooter from '../AdminFooter';
 
 
-type ControlProps = {
-    props: UserStoryProps,
-}
-const Controls = ({props} : ControlProps) => {
-    if(props.admin == true){
-        return <AdminFooter story={props.story}></AdminFooter>;
-    }
-    else{
-        return <Footer story={props.story} ></Footer>;
-    }
-}
+
 function UserStory(props: UserStoryProps) {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const responseScreen = (header: ResponseType) => {
         navigation.push("StoryResponse", { 'header': header });
     }
+    const Controls = () => {
+        if (props.admin == true) {
+            return <AdminFooter story={props.story} user={props.user}></AdminFooter>;
+        }
+        else {
+            return <Footer story={props.story} user={props.user}></Footer>;
+        }
+    }
+  
     const colorScheme = useColorScheme();
     return (
 
         <Card style={styles.card}>
-            <TouchableWithoutFeedback  disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.story) }}>
+            <TouchableWithoutFeedback disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.story.user.image === undefined ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />
-                        <View style={{flex: 1}}>
-                            
+                        <ProfilePicture image={props.story.user.image === undefined || props.story.user.image === null || props.story.user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />
+                        <View style={{ flex: 1 }}>
+
                             <Text style={styles.titleStyle}
                             >{props.story.title} </Text>
-                            
+
                             <View style={styles.userRow}>
                                 <Text style={styles.name}>{props.story.user.name}</Text>
                                 <Text style={styles.username}>{props.story.user.username}</Text>
@@ -78,20 +78,28 @@ function UserStory(props: UserStoryProps) {
 
                     </View>
                     <Card.Content style={styles.content}>
-                        <Text style={{marginBottom:15}}>
+                        {!!props.story.image && <Image
+                            style={styles.topImage}
+                            source={{
+                                uri: props.story.image,
+                            }}
+                        />}
+                        <Text style={{ marginBottom: 15 }}>
                             {props.story.description}
                         </Text>
-                         {/*@ts-ignore*/}
-                         <AudioSlider audio={props.story.recording}></AudioSlider>
+                        <AudioPlayer newStory={props.story}></AudioPlayer>
                     </Card.Content>
                 </View>
             </TouchableWithoutFeedback>
             <Tags tags={props.story.tags}></Tags>
             <Divider />
-            <Controls props={props}></Controls>
+            <Controls ></Controls>
         </Card>
 
     );
 }
+function areEqual(prevProps, nextProps) {
+    return prevProps.story.id === nextProps.story.id;
+  }
 
-export default memo(UserStory);
+export default memo(UserStory, areEqual);

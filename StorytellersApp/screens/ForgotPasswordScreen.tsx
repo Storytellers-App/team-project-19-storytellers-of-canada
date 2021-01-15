@@ -1,21 +1,12 @@
-import React, { Component, useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  StyleSheet,
-  Alert,
-  TouchableOpacity
-} from 'react-native';
-
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import AsyncStorage from '@react-native-community/async-storage';
-import { Input, Button } from 'react-native-elements';
-import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
+import React from 'react';
+import {
+    Alert, StyleSheet, Text, View
+} from 'react-native';
+import { Button, Input } from 'react-native-elements';
+import { Actions } from 'react-native-router-flux';
 import { HOST } from '../config';
+
 
 let url = HOST
 

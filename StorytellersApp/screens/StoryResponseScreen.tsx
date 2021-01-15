@@ -1,34 +1,17 @@
 
+import { RouteProp, useScrollToTop } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
 import {
-    View,
-    TextInput,
-    Image,
-    ScrollView,
-    StyleSheet,
-    ScrollViewProps,
+    ScrollView, View
 } from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
 import {
-    Card,
-    Text,
-    Avatar,
-    Subheading,
-    IconButton,
-    Divider,
-    Appbar,
+    Appbar
 } from 'react-native-paper';
-import Colors from '../constants/Colors';
+import ResponseFeed from '../components/ResponseView';
 import useColorScheme from '../hooks/useColorScheme';
-import ProfilePicture from '../components/ProfilePicture';
-import UserStory from '../components/UserStory';
-import { StoryType, UserStoryType, RootStackParamList, StorySaveType } from '../types';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import { FlatList } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import userstories from '../data/userstoriestest';
-import ResponseFeed from '../components/ResponseView'
+import { RootStackParamList } from '../types';
+import { UserContext } from '../UserContext';
 
 
 type StoryDetailsRouteProp = RouteProp<RootStackParamList, 'StoryResponse'>;
@@ -44,6 +27,7 @@ type Props = {
 export default function StoryResponseScreen({ route, navigation }: Props) {
     const ref = React.useRef<ScrollView>(null);
     const story = route.params.header;
+    const { user } = React.useContext(UserContext);
     useScrollToTop(ref);
 
     const colorScheme = useColorScheme();
@@ -55,7 +39,7 @@ export default function StoryResponseScreen({ route, navigation }: Props) {
                 {/* <Appbar.Action icon="magnify"  />
         <Appbar.Action icon="dots-vertical"  /> */}
             </Appbar.Header>
-            <ResponseFeed response={route.params.header}></ResponseFeed>
+            <ResponseFeed response={route.params.header} user={user}></ResponseFeed>
         </View>
     );
 }

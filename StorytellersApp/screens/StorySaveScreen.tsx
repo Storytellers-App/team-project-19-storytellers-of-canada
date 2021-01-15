@@ -1,16 +1,20 @@
-import React, { Component, useEffect, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, ScrollView, StatusBar, Image, Text, TextInput, TouchableOpacity } from 'react-native';
-import StorySave from '../components/StorySave';
+import { useScrollToTop } from '@react-navigation/native';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import {
-  Searchbar,
   Appbar,
   Button,
-  Portal,
+  Portal, Searchbar
 } from 'react-native-paper';
+import StorySave from '../components/StorySave/';
+import { UserContext } from '../UserContext';
 
 export default function StorySaveScreen() {
   const ref = React.useRef<TextInput>(null);
+  const scrollRef = React.useRef(null);
+  useScrollToTop(scrollRef);
   const [searchText, setSearchText] = React.useState('');
+  const { user } = useContext(UserContext);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [focus, setFocus] = React.useState(false);
   const [helpOpen, setHelpOpen] = React.useState(false);
@@ -69,7 +73,7 @@ export default function StorySaveScreen() {
         )}
         {/* <Appbar.Action icon="dots-vertical"  />  */}
       </Appbar.Header>
-      <StorySave key={searchQuery} search={searchQuery}></StorySave>
+      <StorySave scrollRef={scrollRef} key={searchQuery} search={searchQuery} user={user}></StorySave>
     </View>
   );
 }
