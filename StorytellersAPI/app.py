@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_restful import Api
 from Resources.TestResource import TestDB
 from config import Config
@@ -20,6 +20,7 @@ from Resources.StoryUploadResource import StoryUpload
 from Resources.EmailVerificationWithUsername import EmailVerificationWithUsername
 from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
 from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
+
 from Resources.UpdateNameResource import UpdateName
 from Resources.UpdateEmailResource import UpdateEmail
 from Resources.UpdatePasswordResource import UpdatePassword
@@ -27,14 +28,22 @@ from Resources.UpdateImageResource import UpdateImage
 from Resources.PromoteUserResource import PromoteUser
 from Resources.DeactivateResource import Deactivate
 from Resources.AuthTokenLoginResource import AuthTokenLogin
+from Resources.GDPRResource import GDPRResource
+
 
 # test database
 from Resources.TestResource import TestDB
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../gdprportal/build/static")
 app.config.from_object(Config)
 api = Api(app)
 db.init_app(app)
+
+
+@app.route('/gdprportal/<path:path>')
+def send_js(path):
+    return send_from_directory('../gdprportal/build', path)
+
 
 # gunicorn logging
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
@@ -63,6 +72,7 @@ api.add_resource(EmailVerificationWithUsername,
                  '/emailVerification/noUsername')
 api.add_resource(SendForgotPasswordEmailResource, '/sendForgotPasswordEmail')
 api.add_resource(ResetForgotPasswordResource, '/resetForgotPassword')
+api.add_resource(GDPRResource, '/gdpr')
 # DELETE /story_delete?key&bucket
 api.add_resource(StoryDelete, '/story_delete')
 
