@@ -653,7 +653,7 @@ export default function ProfileScreen(props) {
                   setAdminModal(true);
                 }}
               >
-                Make A User Admin
+                Promote User to Admin
               </Button>
             )}
             <Button
