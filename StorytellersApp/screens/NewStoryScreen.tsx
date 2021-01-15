@@ -11,7 +11,8 @@ import * as Config from '../config';
 import Colors from '../constants/Colors';
 import { RootStackParamList } from '../types';
 import { Audio } from 'expo-av';
-
+import { Appbar } from 'react-native-paper';
+const BACKGROUND_COLOR = "#f6f6f6";
 
 type NewStoryRouteProp = RouteProp<RootStackParamList, 'NewStory'>;
 
@@ -188,7 +189,10 @@ export default function NewStoryScreen({ route, navigation }: Props) {
     }
 
     return (
-
+        <View style={{ flex: 1 }}>
+        <Appbar.Header style={{ backgroundColor:  BACKGROUND_COLOR}}>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        </Appbar.Header>
         <ScrollView style={styles.container}>
             {/* Registration form */}
             <View>
@@ -299,6 +303,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             </View>
 
         </ScrollView>
+        </View>
     )
 }
 
