@@ -1,7 +1,8 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBar, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
+import BottomPlayer from '../components/BottomPlayer';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import AdminPanelScreen from '../screens/AdminPanelScreen';
@@ -12,10 +13,10 @@ import { AdminPanelParamList, BottomTabParamList, HomeNavigatorParamList, RadioP
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
-export default function BottomTabNavigator({user} : {user: UserType}) {
+export default function BottomTabNavigator({ user }: { user: UserType }) {
   const colorScheme = useColorScheme();
   return (
-    <BottomTab.Navigator
+    <BottomTab.Navigator tabBar={props => <CustomTabBar {...props} />}
       initialRouteName="Home"
       tabBarOptions={{
         activeTintColor: Colors.light.tint,
@@ -42,7 +43,7 @@ export default function BottomTabNavigator({user} : {user: UserType}) {
           tabBarIcon: ({ color }) => <TabBarIcon name="md-radio" color={color} />,
         }}
       />
-       {user != null && user.type === 'ADMIN' ? <BottomTab.Screen
+      {user != null && user.type === 'ADMIN' ? <BottomTab.Screen
         name="AdminPanelScreen"
         component={AdminPanelNavigator}
         options={{
@@ -52,7 +53,13 @@ export default function BottomTabNavigator({user} : {user: UserType}) {
     </BottomTab.Navigator>
   );
 }
-
+function CustomTabBar(props) {
+  return (<React.Fragment>
+    <BottomPlayer></BottomPlayer>
+    <BottomTabBar
+      {...props} />
+  </React.Fragment>);
+}
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
 function TabBarIcon(props: { name: string; color: string }) {
@@ -72,7 +79,7 @@ function HomeNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options= {{
+        options={{
           headerShown: false
         }}
       />
@@ -88,7 +95,7 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={StorySaveScreen}
-        options= {{
+        options={{
           headerShown: false
         }}
       />

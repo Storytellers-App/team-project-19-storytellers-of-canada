@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   progress: {
-    height: 4,
+    height: 4.5,
     backgroundColor: '#006699',
   },
   row: {
