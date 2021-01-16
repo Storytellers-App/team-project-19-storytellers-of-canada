@@ -3,7 +3,6 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { AppContext } from '../AppContext';
-import BottomPlayer from '../components/BottomPlayer';
 import LoginScreen from '../screens/LoginScreen';
 import NewCommentScreen from '../screens/NewCommentScreen';
 import NewRecordingScreen from '../screens/NewRecordingScreen';
@@ -24,9 +23,9 @@ import LinkingConfiguration from './LinkingConfiguration';
 export default function Navigation(props: any) {
 
   return (
-    <NavigationContainer
+    <NavigationContainer 
       linking={LinkingConfiguration}
-      theme={DefaultTheme}>
+      theme={DefaultTheme}>     
       <RootNavigator userProp={props.user} />
     </NavigationContainer>
   );
@@ -36,6 +35,7 @@ export default function Navigation(props: any) {
 // Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 const NavigationDrawer = createDrawerNavigator();
+
 function BaseNavigation({ navigation, route }) {
   const [story, setStory] = useState<currentStory | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -58,13 +58,12 @@ function BaseNavigation({ navigation, route }) {
       setIsRadioPlaying: (isRadioPlaying: boolean) => setIsRadioPlaying(isRadioPlaying),
       setFullStoryType: (fullStoryType: ResponseType) => setFullStory(fullStoryType)
     }}>
+      
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Root" >
           {props =>
-            <React.Fragment>
               <BottomTabNavigator user={route.params.user} />
-              <BottomPlayer></BottomPlayer>
-            </React.Fragment>}
+          }
         </Stack.Screen>
         <Stack.Screen name="NewRecording" component={NewRecordingScreen} />
         <Stack.Screen name="NewStory" component={NewStoryScreen} />
