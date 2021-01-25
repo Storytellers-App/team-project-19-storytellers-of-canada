@@ -6829,10 +6829,10 @@ expo-status-bar@~1.0.2:
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.0.2.tgz#2441a77c56be31597898337b0d086981f2adefd8"
   integrity sha512-5313u744GcLzCadxIPXyTkYw77++UXv1dXCuhYDxDbtsEf93iMra7WSvzyE8a7mRQLIIPRuGnBOdrL/V1C7EOQ==
 
-expo-web-browser@~8.5.0:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-8.5.0.tgz#294fac01d9d7c8e496fddeb0ca7cf58d96a1f159"
-  integrity sha512-ysfGgTd16gjTAcxbywR/07Pye6XUZDoQsfeo+BEzP2kRgCWGJ5ll5WfCVNxcHInp9eo8G+n5nKqhd7Fv4gX7rg==
+expo-web-browser@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-9.0.0.tgz#9e12c0d08f19665cbae7b565a11e9c1b2e584cda"
+  integrity sha512-w9jd5U5Cvo9CbD0K/I7Ol+PCn4OZLqveRENoJ+CA9nP2G35XBwTx4zEd7y05MViYEOfJ1fViCER1/pWwJZYcNg==
   dependencies:
     compare-urls "^2.0.0"
 

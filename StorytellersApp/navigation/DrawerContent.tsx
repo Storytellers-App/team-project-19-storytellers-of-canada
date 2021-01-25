@@ -36,6 +36,9 @@ export function DrawerContent(props) {
         }
         props.navigation.navigate('ProfilePage') 
     }
+    const goToPrivacy = () => {
+        props.navigation.navigate('Privacy') 
+    }
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
@@ -76,6 +79,17 @@ export function DrawerContent(props) {
                             )}
                             label="Profile"
                             onPress={goToProfile}
+                        />
+                         <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="shield-lock-outline"
+                                    color={color}
+                                    size={size}
+                                />
+                            )}
+                            label="Privacy"
+                            onPress={goToPrivacy}
                         />
                     </Drawer.Section>
                 </View>
