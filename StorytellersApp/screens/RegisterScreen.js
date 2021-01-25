@@ -24,7 +24,7 @@ class RegisterScreen extends Component {
     /**
      * Redirect to the login page
      */
-    goToLogin(){
+    goToLogin() {
         // Actions.LoginScreen();
         Actions.LoginScreen();
     }
@@ -34,7 +34,7 @@ class RegisterScreen extends Component {
      */
     goToEmailVerification() {
         console.log('Go to email verification');
-        Actions.EmailVerification({email: this.state.email, code: "", username: ""});
+        Actions.EmailVerification({ email: this.state.email, code: "", username: "" });
     }
 
     validateEmail(email) {
@@ -45,8 +45,8 @@ class RegisterScreen extends Component {
     /**
      * Register a Storytellers account
      */
-    register(){
-        if (this.state.name === "" || this.state.email === "" || this.state.username === "" || this.state.password === ""){
+    register() {
+        if (this.state.name === "" || this.state.email === "" || this.state.username === "" || this.state.password === "") {
             Alert.alert(
                 "Missing Registration Information",
                 "Please make sure you have entered information in all fields before trying to register."
@@ -58,7 +58,7 @@ class RegisterScreen extends Component {
                 return;
             }
             // Validating email
-            if (!this.validateEmail(this.state.email)){
+            if (!this.validateEmail(this.state.email)) {
                 Alert.alert(
                     "Invalid Email",
                     "Please make sure you have entered a valid email before trying to register."
@@ -66,11 +66,11 @@ class RegisterScreen extends Component {
             } else {
                 console.log(this.host + `register?name=${this.state.name}&email=${this.state.email}`)
                 fetch(this.host + `register?name=${this.state.name}&email=${this.state.email}`, {
-                        method: 'POST',
-                        headers: new Headers({
-                            'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
-                        })
+                    method: 'POST',
+                    headers: new Headers({
+                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
                     })
+                })
                     .then(response => {
                         return response.json()
                     })
@@ -91,8 +91,8 @@ class RegisterScreen extends Component {
                         )
                         console.error(error);
                     });
-            }           
-        }      
+            }
+        }
     }
 
     /**
@@ -125,14 +125,14 @@ class RegisterScreen extends Component {
                         secureTextEntry={true}
                         style={styles.input}
                         placeholder="Password"
-                        autoCapitalize = 'none'
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
                     <Input
                         secureTextEntry={true}
                         style={styles.input}
                         placeholder="Confirm Password"
-                        autoCapitalize = 'none'
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ confirmedPassword: text })}
                     />
                 </View>
@@ -142,7 +142,14 @@ class RegisterScreen extends Component {
                         title="Register"
                         onPress={this.register}
                     />
+                    <Text style={{ marginTop: 15, textAlign: 'center' }}>By selecting Register, I agree to the</Text>
+                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+                        <Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>Terms of Service</Text>
+                        <Text style={{ textAlign: 'center' }}> and </Text>
+                        <Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>Privacy Policy</Text>
+                    </View>
                 </View>
+
                 {/* Option to return to the login screen */}
                 <View style={styles.loginButtonText}>
                     <Text style={styles.text}>Already have an account?</Text>

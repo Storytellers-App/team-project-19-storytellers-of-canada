@@ -13,10 +13,6 @@ from Resources.AdminResource import Admin
 from Resources.CommentResource import CommentRes
 from Resources.EmailVerificationResource import EmailVerification
 
-from Resources.StoryDeleteResource import StoryDelete
-from Resources.StoryFetchResource import StoryFetch
-from Resources.StoryRenameResource import StoryRename
-from Resources.StoryUploadResource import StoryUpload
 from Resources.EmailVerificationWithUsername import EmailVerificationWithUsername
 from Resources.SendForgotPasswordEmailResource import SendForgotPasswordEmailResource
 from Resources.ResetForgotPasswordResource import ResetForgotPasswordResource
@@ -73,18 +69,6 @@ api.add_resource(EmailVerificationWithUsername,
 api.add_resource(SendForgotPasswordEmailResource, '/sendForgotPasswordEmail')
 api.add_resource(ResetForgotPasswordResource, '/resetForgotPassword')
 api.add_resource(GDPRResource, '/gdpr')
-# DELETE /story_delete?key&bucket
-api.add_resource(StoryDelete, '/story_delete')
-
-# PATCH /story_rename?old_key&old_bucket&new_key&new_bucket
-api.add_resource(StoryRename, '/story_rename')
-
-# PUT /story_upload?key&bucket
-# Must have file as a separate parameter
-api.add_resource(StoryUpload, '/story_upload')
-
-# GET /story_fetch?key&bucket
-api.add_resource(StoryFetch, '/story_fetch')
 
 # Update user info resources
 api.add_resource(UpdateName, '/updateName')

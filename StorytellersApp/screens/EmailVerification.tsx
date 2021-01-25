@@ -70,14 +70,12 @@ export default function EmailVerification({email, code, username}: Props) {
                 
                 <View style={styles.signInButton}>
                     <Button
-                        color="#FFF"
                         onPress={verifyCode}
                         title="Confirm"
                     />
                 </View>
                 <View style={styles.signInButton}>
                     <Button
-                        color="#FFF"
                         onPress={resendEmail}
                         title="Resend verification code"
                     />
