@@ -7,9 +7,11 @@ import {
   Portal, Searchbar
 } from 'react-native-paper';
 import StorySave from '../components/StorySave/';
+import { LocalizationContext } from '../LocalizationContext';
 import { UserContext } from '../UserContext';
 
 export default function StorySaveScreen() {
+  const { t, locale, setLocale } = React.useContext(LocalizationContext);
   const ref = React.useRef<TextInput>(null);
   const scrollRef = React.useRef(null);
   useScrollToTop(scrollRef);
@@ -41,7 +43,7 @@ export default function StorySaveScreen() {
           <Searchbar
             ref={ref}
             style={{ elevation: 0 }}
-            placeholder="Search"
+            placeholder={t('search')}
             onFocus={() => setFocus(true)}
             onChangeText={onChangeSearch}
             value={searchText}
@@ -54,15 +56,15 @@ export default function StorySaveScreen() {
             setHelpOpen(!helpOpen);
           }}
         >
-          HELP
+          {t('helpCapitals')}
         </Button>
         {helpOpen && (
           <Portal>
             <View style={styles.faded}>
               <View style={styles.message}>
-                <Text style={styles.messageTextLoud}>This is the Saved Stories Screen</Text>
-                <Text style={styles.messageText}>All of the stories here are from the SC-Radio-CC StorySave collection. You can scroll through them, or click on any story to view its comments.</Text>
-                <Text style={styles.messageText}>If you want to "like" a story, tap the heart. If you want to comment on a story, tap the speech bubble.</Text>
+                <Text style={styles.messageTextLoud}>{t('helpStorySaveTitle')}</Text>
+                <Text style={styles.messageText}>{t('helpStorySaveStories')}</Text>
+                <Text style={styles.messageText}>{t('helpHomeLikes')}</Text>
               </View>
             </View>
             <TouchableOpacity

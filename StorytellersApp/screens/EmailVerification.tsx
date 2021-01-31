@@ -6,7 +6,7 @@ import {
 import { Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { HOST } from '../config';
-
+import { LocalizationContext} from '../LocalizationContext';
 
 let url = HOST
 
@@ -17,7 +17,7 @@ type Props = {
 }
 
 export default function EmailVerification({email, code, username}: Props) {
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const resendEmail = async () => {
         console.log("Send the email");
         console.log(email)
@@ -47,37 +47,37 @@ export default function EmailVerification({email, code, username}: Props) {
                 if (response.data.success === true) {
                     Actions.LoginScreen();
                 } else {
-                    Alert.alert("Incorrect code, please try again");
+                    Alert.alert(t('incorrectEmailCode'));
                 }
             })
         } catch (e) {
-            Alert.alert("There was a problem reaching the server. Please try again");
+            Alert.alert(t('errorReachingServer'));
         }
     }
 
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.title}>A code was sent to your email</Text>
-                <Text style={styles.title}>Please enter it here to verify your email</Text>
+                <Text style={styles.title}>{t('codeSentToEmail')}</Text>
+                <Text style={styles.title}>{t('pleaseEnterCodeHere')}</Text>
             </View>
             <View>
                 <Input
                     style={styles.input}
-                    placeholder="Verification Code"
+                    placeholder={t('verificationCode')}
                     onChangeText={(value) => code = value}
                 />
                 
                 <View style={styles.signInButton}>
                     <Button
                         onPress={verifyCode}
-                        title="Confirm"
+                        title={t('confirm')}
                     />
                 </View>
                 <View style={styles.signInButton}>
                     <Button
                         onPress={resendEmail}
-                        title="Resend verification code"
+                        title={t('resendCode')}
                     />
                 </View>
                 

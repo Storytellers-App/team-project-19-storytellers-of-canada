@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, TouchableHighlight } from 'react-native';
 import { Text } from '../../components/Themed';
 import Colors from '../../constants/Colors';
+import { LocalizationContext } from '../../LocalizationContext';
 import { ResponseType, RootStackParamList, UserType } from '../../types';
 
 export type Props = {
@@ -14,7 +15,7 @@ export type Props = {
 };
 
 const NewStoryButton = ({ recording, user, parent, time }: Props) => {
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const onPress = async () => {
@@ -31,7 +32,7 @@ const NewStoryButton = ({ recording, user, parent, time }: Props) => {
         >
             <Text
                 style={styles.text}>
-                Next
+                {t('next')}
                     </Text>
         </TouchableHighlight>
 

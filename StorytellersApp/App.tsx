@@ -5,6 +5,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Routes from './Routes';
+import * as Localization from 'expo-localization';
+import i18n from 'i18n-js';
+import * as languages from './Localization';
+import {LocalizationContext} from './LocalizationContext';
 
 declare global {
   namespace ReactNativePaper {
@@ -30,8 +34,19 @@ const theme = {
 
   }
 };
+i18n.fallbacks = true;
+i18n.translations = languages;
 
 export default function App() {
+  const [locale, setLocale] = React.useState(Localization.locale);
+  const localizationContext = React.useMemo(
+    () => ({
+      t: (scope, options) => i18n.t(scope, { locale, ...options }),
+      locale,
+      setLocale,
+    }),
+    [locale]
+  );
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   if (!isLoadingComplete) {
@@ -40,10 +55,12 @@ export default function App() {
     return (
       /*@ts-ignore*/
       <PaperProvider theme={theme}>
+         <LocalizationContext.Provider value={localizationContext}>
         <SafeAreaProvider>
           <Routes />
           <StatusBar style='dark' />
         </SafeAreaProvider>
+        </LocalizationContext.Provider>
       </PaperProvider>
     );
   }

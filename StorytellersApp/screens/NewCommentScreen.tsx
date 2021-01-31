@@ -12,6 +12,7 @@ import {
 import { Text, View } from '../components/Themed';
 import { HOST } from '../config';
 import Colors from "../constants/Colors";
+import { LocalizationContext } from "../LocalizationContext";
 import { RootStackParamList } from '../types';
 
 
@@ -28,7 +29,7 @@ type Props = {
   navigation: NewCommentNavigationProp;
 }
 export default function NewCommentScreen({ route, navigation }: Props) {
-
+  const { t, locale, setLocale } = React.useContext(LocalizationContext);
   const [comment, setComment] = useState("");
   const parent = route.params.parent;
   const user = route.params.user;
@@ -55,31 +56,31 @@ export default function NewCommentScreen({ route, navigation }: Props) {
         .then(response => {
           setIsLoading(false);
 
-          Alert.alert("Your submission is under review!")
+          Alert.alert(t('submissionUnderReview'))
           navigation.goBack();
         })
         .catch((error) => {
           console.error(error);
           setIsLoading(false);
-          Alert.alert("Sorry something went wrong, please try again.");
+          Alert.alert('somethingWentWrong');
         });
     } catch (e) {
       console.log(e);
       setIsLoading(false);
-      Alert.alert("Sorry something went wrong, please try again.");
+      Alert.alert('somethingWentWrong');
     }
 
 
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="close" size={30} color={Colors.light.tint} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onPostComment}>
-          <Text style={styles.buttonText}>Comment</Text>
+          <Text style={styles.buttonText}>{t('comment')}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.newCommentContainer}>
@@ -90,11 +91,11 @@ export default function NewCommentScreen({ route, navigation }: Props) {
             multiline={true}
             numberOfLines={3}
             style={styles.commentInput}
-            placeholder={"Input your response"}
+            placeholder={t('inputResponse')}
           />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    paddingTop: Platform.OS === 'android' ? 25 : 0,
+    paddingTop: Platform.OS === 'android' ? 45 : 0,
     backgroundColor: 'white'
   },
   headerContainer: {

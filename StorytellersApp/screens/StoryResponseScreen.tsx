@@ -10,6 +10,7 @@ import {
 } from 'react-native-paper';
 import ResponseFeed from '../components/ResponseView';
 import useColorScheme from '../hooks/useColorScheme';
+import { LocalizationContext } from '../LocalizationContext';
 import { RootStackParamList } from '../types';
 import { UserContext } from '../UserContext';
 
@@ -25,6 +26,7 @@ type Props = {
 }
 
 export default function StoryResponseScreen({ route, navigation }: Props) {
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const ref = React.useRef<ScrollView>(null);
     const story = route.params.header;
     const { user } = React.useContext(UserContext);
@@ -35,7 +37,7 @@ export default function StoryResponseScreen({ route, navigation }: Props) {
         <View style={{ flex: 1 }}>
             <Appbar.Header style={{ backgroundColor: 'white' }}>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
-                <Appbar.Content title="Responses" />
+                <Appbar.Content title={t('responses')} />
                 {/* <Appbar.Action icon="magnify"  />
         <Appbar.Action icon="dots-vertical"  /> */}
             </Appbar.Header>

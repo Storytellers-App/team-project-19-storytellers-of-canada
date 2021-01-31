@@ -6,6 +6,7 @@ import {
 import { Button, Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { HOST } from '../config';
+import { LocalizationContext } from '../LocalizationContext';
 
 
 let url = HOST
@@ -15,7 +16,7 @@ type Props = {
 }
 
 export default function ForgotPasswordScreen({email}: Props) {
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
 
     const resetPassword = async () => {
         console.log("verify the code");
@@ -30,29 +31,29 @@ export default function ForgotPasswordScreen({email}: Props) {
                 if (response.data.success === true) {
                     Actions.ResetPasswordScreen({email: email});
                 } else {
-                    Alert.alert("There was a problem with the server, please try again");
+                    Alert.alert(t('somethingWentWrong'));
                 }
             })
         } catch (e) {
-            Alert.alert("There was a problem reaching the server. Please try again");
+            Alert.alert(t('somethingWentWrong'));
         }
     }
 
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.title}>Please enter your email</Text>
+                <Text style={styles.title}>{t('enterEmail')}</Text>
             </View>
             <View>
                 <Input
                     style={styles.input}
-                    placeholder="Email"
+                    placeholder={t('email')}
                     onChangeText={(value) => email = value}
                 />
                 <Button
                     buttonStyle={styles.signInButton}
                     onPress={resetPassword}
-                    title="Confirm"
+                    title={t('confirm')}
                 />
             </View>
         </View>
