@@ -8,10 +8,11 @@ import {
     Headline
 } from "react-native-paper";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { LocalizationContext } from '../LocalizationContext';
 
 
 export default function PrivacyScreen(props) {
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const openPrivacyPage = async () => {
        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/gdprportal/index.html');
     }
@@ -19,14 +20,14 @@ export default function PrivacyScreen(props) {
         <View style={{ flex: 1 }}>
             <Appbar.Header style={{ backgroundColor: 'white' }}>
                 <Appbar.BackAction onPress={() => props.navigation.goBack()} />
-                <Appbar.Content title="Privacy" />
+                <Appbar.Content title={t('privacy')} />
                 {/* <Appbar.Action icon="magnify"  />
     <Appbar.Action icon="dots-vertical"  /> */}
             </Appbar.Header>
             <View>
                 <TouchableHighlight onPress={openPrivacyPage}>
                     <Card.Title
-                        title="Download your Data"
+                        title={t('downloadData')}
                         style={{ backgroundColor: 'white' }}
                         left={(props) => <Icon size={props.size} name='shield-account-outline'></Icon>}
                     />
@@ -34,14 +35,14 @@ export default function PrivacyScreen(props) {
                 <Headline style={{marginLeft: 10, marginVertical: 10}}>Legal</Headline>
                 <TouchableHighlight>
                     <Card.Title
-                        title="View Terms of Service"
+                        title={t('viewTerms')}
                         style={{ backgroundColor: 'white' }}
                         left={(props) => <Icon size={props.size} name='security'></Icon>}
                     />
                 </TouchableHighlight>
                 <TouchableHighlight>
                     <Card.Title
-                        title="View Privacy Policy"
+                        title={t('viewPrivacy')}
                         style={{ backgroundColor: 'white' }}
                         left={(props) => <Icon size={props.size} name="help-circle-outline"></Icon>}
                     />

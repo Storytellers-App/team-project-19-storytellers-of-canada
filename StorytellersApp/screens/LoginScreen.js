@@ -22,11 +22,7 @@ export default class LoginScreen extends Component {
         this.checkPrevLogin();
       
     }
-    componentDidMount() {
-        this.t = this.context.t;
-        this.locale = this.context.locale;
-        this.setLocale = this.context.setLocale;
-    }
+   
     /**
      * Redirect to the registration page
      */
@@ -105,8 +101,8 @@ export default class LoginScreen extends Component {
 
         if (this.state.username === "" || this.state.password === "") {
             Alert.alert(
-                this.t('missingLogin'),
-                this.t('makeSureInfoEntered')
+                this.context.t('missingLogin'),
+                this.context.t('makeSureInfoEntered')
             );
         } else {
             // Submitting a login request
@@ -133,8 +129,8 @@ export default class LoginScreen extends Component {
                         if (result["active"] === undefined) {
                             // Invalid login information
                             Alert.alert(
-                               this.t('invalidLogin'),
-                                this.t('makeSureUserValid')
+                               this.context.t('invalidLogin'),
+                                this.context.t('makeSureUserValid')
                             )
                         } else {
                             // active is defined, check to see if inactive
@@ -183,19 +179,19 @@ export default class LoginScreen extends Component {
                 </View>
                 {/* Login form */}
                 <View>
-                    <Text style={styles.title}>{this.t('loginMessage')}</Text>
+                    <Text style={styles.title}>{this.context.t('loginMessage')}</Text>
                 </View>
                 <View>
                     <Input
                         style={styles.input}
-                        placeholder={this.t('username')}
+                        placeholder={this.context.t('username')}
                         autoCapitalize='none'
                         onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
                         style={styles.input}
                         secureTextEntry={true}
-                        placeholder={this.t('password')}
+                        placeholder={this.context.t('password')}
                         autoCapitalize='none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
@@ -203,27 +199,27 @@ export default class LoginScreen extends Component {
                 <View>
                     <Button
                         buttonStyle={styles.signInButton}
-                        title={this.t('signIn')}
+                        title={this.context.t('signIn')}
                         onPress={this.login}
                     />
                     <Button
                         buttonStyle={styles.registerButton}
                         titleStyle={styles.registerText}
                         onPress={this.goToRegistration}
-                        title={this.t('registerMessage')}
+                        title={this.context.t('registerMessage')}
                         type="outline"
                     />
                 </View>
                 <View style={styles.guestButtonText}>
                     <TouchableOpacity onPress={this.goToForgotPassword}>
-                        <Text style={styles.buttonText}>{this.t('forgotPassword')}</Text>
+                        <Text style={styles.buttonText}>{this.context.t('forgotPassword')}</Text>
                     </TouchableOpacity>
                 </View>
                 {/* Option to enter the app as a guest */}
                 <View style={styles.guestButtonText}>
-                    <Text style={styles.text}>{this.t('dontWantAccount')}</Text>
+                    <Text style={styles.text}>{this.context.t('dontWantAccount')}</Text>
                     <TouchableOpacity onPress={() => { this.goToHome() }}>
-                        <Text style={styles.buttonText}> {this.t('loginAsGuest')}</Text>
+                        <Text style={styles.buttonText}> {this.context.t('loginAsGuest')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

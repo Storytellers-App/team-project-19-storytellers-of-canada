@@ -10,9 +10,10 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { UserContext } from '../UserContext';
+import { LocalizationContext } from '../LocalizationContext';
 
 export function DrawerContent(props) {
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const {user, setUser} = React.useContext(UserContext)
 
     // Signout function
@@ -31,7 +32,7 @@ export function DrawerContent(props) {
     } 
     const goToProfile = () => {
         if (user === undefined || user === null || user.username === "") {
-            Alert.alert("Please login to view profile information");
+            Alert.alert(t('pleaseLoginToViewProfile'));
             return;
         }
         props.navigation.navigate('ProfilePage') 
@@ -52,7 +53,7 @@ export function DrawerContent(props) {
                                 size={120}
                             />
                             <View style={{ marginTop: 20 }}>
-                                <Title style={styles.title}>{user === undefined || user === null ? "Guest User" : user?.name}</Title>
+                                <Title style={styles.title}>{user === undefined || user === null ? t('guestUser') : user?.name}</Title>
                                 {user != null && user != undefined && <Caption style={styles.caption}>{user?.email}</Caption>}
                             </View>
                         </View>
@@ -66,7 +67,7 @@ export function DrawerContent(props) {
                                     size={size}
                                 />
                             )}
-                            label="Home"
+                            label={t('home')}
                             onPress={() => { props.navigation.navigate('Home') }}
                         />
                         <DrawerItem
@@ -77,7 +78,7 @@ export function DrawerContent(props) {
                                     size={size}
                                 />
                             )}
-                            label="Profile"
+                            label={t('profile')}
                             onPress={goToProfile}
                         />
                          <DrawerItem
@@ -88,7 +89,7 @@ export function DrawerContent(props) {
                                     size={size}
                                 />
                             )}
-                            label="Privacy"
+                            label={t('privacy')}
                             onPress={goToPrivacy}
                         />
                     </Drawer.Section>
@@ -103,7 +104,7 @@ export function DrawerContent(props) {
                         size={size}
                         />
                     )}
-                    label="Sign Out"
+                    label={t('signOut')}
                     labelStyle = {{color:'red'}}
                     onPress={() => {signOut()}}
                 />

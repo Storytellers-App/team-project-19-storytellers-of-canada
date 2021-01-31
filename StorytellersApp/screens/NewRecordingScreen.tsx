@@ -16,6 +16,7 @@ import Colors from '../constants/Colors';
 import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../types';
 import * as MediaLibrary from 'expo-media-library';
 import { ActivityIndicator, Appbar } from 'react-native-paper';
+import { LocalizationContext } from '../LocalizationContext';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "#f6f6f6";
@@ -66,6 +67,7 @@ function StopAudio({ sound }: { sound: Audio.Sound | null }) {
 }
 
 export default class NewRecordingScreen extends React.Component<Props, State> {
+  static contextType = LocalizationContext;
   private recording: Audio.Recording | null;
   private sound: Audio.Sound | null;
   private isSeeking: boolean;
@@ -235,7 +237,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     }
     if (status.durationMillis > 192000) {
       this._stopRecordingAndEnablePlayback();
-      Alert.alert("Recording can be 3 minutes max")
+      Alert.alert(this.context.t('maxLengthAlert'))
 
     }
   };
@@ -522,7 +524,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
     this.setState({isDownloading: true})
     const perm = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (perm.status != 'granted') {
-      Alert.alert("This permission is required in order to download audio files");
+      Alert.alert(this.context.t('audioFilesPermission'));
       this.setState({isDownloading: false})
       return;
     }
@@ -537,11 +539,11 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
         }
       }
       this.setState({isDownloading: false})
-      Alert.alert("File has been successfully added to Downloads folder");
+      Alert.alert(this.context.t('downloadSuccess'));
     }
     catch (e) {
       this.setState({isDownloading: false})
-      Alert.alert("Something went wrong during saving");
+      Alert.alert(this.context.t('downloadFail'));
     }
   }
 
@@ -561,8 +563,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
               { fontFamily: "cutive-mono-regular" },
             ]}
           >
-            You must enable audio recording permissions in order to use this
-            app.
+            {this.context.t('audioPermissionPrompt')}
             </Text>
           <View />
         </View>
@@ -737,7 +738,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                   styles.recordingTimestamp,
                 ]}
               >
-                {this._getRecordingTimestamp() === "00:00" ? '3 Minutes Maximum' : this._getRecordingTimestamp()}
+                {this._getRecordingTimestamp() === "00:00" ? this.context.t('maxLengthStatic'): this._getRecordingTimestamp()}
               </Text>
             </View>
             <View style={styles.recordButton}>
@@ -790,7 +791,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
                   fontWeight: 'bold',
                   fontSize: 15,
                 }}>
-                Upload Existing File
+                {this.context.t('uploadExistingFile')}
                     </Text>
             </View>
           </TouchableHighlight>
