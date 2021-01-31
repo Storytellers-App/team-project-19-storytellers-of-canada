@@ -17,6 +17,7 @@ import { ResponseType as ResponseStory, RootStackParamList, UserType } from '../
 import * as MediaLibrary from 'expo-media-library';
 import { ActivityIndicator, Appbar } from 'react-native-paper';
 import { LocalizationContext } from '../LocalizationContext';
+import { blue100, red100 } from 'react-native-paper/lib/typescript/src/styles/colors';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get("window");
 const BACKGROUND_COLOR = "#f6f6f6";
@@ -775,6 +776,7 @@ export default class NewRecordingScreen extends React.Component<Props, State> {
             backgroundColor: Colors.light.tint,
             borderRadius: 30,
             alignItems: 'center',
+            marginBottom: 30,
             opacity: this.state.isLoading || this.state.isRecording ? DISABLED_OPACITY : 1.0,
           }}
             disabled={this.state.isLoading || this.state.isRecording}
@@ -830,23 +832,22 @@ const styles = StyleSheet.create({
   },
   wrapper: {},
   halfScreenContainer: {
-    flex: 3,
+    flex: 1.75,
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
     alignSelf: "stretch",
-    paddingTop: 10,
 
   },
   halfScreenContainerBottom: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "stretch",
     //marginBottom: 50,
-    paddingBottom: 50,
-
+    paddingBottom: 0,
+    // backgroundColor: 'white',
 
   },
   recordingContainer: {
@@ -857,12 +858,15 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     minHeight: 119,
     maxHeight: 119,
+    backgroundColor: 'red',
   },
   recordButton: {
     flexDirection: 'row',
-    flex: 3,
+    flex: 1,
     marginTop: 10,
-
+    position: "relative",
+    bottom: 20,
+    // backgroundColor: 'red',
   },
   recordingDataContainer: {
     flex: 1,
