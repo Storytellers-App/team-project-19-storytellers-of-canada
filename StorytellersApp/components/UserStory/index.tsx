@@ -49,7 +49,7 @@ function UserStory(props: UserStoryProps) {
             <TouchableWithoutFeedback disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.story.user.image === undefined || props.story.user.image === null || props.story.user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />
+                        <ProfilePicture image={props.story.user.image} size={45} name={props.story.user.name} />
                         <View style={{ flex: 1 }}>
 
                             <Text style={styles.titleStyle}

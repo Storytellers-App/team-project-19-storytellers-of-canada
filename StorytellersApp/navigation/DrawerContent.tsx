@@ -11,6 +11,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { UserContext } from '../UserContext';
 import { LocalizationContext } from '../LocalizationContext';
+import ProfilePicture from '../components/ProfilePicture';
 
 export function DrawerContent(props) {
     const { t, locale, setLocale } = React.useContext(LocalizationContext);
@@ -46,12 +47,7 @@ export function DrawerContent(props) {
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
                         <View style={{ marginTop: 15 }}>
-                            <Avatar.Image
-                                source={{
-                                    uri: user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
-                                }}
-                                size={120}
-                            />
+                            <ProfilePicture size={120} image={user?.image} name={user?.name}></ProfilePicture>
                             <View style={{ marginTop: 20 }}>
                                 <Title style={styles.title}>{user === undefined || user === null ? t('guestUser') : user?.name}</Title>
                                 {user != null && user != undefined && <Caption style={styles.caption}>{user?.email}</Caption>}

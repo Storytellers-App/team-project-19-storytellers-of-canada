@@ -55,15 +55,9 @@ export default function HomeScreen({navigation}) {
         <View style={{ marginLeft: 7 }}>
           <TouchableOpacity onPress={openDrawer}>
           {  user === null || user === undefined || user.image === "" ? <IconButton size={25} icon={"menu"} /> : <ProfilePicture
-            image={
-              user === null || user === undefined
-                ? undefined
-                : user.image === null || user.image === undefined 
-                ? "https://ui-avatars.com/api/?background=006699&color=fff&name=" +
-                  user.name
-                : user.image
-            }
+            image={user.image}
             size={45}
+            name={user.name}
           />}
           </TouchableOpacity>
         </View>
