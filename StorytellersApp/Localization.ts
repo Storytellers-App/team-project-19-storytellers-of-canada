@@ -130,6 +130,8 @@ export const en = {
     pleaseConfirmDeactivation: 'Please confirm that you are deactivating your account.',
     profileInfo: 'Profile Information',
     updatePic: 'Update Picture',
+    removePic: 'Remove Picture',
+    deletePicConfirmation:  'Are you sure that you want to delete this profile picture?',
     
     //Privacy Screen
     downloadData: "Download your Data",
@@ -309,7 +311,9 @@ export const fr = {
      pleaseConfirmDeactivation: 'Please confirm that you are deactivating your account.',
      profileInfo: 'Information de profil',
      updatePic: 'Update Picture',
-     
+     removePic: 'Remove Picture',
+     deletePicConfirmation:  'Are you sure that you want to delete this profile picture?',
+
      //Privacy Screen
      downloadData: "Télecharger votre information",
      viewTerms: "Lire les conditions générales",

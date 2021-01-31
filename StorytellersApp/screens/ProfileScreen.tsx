@@ -9,7 +9,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import {
   Appbar, Avatar,
   Button,
+  Dialog,
+  IconButton,
   Modal,
+  Paragraph,
   Portal, Text, Title
 } from "react-native-paper";
 import * as Config from "../config";
@@ -31,7 +34,7 @@ export default function ProfileScreen(props) {
   const [showAdminModal, setAdminModal] = React.useState(false);
   const [showDeactivateModal, setDeactivateModal] = React.useState(false);
   const [showConfirmModal, setConfirmModal] = React.useState(false);
-
+  const [showConfirmPicDelete, setShowConfirmPicDelete] = React.useState(false);
   const [name, setName] = React.useState("");
 
   // Updating the name in the backend
@@ -307,6 +310,43 @@ export default function ProfileScreen(props) {
   };
   const [profilePic, setProfilePic] = React.useState("");
 
+  const removePic = async () => {
+    setShowConfirmPicDelete(false);
+    if (user === undefined || user.authToken === undefined) {
+      return;
+    }
+    fetch(Config.HOST + 'updateImage', {
+      method: "DELETE",
+      headers: new Headers({
+        Authorization: user?.authToken
+      }
+      ),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        if (result["success"]) {
+          let newUser = {
+            username: user?.username,
+            name: user?.name,
+            type: user?.type,
+            email: user?.email,
+            authToken: user?.authToken,
+            image: undefined,
+          } as UserType;
+          setUser(newUser);
+        } else {
+          Alert.alert(t('somethingWentWrong'))
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Connection Error");
+        console.error(error);
+      });
+
+  }
   const updatePic = async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -574,6 +614,18 @@ export default function ProfileScreen(props) {
             />
           </Modal>
         </Portal>
+        <Portal>
+          <Dialog visible={showConfirmPicDelete} onDismiss={() => setShowConfirmPicDelete(false)} style={{ backgroundColor: 'white' }}>
+            <Dialog.Content>
+              <Paragraph >{t('deletePicConfirmation')}</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setShowConfirmPicDelete(false)}>{t('cancel')}</Button>
+              <Button style={{ marginHorizontal: 15 }} onPress={removePic}>{t('yes')}</Button>
+            </Dialog.Actions>
+
+          </Dialog>
+        </Portal>
         <Appbar.Header style={{ backgroundColor: "white" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Button
@@ -593,16 +645,28 @@ export default function ProfileScreen(props) {
                 backgroundColor: "rgba(0,0,0,0.5),",
               }}
             >
-              <View style={{marginVertical: 30}}>
-              <ProfilePicture size={120} image={user?.image} name={user?.name}></ProfilePicture>
+              <View style={{ marginVertical: 30 }}>
+
+                <ProfilePicture size={120} image={user?.image} name={user?.name}></ProfilePicture>
+                {/* <IconButton size={30} color={'white'} style={{position: 'absolute', right: -30,
+                bottom: -25,}}icon="close"></IconButton> */}
               </View>
-              <Button
-                icon="pencil"
-                labelStyle={{ color: 'white', fontSize: 14 }}
-                style={{ paddingBottom: 10 }}
-                onPress={updatePic}>
-               {t('updatePic')}
-                        </Button>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <Button
+                  icon="pencil"
+                  labelStyle={{ color: 'white', fontSize: 14 }}
+                  style={{ paddingBottom: 10 }}
+                  onPress={updatePic}>
+                  {t('updatePic')}
+                </Button>
+                <Button
+                  icon="close"
+                  labelStyle={{ color: 'white', fontSize: 14 }}
+                  style={{ paddingBottom: 10 }}
+                  onPress={() => setShowConfirmPicDelete(true)}>
+                  {t('removePic')}
+                </Button>
+              </View>
             </View>
           </ImageBackground>
           <View style={styles.userInfoSection}>
@@ -610,7 +674,7 @@ export default function ProfileScreen(props) {
               <Text style={styles.infoHeader}>{t('fullName')}</Text>
               <Text style={styles.info}>{user?.name}</Text>
               <Text style={styles.change} onPress={showNameModal}>
-               {t('changeFullName')}
+                {t('changeFullName')}
               </Text>
             </View>
             <View style={styles.userInfo}>
@@ -650,7 +714,7 @@ export default function ProfileScreen(props) {
                   setAdminModal(true);
                 }}
               >
-               {t('elevateUserToAdmin')}
+                {t('elevateUserToAdmin')}
               </Button>
             )}
             <Button

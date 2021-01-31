@@ -37,3 +37,19 @@ class UpdateImage(Resource):
         except Exception as e:
             print(e)
             return HTTPStatus.BAD_REQUEST
+
+    def delete(self):
+        # Getting the user's auth token
+        authToken = request.headers.get('Authorization')
+
+        # deleting the user's profile pic
+        try:
+            user_service = GetUserService()
+            temp_user = user_service.getUserWithAuthToken(authToken)
+
+            temp_user.image = None
+            db.session.commit()
+            return jsonify(success=True)
+        except Exception as e:
+            print(e)
+            return HTTPStatus.BAD_REQUEST
