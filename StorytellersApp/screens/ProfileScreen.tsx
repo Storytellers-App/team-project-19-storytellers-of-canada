@@ -18,6 +18,7 @@ import { UserContext } from "../UserContext";
 import * as ImagePicker from 'expo-image-picker';
 import * as SecureStore from 'expo-secure-store';
 import { LocalizationContext } from "../LocalizationContext";
+import ProfilePicture from "../components/ProfilePicture";
 
 export default function ProfileScreen(props) {
   const { user, setUser } = React.useContext(UserContext);
@@ -592,14 +593,9 @@ export default function ProfileScreen(props) {
                 backgroundColor: "rgba(0,0,0,0.5),",
               }}
             >
-              <Avatar.Image
-                source={{
-                  uri:
-                    user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
-                }}
-                size={120}
-                style={{ marginTop: 30, marginBottom: 30 }}
-              />
+              <View style={{marginVertical: 30}}>
+              <ProfilePicture size={120} image={user?.image} name={user?.name}></ProfilePicture>
+              </View>
               <Button
                 icon="pencil"
                 labelStyle={{ color: 'white', fontSize: 14 }}
