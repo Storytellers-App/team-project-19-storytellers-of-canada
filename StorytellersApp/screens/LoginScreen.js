@@ -4,7 +4,7 @@ import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import * as SecureStore from 'expo-secure-store';
 import base64 from 'react-native-base64'
-import {LocalizationContext} from '../LocalizationContext';
+import { LocalizationContext } from '../LocalizationContext';
 import * as Config from '../config';
 /**
  * Class for the login screen component
@@ -20,9 +20,9 @@ export default class LoginScreen extends Component {
         this.login = this.login.bind(this)
         this.host = Config.HOST
         this.checkPrevLogin();
-      
+
     }
-   
+
     /**
      * Redirect to the registration page
      */
@@ -65,8 +65,8 @@ export default class LoginScreen extends Component {
     }
 
     checkAuth = async (authToken) => {
-          // Submitting a login request
-          fetch(this.host + 'authTokenLogin', {
+        // Submitting a login request
+        fetch(this.host + 'authTokenLogin', {
             headers: new Headers({
                 'Authorization': authToken
             })
@@ -129,7 +129,7 @@ export default class LoginScreen extends Component {
                         if (result["active"] === undefined) {
                             // Invalid login information
                             Alert.alert(
-                               this.context.t('invalidLogin'),
+                                this.context.t('invalidLogin'),
                                 this.context.t('makeSureUserValid')
                             )
                         } else {
@@ -167,7 +167,7 @@ export default class LoginScreen extends Component {
         if (!this.state.renderScreen) {
             return null;
         }
-       
+
         return (
             <View style={styles.container}>
                 {/* Storytellers of Canada logo */}
@@ -222,6 +222,15 @@ export default class LoginScreen extends Component {
                         <Text style={styles.buttonText}> {this.context.t('loginAsGuest')}</Text>
                     </TouchableOpacity>
                 </View>
+                {this.context.locale === 'en' ? (
+                    <TouchableOpacity onPress={() => this.context.setLocale('fr')}>
+                        <Text style={styles.languageChoice}>Français</Text>
+                    </TouchableOpacity>
+                ) : (
+                        <TouchableOpacity onPress={() => this.context.setLocale('en')}>
+                            <Text style={styles.languageChoice}>English</Text>
+                        </TouchableOpacity>
+                    )}
             </View>
         );
     }
@@ -284,4 +293,9 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         flexDirection: "row",
     },
+    languageChoice: {
+        color: 'black',
+        fontSize: 15,
+        alignSelf: 'center'
+    }
 });
