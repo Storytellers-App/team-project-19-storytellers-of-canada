@@ -17,6 +17,7 @@ import { UserType } from "../types";
 import { UserContext } from "../UserContext";
 import * as ImagePicker from 'expo-image-picker';
 import * as SecureStore from 'expo-secure-store';
+import booksImage from "../assets/images/books.jpeg";
 
 export default function ProfileScreen(props) {
   const { user, setUser } = React.useContext(UserContext);
@@ -299,10 +300,7 @@ export default function ProfileScreen(props) {
     }
   };
 
-  const image = {
-    uri:
-      "https://images.pexels.com/photos/1387022/pexels-photo-1387022.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  };
+  const image = booksImage;
   const [profilePic, setProfilePic] = React.useState("");
 
   const updatePic = async () => {
