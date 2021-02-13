@@ -9,7 +9,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import {
   Appbar, Avatar,
   Button,
+  Dialog,
+  IconButton,
   Modal,
+  Paragraph,
   Portal, Text, Title
 } from "react-native-paper";
 import * as Config from "../config";
@@ -17,11 +20,16 @@ import { UserType } from "../types";
 import { UserContext } from "../UserContext";
 import * as ImagePicker from 'expo-image-picker';
 import * as SecureStore from 'expo-secure-store';
+
 import booksImage from "../assets/images/books.jpeg";
+
+import { LocalizationContext } from "../LocalizationContext";
+import ProfilePicture from "../components/ProfilePicture";
+
 
 export default function ProfileScreen(props) {
   const { user, setUser } = React.useContext(UserContext);
-
+  const { t, locale, setLocale } = React.useContext(LocalizationContext);
   const [visible, setVisible] = React.useState(false);
   const showNameModal = () => setVisible(true);
   const hideNameModal = () => setVisible(false);
@@ -30,7 +38,7 @@ export default function ProfileScreen(props) {
   const [showAdminModal, setAdminModal] = React.useState(false);
   const [showDeactivateModal, setDeactivateModal] = React.useState(false);
   const [showConfirmModal, setConfirmModal] = React.useState(false);
-
+  const [showConfirmPicDelete, setShowConfirmPicDelete] = React.useState(false);
   const [name, setName] = React.useState("");
 
   // Updating the name in the backend
@@ -56,11 +64,11 @@ export default function ProfileScreen(props) {
             image: user?.image
           } as UserType;
           setUser(newUser);
-          Alert.alert("Name Change Successful");
+          Alert.alert(t('nameChangeSuccess'));
           hideNameModal();
           props.navigation.navigate("ProfilePage");
         } else {
-          Alert.alert("Name Update Failed.", "Please Try Again");
+          Alert.alert(t('nameUpdateFail'), t('pleaseTryAgain'));
         }
       })
       .catch((error) => {
@@ -83,13 +91,13 @@ export default function ProfileScreen(props) {
     // Checking if the emails are the same
     if (!(newEmail === confirmEmail)) {
       Alert.alert(
-        "Invalid Email Entry",
-        "Please make sure that your email is the same for both fields."
+        t('invalidEmail'),
+        t('makeSureEmailSame')
       );
     } else if (!validateEmail(newEmail)) {
       Alert.alert(
-        "Invalid Email Entry",
-        "Please make sure the email you enter is a valid email address."
+        t('invalidEmail'),
+        t('makeSureValidEmailChange')
       );
     } else {
       fetch(Config.HOST + `updateEmail?email=${newEmail}`, {
@@ -113,17 +121,17 @@ export default function ProfileScreen(props) {
               image: user?.image
             } as UserType;
             setUser(newUser);
-            Alert.alert("Email Change Successful");
+            Alert.alert(t('emailChangeSuccess'));
             setEmailModal(false);
             props.navigation.navigate("ProfilePage");
           } else {
             if (result["exists"]) {
               Alert.alert(
-                "Email Update Failed.",
-                "This email is already registered."
+                t('emailUpdateFail'),
+                t('emailAlreadyRegistered')
               );
             } else {
-              Alert.alert("Email Update Failed.", "Please Try Again");
+              Alert.alert(t('emailUpdateFail'), t('pleaseTryAgain'));
             }
           }
         })
@@ -143,13 +151,13 @@ export default function ProfileScreen(props) {
     // Checking if the emails are the same
     if (!(newPassword === confirmPassword)) {
       Alert.alert(
-        "Invalid Password Entry",
-        "Please make sure that your new password is the same for both fields."
+        t('invalidPasswordEntry'),
+        t('passwordMismatch')
       );
     } else if (currentPassword === newPassword) {
       Alert.alert(
-        "Invalid Password Entry",
-        "You cannot choose your new password to be your current one."
+        t('invalidPasswordEntry'),
+        t('passwordSameOld')
       );
     } else {
       fetch(Config.HOST + `updatePassword`, {
@@ -171,8 +179,8 @@ export default function ProfileScreen(props) {
             props.navigation.navigate("ProfilePage");
           } else {
             Alert.alert(
-              "Password Update Failed.",
-              "Please make sure you have entered the correct current password."
+              t('passwordUpdateFail'),
+              t('makeSureCorrectCurrPassword')
             );
           }
         })
@@ -191,8 +199,8 @@ export default function ProfileScreen(props) {
     // Checking if the emails are the same
     if (!(newAdmin === confirmNewAdmin)) {
       Alert.alert(
-        "Invalid Username Entry",
-        "Please make sure that the username is the same for both fields."
+        t('invalidUsernameEntry'),
+        t('makeSureUsernameSame')
       );
     } else {
       fetch(Config.HOST + `promoteUser?username=${newAdmin}`, {
@@ -208,24 +216,24 @@ export default function ProfileScreen(props) {
           if (result["success"]) {
             console.log("Successful response");
             Alert.alert(
-              "User Successfully Elevated to Admin.",
-              "They will need to log out and log back in for this change to take effect."
+              t('userElevateSuccess'),
+              t('promotedLogBackIn')
             );
           } else {
             if (result["error"] == "NOTADMIN") {
               Alert.alert(
-                "User elevation failed",
-                "You must be an Admin to elevate users."
+                t('userElevateFail'),
+                t('mustBeAdmin')
               );
             } else if (result["error"] == "NOAUTH") {
               Alert.alert(
-                "User elevation failed",
-                "You must be authenticated to elevate users."
+                t('userElevateFail'),
+                t('mustBeAuth')
               );
             } else if (result["error"] == "NOUSER") {
               Alert.alert(
-                "User elevation failed",
-                "There is no user with that username."
+                t('userElevateFail'),
+                t('userNotFound')
               );
             }
           }
@@ -259,7 +267,7 @@ export default function ProfileScreen(props) {
         console.log(result);
         if (result["success"]) {
           console.log("Successful response");
-          Alert.alert("Deactivation Successful", "You will now be logged out.");
+          Alert.alert(t('deactivateSuccess'));
           // Logging out
           setDeactivateModal(false);
           setConfirmModal(false);
@@ -276,8 +284,8 @@ export default function ProfileScreen(props) {
           setDeactivateModal(false);
           setConfirmModal(false);
           Alert.alert(
-            "Deactivation Failed.",
-            "Please make sure you have entered the correct current password."
+            t('deactivateFail'),
+            t('makeSureCorrectCurrPassword')
           );
         }
       })
@@ -291,8 +299,8 @@ export default function ProfileScreen(props) {
     // Continue if a password is entered
     if (deactivatePassword === "") {
       Alert.alert(
-        "Invalid Password Information",
-        "Please make sure you have entered your password."
+        t('invalidPasswordEntry'),
+        t('makeSureCorrectCurrPassword')
       );
     } else {
       setConfirmModal(true);
@@ -303,11 +311,48 @@ export default function ProfileScreen(props) {
   const image = booksImage;
   const [profilePic, setProfilePic] = React.useState("");
 
+  const removePic = async () => {
+    setShowConfirmPicDelete(false);
+    if (user === undefined || user.authToken === undefined) {
+      return;
+    }
+    fetch(Config.HOST + 'updateImage', {
+      method: "DELETE",
+      headers: new Headers({
+        Authorization: user?.authToken
+      }
+      ),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        if (result["success"]) {
+          let newUser = {
+            username: user?.username,
+            name: user?.name,
+            type: user?.type,
+            email: user?.email,
+            authToken: user?.authToken,
+            image: undefined,
+          } as UserType;
+          setUser(newUser);
+        } else {
+          Alert.alert(t('somethingWentWrong'))
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Connection Error");
+        console.error(error);
+      });
+
+  }
   const updatePic = async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
+        alert(t('cameraRollPermissions'));
       }
     }
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -341,10 +386,10 @@ export default function ProfileScreen(props) {
               console.log(newUser?.image)
               setUser(newUser);
             }
-            Alert.alert("Profile picture has been updated");
+            Alert.alert(t('profilePicUpdateSuccess'));
           } else {
             console.log('error', xhr.responseText);
-            Alert.alert("Sorry something went wrong, please try again");
+            Alert.alert(t('profilePicUpdateFail'));
           }
         };
       }
@@ -361,10 +406,10 @@ export default function ProfileScreen(props) {
             onDismiss={hideNameModal}
           >
             <View style={{ alignItems: "center", padding: 20 }}>
-              <Title>Change Full Name</Title>
+              <Title>{t('changeFullName')}</Title>
               <Input
                 style={styles.input}
-                placeholder="New Name"
+                placeholder={t('newName')}
                 autoCapitalize="words"
                 onChangeText={(text) => {
                   setName(text);
@@ -373,7 +418,7 @@ export default function ProfileScreen(props) {
             </View>
             <UpdateButton
               buttonStyle={styles.button}
-              title="Update"
+              title={t('update')}
               onPress={() => {
                 updateName();
               }}
@@ -389,10 +434,10 @@ export default function ProfileScreen(props) {
             }}
           >
             <View style={{ alignItems: "center", padding: 20 }}>
-              <Title>Change Email</Title>
+              <Title>{t('changeEmail')}</Title>
               <Input
                 style={{ fontSize: 16, marginTop: 30 }}
-                placeholder="New Email"
+                placeholder={t('newEmail')}
                 autoCapitalize="none"
                 onChangeText={(text) => {
                   setNewEmail(text);
@@ -400,7 +445,7 @@ export default function ProfileScreen(props) {
               />
               <Input
                 style={{ fontSize: 16 }}
-                placeholder="Confirm Email"
+                placeholder={t('confirmEmail')}
                 autoCapitalize="none"
                 onChangeText={(text) => {
                   setConfirmEmail(text);
@@ -409,7 +454,7 @@ export default function ProfileScreen(props) {
             </View>
             <UpdateButton
               buttonStyle={styles.button}
-              title="Update"
+              title={t('update')}
               onPress={() => {
                 updateEmail();
               }}
@@ -425,10 +470,10 @@ export default function ProfileScreen(props) {
             }}
           >
             <View style={{ alignItems: "center", padding: 20 }}>
-              <Title>Change Password</Title>
+              <Title>{t('changePassword')}</Title>
               <Input
                 style={{ fontSize: 16, marginTop: 30 }}
-                placeholder="Current Password"
+                placeholder={t('currentPassword')}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 onChangeText={(text) => {
@@ -437,7 +482,7 @@ export default function ProfileScreen(props) {
               />
               <Input
                 style={{ fontSize: 16, marginTop: 40 }}
-                placeholder="New Password"
+                placeholder={t('newPassword')}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 onChangeText={(text) => {
@@ -446,7 +491,7 @@ export default function ProfileScreen(props) {
               />
               <Input
                 style={{ fontSize: 16 }}
-                placeholder="Confirm Password"
+                placeholder={t('confirmPassword')}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 onChangeText={(text) => {
@@ -456,7 +501,7 @@ export default function ProfileScreen(props) {
             </View>
             <UpdateButton
               buttonStyle={styles.button}
-              title="Update"
+              title={t('update')}
               onPress={() => {
                 updatePassword();
               }}
@@ -472,10 +517,10 @@ export default function ProfileScreen(props) {
             }}
           >
             <View style={{ alignItems: "center", padding: 20 }}>
-              <Title>Elevate a User to Admin</Title>
+              <Title>{t('elevateUserToAdmin')}</Title>
               <Input
                 style={{ fontSize: 16, marginTop: 30 }}
-                placeholder="Username to Elevate"
+                placeholder={t('usernameToElevate')}
                 autoCapitalize="none"
                 onChangeText={(text) => {
                   setNewAdmin(text);
@@ -483,7 +528,7 @@ export default function ProfileScreen(props) {
               />
               <Input
                 style={{ fontSize: 16 }}
-                placeholder="Confirm Username"
+                placeholder={t('confirmUsername')}
                 autoCapitalize="none"
                 onChangeText={(text) => {
                   setConfirmNewAdmin(text);
@@ -492,7 +537,7 @@ export default function ProfileScreen(props) {
             </View>
             <UpdateButton
               buttonStyle={styles.button}
-              title="Elevate"
+              title={t('elevate')}
               onPress={() => {
                 elevateUser();
               }}
@@ -509,10 +554,10 @@ export default function ProfileScreen(props) {
             }}
           >
             <View style={{ alignItems: "center", padding: 20 }}>
-              <Title>Deactivate Account</Title>
+              <Title>{t('deactivateAccount')}</Title>
               <Input
                 style={{ fontSize: 16, marginTop: 40 }}
-                placeholder="Current Password"
+                placeholder={t('currentPassword')}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 onChangeText={(text) => {
@@ -522,7 +567,7 @@ export default function ProfileScreen(props) {
             </View>
             <UpdateButton
               buttonStyle={styles.deactivateButton}
-              title="Deactivate Account"
+              title={t('deactivateAccount')}
               onPress={() => {
                 goToConfirm();
               }}
@@ -539,7 +584,7 @@ export default function ProfileScreen(props) {
             }}
           >
             <View style={{ alignItems: "center", padding: 20 }}>
-              <Title>Confirm Deactivation</Title>
+              <Title>{t('confirmDeactivation')}</Title>
             </View>
             <View>
               <Text
@@ -550,25 +595,37 @@ export default function ProfileScreen(props) {
                   textAlign: "center",
                 }}
               >
-                Please confirm that you are deactivating your account.
+                {t('pleaseConfirmDeactivation')}
               </Text>
             </View>
             <UpdateButton
               buttonStyle={styles.deactivateButton}
-              title="Deactivate Account"
+              title={t('deactivateAccount')}
               onPress={() => {
                 deactivate();
               }}
             />
             <UpdateButton
               buttonStyle={styles.cancelButton}
-              title="Cancel"
+              title={t('cancel')}
               onPress={() => {
                 setDeactivatePassword("");
                 setConfirmModal(false);
               }}
             />
           </Modal>
+        </Portal>
+        <Portal>
+          <Dialog visible={showConfirmPicDelete} onDismiss={() => setShowConfirmPicDelete(false)} style={{ backgroundColor: 'white' }}>
+            <Dialog.Content>
+              <Paragraph >{t('deletePicConfirmation')}</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setShowConfirmPicDelete(false)}>{t('cancel')}</Button>
+              <Button style={{ marginHorizontal: 15 }} onPress={removePic}>{t('yes')}</Button>
+            </Dialog.Actions>
+
+          </Dialog>
         </Portal>
         <Appbar.Header style={{ backgroundColor: "white" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -577,7 +634,7 @@ export default function ProfileScreen(props) {
               labelStyle={{ color: "black", fontSize: 24 }}
               onPress={() => props.navigation.navigate("Home")}
             ></Button>
-            <Title style={{ marginBottom: 5 }}>Profile Information</Title>
+            <Title style={{ marginBottom: 5 }}>{t('profileInfo')}</Title>
           </View>
         </Appbar.Header>
         <View style={{ justifyContent: "center" }}>
@@ -589,33 +646,40 @@ export default function ProfileScreen(props) {
                 backgroundColor: "rgba(0,0,0,0.5),",
               }}
             >
-              <Avatar.Image
-                source={{
-                  uri:
-                    user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
-                }}
-                size={120}
-                style={{ marginTop: 30, marginBottom: 30 }}
-              />
-              <Button
-                icon="pencil"
-                labelStyle={{ color: 'white', fontSize: 14 }}
-                style={{ paddingBottom: 10 }}
-                onPress={updatePic}>
-                Update Picture
-                        </Button>
+              <View style={{ marginVertical: 30 }}>
+
+                <ProfilePicture size={120} image={user?.image} name={user?.name}></ProfilePicture>
+                {/* <IconButton size={30} color={'white'} style={{position: 'absolute', right: -30,
+                bottom: -25,}}icon="close"></IconButton> */}
+              </View>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <Button
+                  icon="pencil"
+                  labelStyle={{ color: 'white', fontSize: 14 }}
+                  style={{ paddingBottom: 10 }}
+                  onPress={updatePic}>
+                  {t('updatePic')}
+                </Button>
+                <Button
+                  icon="close"
+                  labelStyle={{ color: 'white', fontSize: 14 }}
+                  style={{ paddingBottom: 10 }}
+                  onPress={() => setShowConfirmPicDelete(true)}>
+                  {t('removePic')}
+                </Button>
+              </View>
             </View>
           </ImageBackground>
           <View style={styles.userInfoSection}>
             <View style={styles.userInfo}>
-              <Text style={styles.infoHeader}>Full Name</Text>
+              <Text style={styles.infoHeader}>{t('fullName')}</Text>
               <Text style={styles.info}>{user?.name}</Text>
               <Text style={styles.change} onPress={showNameModal}>
-                Change Full Name
+                {t('changeFullName')}
               </Text>
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.infoHeader}>Email</Text>
+              <Text style={styles.infoHeader}>{t('email')}</Text>
               <Text style={styles.info}>{user?.email}</Text>
               <Text
                 style={styles.change}
@@ -623,11 +687,11 @@ export default function ProfileScreen(props) {
                   setEmailModal(true);
                 }}
               >
-                Change Email
+                {t('changeEmail')}
               </Text>
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.infoHeader}>Username</Text>
+              <Text style={styles.infoHeader}>{t('username')}</Text>
               <Text style={styles.info}>{user?.username}</Text>
             </View>
           </View>
@@ -640,7 +704,7 @@ export default function ProfileScreen(props) {
                 setPasswordModal(true);
               }}
             >
-              Change Password
+              {t('changePassword')}
             </Button>
             {user?.type == "ADMIN" && (
               <Button
@@ -651,7 +715,7 @@ export default function ProfileScreen(props) {
                   setAdminModal(true);
                 }}
               >
-                Promote User to Admin
+                {t('elevateUserToAdmin')}
               </Button>
             )}
             <Button
@@ -661,7 +725,7 @@ export default function ProfileScreen(props) {
                 setDeactivateModal(true);
               }}
             >
-              Deactivate Account
+              {t('deactivateAccount')}
             </Button>
           </View>
         </View>

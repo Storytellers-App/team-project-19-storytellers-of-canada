@@ -6,8 +6,44 @@ import { Actions } from 'react-native-router-flux';
 import { Audio } from 'expo-av';
 import { throwIfAudioIsDisabled } from 'expo-av/build/Audio/AudioAvailability';
 import { AppContext } from '../AppContext';
+import { LocalizationContext } from '../LocalizationContext';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 let loading = false;
+
+function AppBarAndHelp() {
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
+    const [helpOpen, setHelpOpen] = React.useState(false);
+    return (
+        <View>
+            <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display: 'flex' }}>
+                <Text style={{ fontSize: 20 }}>{t('scRadio')}</Text>
+                <Button
+                    style={{ marginLeft: "auto" }}
+                    onPress={
+                        () => setHelpOpen(!helpOpen)
+                    }
+                >
+                    {t('helpCapitals')}
+                </Button>
+            </Appbar.Header>
+            {helpOpen && <Portal>
+                <View style={styles.faded}>
+                    <View style={styles.message}>
+                        <Text style={styles.messageTextLoud}>{t('helpRadioTitle')}</Text>
+                        <Text style={styles.messageText}>{t('helpRadioMessage')}</Text>
+                    </View>
+                </View>
+                <TouchableOpacity
+                    style={{ height: "100%" }}
+                    onPress={() => setHelpOpen(false)}
+                />
+            </Portal>}
+        </View>
+    )
+}
+
 export default class RadioPlayer extends React.Component {
+
     static contextType = AppContext
     constructor() {
         super();
@@ -18,6 +54,7 @@ export default class RadioPlayer extends React.Component {
         };
         this.timer = setInterval(() => this.updateNowPlaying(), 5000);
     }
+
     async componentDidMount() {
         this.mounted = true;
         this.updateNowPlaying();
@@ -157,32 +194,7 @@ export default class RadioPlayer extends React.Component {
         return (
 
             <View style={{ flex: 1 }}>
-                <Appbar.Header style={{ backgroundColor: "white", marginLeft: 20, display: 'flex' }}>
-                    <Text style={{ fontSize: 20 }}>SC-Radio-CC</Text>
-                    <Button
-                        style={{ marginLeft: "auto" }}
-                        onPress={() => {
-                            this.setState({ helpOpen: !this.state.helpOpen });
-                        }}
-                    >
-                        HELP
-                </Button>
-                </Appbar.Header>
-                {this.state.helpOpen && (
-                    <Portal>
-                        <View style={styles.faded}>
-                            <View style={styles.message}>
-                                <Text style={styles.messageTextLoud}>This is the SC-Radio-CC Screen</Text>
-                                <Text style={styles.messageText}>Here you can listen to the SC-Radio-CC station, streaming live!</Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity
-                            style={{ height: "100%" }}
-                            onPress={() => this.setState({ helpOpen: false })}
-                        />
-                    </Portal>
-                )}
-
+                <AppBarAndHelp></AppBarAndHelp>
                 <View style={styles.container}>
                     <Image
                         style={styles.logo}

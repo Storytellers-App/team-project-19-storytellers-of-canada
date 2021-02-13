@@ -12,6 +12,7 @@ import Colors from '../constants/Colors';
 import { RootStackParamList } from '../types';
 import { Audio } from 'expo-av';
 import { Appbar } from 'react-native-paper';
+import { LocalizationContext } from '../LocalizationContext';
 const BACKGROUND_COLOR = "#f6f6f6";
 
 type NewStoryRouteProp = RouteProp<RootStackParamList, 'NewStory'>;
@@ -26,6 +27,7 @@ type Props = {
 }
 
 export default function NewStoryScreen({ route, navigation }: Props) {
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const host = Config.HOST;
     const { parent, recording, user } = route.params;
     const [title, setTitle] = useState("");
@@ -82,7 +84,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
             if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to allow you to select a thumbnail image from your device!');
+                alert(t('cameraRollPermissions'));
             }
         }
         setIsLoadingImage(true);
@@ -92,7 +94,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
             if (!result.cancelled) {
 
                 setImage(result.uri);
-                Alert.alert("Image has been selected");
+                Alert.alert(t('imageSelected'));
             }
             setIsLoadingImage(false);
         });
@@ -109,12 +111,12 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         }
 
         if (title === "") {
-            Alert.alert("Please give your story a title!");
+            Alert.alert(t('emptyTitle'));
             return;
         }
 
         if (isStoredStory && author === "") {
-            Alert.alert("Please give the story an author!");
+            Alert.alert(t('emptyAuthor'));
             return;
         }
         setIsLoadingSubmit(true);
@@ -159,7 +161,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         console.log(long);
 
         if (!isStoredStory && long) {
-            Alert.alert("Stories must be maximum 3 minutes in length");
+            Alert.alert(t('maxStoredLengthAlert'));
             setIsLoadingSubmit(false);
             return;
         }
@@ -177,11 +179,11 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 if (xhr.status === 200) {
                     navigation.navigate('HomeScreen')
                     setIsLoadingSubmit(false);
-                    Alert.alert("Your submission is under review!")
+                    Alert.alert(t('submissionUnderReview'))
                 } else {
                     setIsLoadingSubmit(false);
                     console.log('error', xhr.responseText);
-                    Alert.alert("Sorry something went wrong, please try again");
+                    Alert.alert(t('somethingWentWrong'));
                 }
             };
         }
@@ -196,25 +198,25 @@ export default function NewStoryScreen({ route, navigation }: Props) {
         <ScrollView style={styles.container}>
             {/* Registration form */}
             <View>
-                <Text style={styles.title}>Submit Your New Story For Review!</Text>
+                <Text style={styles.title}>{t('newStorySubmissionTitle')}</Text>
             </View>
             <View>
                 {user.type === 'ADMIN' ?
                     <View>
-                        <Text style={styles.input}>{' Is this a Story for the Story Save \n Collection?'}</Text>
+                        <Text style={styles.input}>{t('isThisStorySave')}</Text>
                         <Picker
                             selectedValue={isStoredStory}
                             style={{ height: 50, width: 100 }}
                             onValueChange={(itemValue, itemIndex) => setIsStoredStory(itemValue)}>
-                            <Picker.Item label="Yes" value={true} />
-                            <Picker.Item label="No" value={false} />
+                            <Picker.Item label={t('yes')} value={true} />
+                            <Picker.Item label={t('no')} value={false} />
                         </Picker>
 
 
                         {isStoredStory
                             ? <Input
                                 style={styles.input}
-                                placeholder="Author"
+                                placeholder={t('author')}
                                 onChangeText={(text) => handleOnChangeAuthor(text)}
                             />
                             : null
@@ -226,12 +228,12 @@ export default function NewStoryScreen({ route, navigation }: Props) {
 
                 <Input
                     style={styles.input}
-                    placeholder="Title"
+                    placeholder={t('title')}
                     onChangeText={(text) => handleOnChangeTitle(text)}
                 />
                 <Input
                     style={styles.input}
-                    placeholder="Description"
+                    placeholder={t('description')}
                     multiline={true}
                     maxLength={350}
                     onChangeText={(text) => handleOnChangeDescription(text)}
@@ -243,7 +245,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                     updateState={(state) => {
                         setTags(state);
                     }}
-                    placeholder="Tags..."
+                    placeholder={t('tags') + '...'}
                     tagStyle={styles.tag}
                     keysForTag={'done'}
                     tagTextStyle={styles.tagText}
@@ -264,13 +266,13 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                     {isLoadingImage ? <ActivityIndicator size="large" color={Colors.light.tint} />
                         : null}
 
-                    {isLoadingImage ? <Text>{'\t \t \t Processing Image...'}</Text>
+                    {isLoadingImage ? <Text>{'\t \t \t ' +  t('processingImage') + '...'}</Text>
                         : null}
 
                     {isLoadingSubmit ? <ActivityIndicator size="large" color={Colors.light.tint} />
                         : null}
 
-                    {isLoadingSubmit ? <Text>{'\t \t \t Submitting Your Story...'}</Text>
+                    {isLoadingSubmit ? <Text>{'\t \t \t ' +  t('submissionInProgress') + '...'}</Text>
                         : null}
 
                 </View>
@@ -283,7 +285,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 >
                     <Text
                         style={styles.buttonTextImage}>
-                        Upload Thumbnail Image
+                        {t('uploadThumbnail')}
                     </Text>
                 </TouchableHighlight>
 
@@ -295,7 +297,7 @@ export default function NewStoryScreen({ route, navigation }: Props) {
                 >
                     <Text
                         style={styles.buttonText}>
-                        Submit
+                        {t('submit')}
                     </Text>
                 </TouchableHighlight>
 

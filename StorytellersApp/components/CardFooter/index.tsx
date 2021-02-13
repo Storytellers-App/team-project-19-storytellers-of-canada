@@ -10,6 +10,7 @@ import {
 } from 'react-native-paper';
 import { AppContext } from '../../AppContext';
 import { HOST } from '../../config';
+import { LocalizationContext } from '../../LocalizationContext';
 import { ResponseType, UserType } from '../../types';
 import styles from './styles';
 
@@ -20,6 +21,7 @@ export type UserStoryProps = {
 let url = HOST
 
 const Footer = (props: UserStoryProps) => {
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const {user} = props;
     const [loading, setLoading] = useState(false);
     const [userLike, setUserLike] = useState(props.story.isLiked);
@@ -85,7 +87,7 @@ const Footer = (props: UserStoryProps) => {
 
     const onLike = async () => {
         if (user === undefined || user === null) {
-            Alert.alert("Please login to like a story");
+            Alert.alert(t('pleaseLoginToLike'));
             return;
         }
         if (loading) {
@@ -119,7 +121,7 @@ const Footer = (props: UserStoryProps) => {
 
     const showDialog = () => {
         if (user === undefined || user === null || user.username === "") {
-            Alert.alert("Please login to record a story");
+            Alert.alert(t('pleaseLoginToRecord'));
             return;
         }
         setReplyVisible(true);
@@ -198,19 +200,19 @@ const Footer = (props: UserStoryProps) => {
             </View>
             <Portal>
                 <Dialog visible={replyVisible} onDismiss={hideDialog} style={{ backgroundColor: 'white' }}>
-                    <Dialog.Title style={{ color: 'black' }}>Reply</Dialog.Title>
+                    <Dialog.Title style={{ color: 'black' }}>{t('reply')}</Dialog.Title>
                     <Dialog.Content>
                         <View style={styles.replyMenu}>
                             <TouchableOpacity onPress={commentReply}>
                                 <View style={styles.replyOption}>
                                     <IconButton size={30} icon="comment-text" />
-                                    <Text>Comment</Text>
+                                    <Text>{t('comment')}</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={audioReply}>
                                 <View style={styles.replyOption}>
                                     <IconButton size={30} icon="microphone" />
-                                    <Text>Audio</Text>
+                                    <Text>{t('audio')}</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -218,11 +220,11 @@ const Footer = (props: UserStoryProps) => {
                 </Dialog>
                 <Dialog visible={deleteVisible} onDismiss={hideConfirmDelete} style={{ backgroundColor: 'white' }}>
                 <Dialog.Content>
-                    <Paragraph >Are you sure that you want to delete this story?</Paragraph>
+                    <Paragraph >{t('deleteConfirmation')}</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions>
-            <Button onPress={hideConfirmDelete}>Cancel</Button>
-            <Button style={{marginHorizontal: 15}}onPress={onDelete}>Yes</Button>
+            <Button onPress={hideConfirmDelete}>{t('cancel')}</Button>
+            <Button style={{marginHorizontal: 15}}onPress={onDelete}>{t('yes')}</Button>
           </Dialog.Actions>
         
                 </Dialog>

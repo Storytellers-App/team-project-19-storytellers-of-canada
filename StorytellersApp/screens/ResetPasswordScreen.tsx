@@ -6,6 +6,7 @@ import {
 import { Button, Input } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import { HOST } from '../config';
+import { LocalizationContext } from '../LocalizationContext';
 
 
 let url = HOST
@@ -19,7 +20,7 @@ type Props = {
 
 export default function ResetPasswordScreen({email, verificationCode, password, confirmPassword}: Props) {
 
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const verifyCode = async () => {
         console.log("verify the code");
         if (password === confirmPassword) {
@@ -36,44 +37,44 @@ export default function ResetPasswordScreen({email, verificationCode, password, 
                     if (response.data.success === true) {
                         Actions.LoginScreen();
                     } else {
-                        Alert.alert("There was a problem with the server, please try again");
+                        Alert.alert(t('somethingWentWrong'));
                     }
                 })
             } catch (e) {
-                Alert.alert("There was a problem reaching the server. Please try again");
+                Alert.alert(t('somethingWentWrong'));
             }
         } else {
-            Alert.alert("The passwords don't match");
+            Alert.alert(t('passwordMismatch'));
         }
     }
 
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.title}>A code was sent to your email. Please enter it below, then enter your new password</Text>
+                <Text style={styles.title}>{t('codeSentToEmailReset')}</Text>
             </View>
             <View>
                 <Input
                     style={styles.input}
-                    placeholder="Verification Code"
+                    placeholder={t('verificationCode')}
                     onChangeText={(value) => verificationCode = value}
                 />
                 <Input
                     style={styles.input}
-                    placeholder="Password"
+                    placeholder={t('password')}
                     secureTextEntry={true}
                     onChangeText={(value) => password = value}
                 />
                 <Input
                     style={styles.input}
-                    placeholder="Confirm Password"
+                    placeholder={t('confirmPassword')}
                     secureTextEntry={true}
                     onChangeText={(value) => confirmPassword = value}
                 />
                 <Button
                     buttonStyle={styles.signInButton}
                     onPress={verifyCode}
-                    title="Confirm"
+                    title={t('confirm')}
                 />
             </View>
         </View>
