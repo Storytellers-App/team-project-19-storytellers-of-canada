@@ -20,8 +20,12 @@ import { UserType } from "../types";
 import { UserContext } from "../UserContext";
 import * as ImagePicker from 'expo-image-picker';
 import * as SecureStore from 'expo-secure-store';
+
+import booksImage from "../assets/images/books.jpeg";
+
 import { LocalizationContext } from "../LocalizationContext";
 import ProfilePicture from "../components/ProfilePicture";
+
 
 export default function ProfileScreen(props) {
   const { user, setUser } = React.useContext(UserContext);
@@ -304,10 +308,7 @@ export default function ProfileScreen(props) {
     }
   };
 
-  const image = {
-    uri:
-      "https://images.pexels.com/photos/1387022/pexels-photo-1387022.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  };
+  const image = booksImage;
   const [profilePic, setProfilePic] = React.useState("");
 
   const removePic = async () => {
@@ -760,7 +761,6 @@ const styles = StyleSheet.create({
   },
   info: {
     fontSize: 22,
-    fontWeight: "900",
   },
   change: {
     fontSize: 13,

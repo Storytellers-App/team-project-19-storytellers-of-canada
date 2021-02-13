@@ -1,12 +1,13 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { FlatList, Image, Text, View } from 'react-native';
+import { FlatList, ImageBackground, Text, View } from 'react-native';
 import * as Config from '../../config';
 import { LocalizationContext } from '../../LocalizationContext';
 import { StorySaveType, UserType } from "../../types";
 import SavedStory from '../SavedStory';
 import styles from "./styles";
+import storySaveSplash from "../../assets/images/storysavesplash.png";
 
 
 let url = Config.HOST
@@ -117,12 +118,9 @@ export default class StorySave extends Component<Props, State> {
   Header = () => {
     return (<View style={styles.storySaveHeader}>
       <View style={{ flex: 0.4 }}>
-        <Image
+        <ImageBackground
           style={styles.topImage}
-          source={{
-            uri:
-              "https://images.669pic.com/element_min_new_pic/22/30/24/59/e159482b59b7e920efe5a14140aaf28b.png",
-          }}
+          source={storySaveSplash}
         />
       </View>
       <View style={{ flex: 0.6 }}>
