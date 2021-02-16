@@ -36,3 +36,13 @@ The frontend was developed with React Native and TypeScript integrated with the 
 	[https://expo.io/--/to-exp/exp%3A%2F%2Fexp.host%2F%40jamesmcurrier%2FStorytellersApp](https://expo.io/--/to-exp/exp%3A%2F%2Fexp.host%2F%40jamesmcurrier%2FStorytellersApp)
 
 - A test version of the app should open on your phone
+
+## Screenshots
+<p float="left">
+  <img src="./ExampleImages/loginScreen.png" width="200" />
+  <img src="./ExampleImages/homeScreen.png" width="200" /> 
+  <img src="./ExampleImages/storysaveScreen.png" width="200" /> 
+  <img src="./ExampleImages/radioScreen.png" width="200" /> 
+</p>
+
+
