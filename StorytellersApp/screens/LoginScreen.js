@@ -222,7 +222,7 @@ export default class LoginScreen extends Component {
                         <Text style={styles.buttonText}> {this.context.t('loginAsGuest')}</Text>
                     </TouchableOpacity>
                 </View>
-                {this.context.locale === 'en' ? (
+                {/* {this.context.locale === 'en' ? (
                     <TouchableOpacity onPress={() => this.context.setLocale('fr')}>
                         <Text style={styles.languageChoice}>Français</Text>
                     </TouchableOpacity>
@@ -230,7 +230,7 @@ export default class LoginScreen extends Component {
                         <TouchableOpacity onPress={() => this.context.setLocale('en')}>
                             <Text style={styles.languageChoice}>English</Text>
                         </TouchableOpacity>
-                    )}
+                    )} */}
             </View>
         );
     }
