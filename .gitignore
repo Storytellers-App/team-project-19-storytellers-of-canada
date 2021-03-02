@@ -14,3 +14,5 @@ StorytellersAPI/Services/instance/config.py
 StorytellersAPI/Services/instance/__pycache__/
 
 StorytellersAPI/venv/
+
+tos/public/.idea/
