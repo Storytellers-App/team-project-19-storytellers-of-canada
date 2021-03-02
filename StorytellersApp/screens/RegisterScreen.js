@@ -4,6 +4,7 @@ import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import base64 from 'react-native-base64'
 import { LocalizationContext } from '../LocalizationContext';
+import * as WebBrowser from 'expo-web-browser';
 import * as Config from '../config';
 
 /**
@@ -21,6 +22,12 @@ class RegisterScreen extends Component {
         this.register = this.register.bind(this)
         this.host = Config.HOST
     }
+    openTOSPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     }
+    openPrivacyPolicyPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     }
 
     /**
      * Redirect to the login page
@@ -144,9 +151,9 @@ class RegisterScreen extends Component {
                     />
                     <Text style={{ marginTop: 15, textAlign: 'center' }}>{this.context.t('termsOfServiceMessage')}</Text>
                     <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                        <Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>{this.context.t('termsOfService')}</Text>
+                        <TouchableOpacity onPress={this.openTOSPage}><Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>{this.context.t('termsOfService')}</Text></TouchableOpacity>
                         <Text style={{ textAlign: 'center' }}> {this.context.t('and')} </Text>
-                        <Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>{this.context.t('privacyPolicy')}</Text>
+                        <TouchableOpacity onPress={this.openPrivacyPolicyPage}><Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>{this.context.t('privacyPolicy')}</Text></TouchableOpacity>
                     </View>
                 </View>
 

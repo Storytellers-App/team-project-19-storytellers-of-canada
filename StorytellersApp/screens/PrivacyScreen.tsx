@@ -16,6 +16,13 @@ export default function PrivacyScreen(props) {
     const openPrivacyPage = async () => {
        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/gdprportal/index.html');
     }
+    const openTOSPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     }
+     const openPrivacyPolicyPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     }
+    
     return (
         <View style={{ flex: 1 }}>
             <Appbar.Header style={{ backgroundColor: 'white' }}>
@@ -33,14 +40,14 @@ export default function PrivacyScreen(props) {
                     />
                 </TouchableHighlight>
                 <Headline style={{marginLeft: 10, marginVertical: 10}}>Legal</Headline>
-                <TouchableHighlight>
+                <TouchableHighlight onPress={openTOSPage}>
                     <Card.Title
                         title={t('viewTerms')}
                         style={{ backgroundColor: 'white' }}
                         left={(props) => <Icon size={props.size} name='security'></Icon>}
                     />
                 </TouchableHighlight>
-                <TouchableHighlight>
+                <TouchableHighlight onPress={openPrivacyPolicyPage}>
                     <Card.Title
                         title={t('viewPrivacy')}
                         style={{ backgroundColor: 'white' }}
