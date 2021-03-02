@@ -2,16 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://radioapp.storytellers-conteurs.ca/categories/</loc>
+    <loc>https://radioapp.storytellers-conteurs.ca/tos/categories/</loc>
   </url><url>
-    <loc>https://radioapp.storytellers-conteurs.ca/posts/</loc>
+    <loc>https://radioapp.storytellers-conteurs.ca/tos/posts/</loc>
   </url><url>
-    <loc>https://radioapp.storytellers-conteurs.ca/posts/privacypolicy/</loc>
+    <loc>https://radioapp.storytellers-conteurs.ca/tos/posts/privacypolicy/</loc>
   </url><url>
-    <loc>https://radioapp.storytellers-conteurs.ca/</loc>
+    <loc>https://radioapp.storytellers-conteurs.ca/tos/</loc>
   </url><url>
-    <loc>https://radioapp.storytellers-conteurs.ca/tags/</loc>
+    <loc>https://radioapp.storytellers-conteurs.ca/tos/tags/</loc>
   </url><url>
-    <loc>https://radioapp.storytellers-conteurs.ca/posts/tos/</loc>
+    <loc>https://radioapp.storytellers-conteurs.ca/tos/posts/tos/</loc>
   </url>
 </urlset>
