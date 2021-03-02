@@ -1,0 +1,7 @@
+baseURL = "https://radioapp.storytellers-conteurs.ca/"
+languageCode = "en-us"
+title = "Storytellers of Canada Disclaimers"
+theme = "etch"
+
+[params]
+  dark = "off"
