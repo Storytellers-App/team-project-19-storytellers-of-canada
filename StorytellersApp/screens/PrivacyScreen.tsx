@@ -17,10 +17,10 @@ export default function PrivacyScreen(props) {
        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/gdprportal/index.html');
     }
     const openTOSPage = async () => {
-        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/posts/tos.html');
      }
      const openPrivacyPolicyPage = async () => {
-        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/posts/privacypolicy.html');
      }
     
     return (

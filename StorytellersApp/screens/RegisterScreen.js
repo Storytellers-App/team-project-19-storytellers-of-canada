@@ -22,11 +22,11 @@ class RegisterScreen extends Component {
         this.register = this.register.bind(this)
         this.host = Config.HOST
     }
-    openTOSPage = async () => {
-        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     openTOSPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/posts/tos.html');
      }
-    openPrivacyPolicyPage = async () => {
-        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     openPrivacyPolicyPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/posts/privacypolicy.html');
      }
 
     /**
