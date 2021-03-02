@@ -3,7 +3,8 @@ import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import base64 from 'react-native-base64'
-
+import { LocalizationContext } from '../LocalizationContext';
+import * as WebBrowser from 'expo-web-browser';
 import * as Config from '../config';
 
 /**
@@ -14,17 +15,24 @@ class RegisterScreen extends Component {
     /**
      * Constructor
      */
+    static contextType = LocalizationContext;
     constructor() {
         super()
         this.state = { name: "", email: "", username: "", password: "", confirmedPassword: "" }
         this.register = this.register.bind(this)
         this.host = Config.HOST
     }
+    openTOSPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     }
+    openPrivacyPolicyPage = async () => {
+        WebBrowser.openBrowserAsync('https://radioapp.storytellers-conteurs.ca/tos/index.html');
+     }
 
     /**
      * Redirect to the login page
      */
-    goToLogin(){
+    goToLogin() {
         // Actions.LoginScreen();
         Actions.LoginScreen();
     }
@@ -34,7 +42,7 @@ class RegisterScreen extends Component {
      */
     goToEmailVerification() {
         console.log('Go to email verification');
-        Actions.EmailVerification({email: this.state.email, code: "", username: ""});
+        Actions.EmailVerification({ email: this.state.email, code: "", username: "" });
     }
 
     validateEmail(email) {
@@ -45,32 +53,32 @@ class RegisterScreen extends Component {
     /**
      * Register a Storytellers account
      */
-    register(){
-        if (this.state.name === "" || this.state.email === "" || this.state.username === "" || this.state.password === ""){
+    register() {
+        if (this.state.name === "" || this.state.email === "" || this.state.username === "" || this.state.password === "") {
             Alert.alert(
-                "Missing Registration Information",
-                "Please make sure you have entered information in all fields before trying to register."
+                this.context.t('missingRegistrationInfo'),
+                this.context.t('missingRegistrationInfo'),
             );
         } else {
             // Check if the passwords match
             if (this.state.password != this.state.confirmedPassword) {
-                Alert.alert("Passwords don't match");
+                Alert.alert(this.context.t('passwordMismatch'));
                 return;
             }
             // Validating email
-            if (!this.validateEmail(this.state.email)){
+            if (!this.validateEmail(this.state.email)) {
                 Alert.alert(
-                    "Invalid Email",
-                    "Please make sure you have entered a valid email before trying to register."
+                    this.context.t('invalidEmail'),
+                    this.context.t('makeSureValidEmailEntered'),
                 );
             } else {
                 console.log(this.host + `register?name=${this.state.name}&email=${this.state.email}`)
                 fetch(this.host + `register?name=${this.state.name}&email=${this.state.email}`, {
-                        method: 'POST',
-                        headers: new Headers({
-                            'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
-                        })
+                    method: 'POST',
+                    headers: new Headers({
+                        'Authorization': base64.encode(`${this.state.username}:${this.state.password}`)
                     })
+                })
                     .then(response => {
                         return response.json()
                     })
@@ -81,7 +89,7 @@ class RegisterScreen extends Component {
                             this.goToEmailVerification();
                         } else {
                             Alert.alert(
-                                "Invalid Registration Information"
+                                this.context.t('invalidRegistration')
                             )
                         }
                     })
@@ -91,63 +99,69 @@ class RegisterScreen extends Component {
                         )
                         console.error(error);
                     });
-            }           
-        }      
+            }
+        }
     }
-
     /**
-     * Render the registration screen
-     */
+        * Render the registration screen
+        */
     render() {
         return (
             <View style={styles.container}>
                 {/* Registration form */}
                 <View>
-                    <Text style={styles.title}>Create Your Storytellers Account</Text>
+                    <Text style={styles.title}>{this.context.t('createYourAccountMessage')}</Text>
                 </View>
                 <View>
                     <Input
                         style={styles.input}
-                        placeholder="Full Name"
+                        placeholder={this.context.t('fullName')}
                         onChangeText={(text) => this.setState({ name: text })}
                     />
                     <Input
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder={this.context.t('email')}
                         onChangeText={(text) => this.setState({ email: text })}
                     />
                     <Input
                         style={styles.input}
-                        placeholder="Username"
+                        placeholder={this.context.t('username')}
                         onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
                         secureTextEntry={true}
                         style={styles.input}
-                        placeholder="Password"
-                        autoCapitalize = 'none'
+                        placeholder={this.context.t('password')}
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
                     <Input
                         secureTextEntry={true}
                         style={styles.input}
-                        placeholder="Confirm Password"
-                        autoCapitalize = 'none'
+                        placeholder={this.context.t('confirmPassword')}
+                        autoCapitalize='none'
                         onChangeText={(text) => this.setState({ confirmedPassword: text })}
                     />
                 </View>
                 <View>
                     <Button
                         buttonStyle={styles.signUpButton}
-                        title="Register"
+                        title={this.context.t('register')}
                         onPress={this.register}
                     />
+                    <Text style={{ marginTop: 15, textAlign: 'center' }}>{this.context.t('termsOfServiceMessage')}</Text>
+                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+                        <TouchableOpacity onPress={this.openTOSPage}><Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>{this.context.t('termsOfService')}</Text></TouchableOpacity>
+                        <Text style={{ textAlign: 'center' }}> {this.context.t('and')} </Text>
+                        <TouchableOpacity onPress={this.openPrivacyPolicyPage}><Text style={{ textDecorationLine: 'underline', textAlign: 'center' }}>{this.context.t('privacyPolicy')}</Text></TouchableOpacity>
+                    </View>
                 </View>
+
                 {/* Option to return to the login screen */}
                 <View style={styles.loginButtonText}>
-                    <Text style={styles.text}>Already have an account?</Text>
+                    <Text style={styles.text}>{this.context.t('alreadyHaveAccount')}</Text>
                     <TouchableOpacity onPress={this.goToLogin}>
-                        <Text style={styles.buttonText}> Login</Text>
+                        <Text style={styles.buttonText}> {this.context.t('login')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { FlatList, ImageBackground, Text, View } from 'react-native';
 import * as Config from '../../config';
+import { LocalizationContext } from '../../LocalizationContext';
 import { StorySaveType, UserType } from "../../types";
 import SavedStory from '../SavedStory';
 import styles from "./styles";
@@ -23,7 +24,7 @@ type State = {
   sessionStart: string
 };
 export default class StorySave extends Component<Props, State> {
-
+  static contextType = LocalizationContext;
   private search: string;
   private user: UserType | null | undefined;
   private scrollRef: any;
@@ -123,7 +124,7 @@ export default class StorySave extends Component<Props, State> {
         />
       </View>
       <View style={{ flex: 0.6 }}>
-        <Text style={styles.storySaveTitle}>StorySave Collection</Text>
+        <Text style={styles.storySaveTitle}>{this.context.t('storySaveCollection')}</Text>
       </View>
     </View>
     );

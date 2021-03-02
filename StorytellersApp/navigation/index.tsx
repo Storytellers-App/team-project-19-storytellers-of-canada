@@ -8,6 +8,7 @@ import NewCommentScreen from '../screens/NewCommentScreen';
 import NewRecordingScreen from '../screens/NewRecordingScreen';
 import NewStoryScreen from '../screens/NewStoryScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
+import PrivacyScreen from '../screens/PrivacyScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import StoryResponseScreen from '../screens/StoryResponseScreen';
 import { currentStory, ResponseType, RootStackParamList, UserType } from '../types';
@@ -86,6 +87,7 @@ function RootNavigator({ userProp }: { userProp: UserType | undefined }) {
       <NavigationDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
         <NavigationDrawer.Screen name="Home" component={BaseNavigation} initialParams={{ user: userProp }} />
         <NavigationDrawer.Screen name="ProfilePage" component={ProfileScreen} />
+        <NavigationDrawer.Screen name="Privacy" component={PrivacyScreen} />
         <NavigationDrawer.Screen name="Login" component={LoginScreen} />
       </NavigationDrawer.Navigator>
     </UserContext.Provider>

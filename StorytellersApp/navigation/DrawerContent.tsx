@@ -10,9 +10,11 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { UserContext } from '../UserContext';
+import { LocalizationContext } from '../LocalizationContext';
+import ProfilePicture from '../components/ProfilePicture';
 
 export function DrawerContent(props) {
-
+    const { t, locale, setLocale } = React.useContext(LocalizationContext);
     const {user, setUser} = React.useContext(UserContext)
 
     // Signout function
@@ -31,10 +33,13 @@ export function DrawerContent(props) {
     } 
     const goToProfile = () => {
         if (user === undefined || user === null || user.username === "") {
-            Alert.alert("Please login to view profile information");
+            Alert.alert(t('pleaseLoginToViewProfile'));
             return;
         }
         props.navigation.navigate('ProfilePage') 
+    }
+    const goToPrivacy = () => {
+        props.navigation.navigate('Privacy') 
     }
     return (
         <View style={{ flex: 1 }}>
@@ -42,14 +47,9 @@ export function DrawerContent(props) {
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
                         <View style={{ marginTop: 15 }}>
-                            <Avatar.Image
-                                source={{
-                                    uri: user?.image === undefined || user?.image === null || user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + user?.name : user?.image
-                                }}
-                                size={120}
-                            />
+                            <ProfilePicture size={120} image={user?.image} name={user?.name}></ProfilePicture>
                             <View style={{ marginTop: 20 }}>
-                                <Title style={styles.title}>{user === undefined || user === null ? "Guest User" : user?.name}</Title>
+                                <Title style={styles.title}>{user === undefined || user === null ? t('guestUser') : user?.name}</Title>
                                 {user != null && user != undefined && <Caption style={styles.caption}>{user?.email}</Caption>}
                             </View>
                         </View>
@@ -63,7 +63,7 @@ export function DrawerContent(props) {
                                     size={size}
                                 />
                             )}
-                            label="Home"
+                            label={t('home')}
                             onPress={() => { props.navigation.navigate('Home') }}
                         />
                         <DrawerItem
@@ -74,8 +74,19 @@ export function DrawerContent(props) {
                                     size={size}
                                 />
                             )}
-                            label="Profile"
+                            label={t('profile')}
                             onPress={goToProfile}
+                        />
+                         <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="shield-lock-outline"
+                                    color={color}
+                                    size={size}
+                                />
+                            )}
+                            label={t('privacy')}
+                            onPress={goToPrivacy}
                         />
                     </Drawer.Section>
                 </View>
@@ -89,7 +100,7 @@ export function DrawerContent(props) {
                         size={size}
                         />
                     )}
-                    label="Sign Out"
+                    label={t('signOut')}
                     labelStyle = {{color:'red'}}
                     onPress={() => {signOut()}}
                 />

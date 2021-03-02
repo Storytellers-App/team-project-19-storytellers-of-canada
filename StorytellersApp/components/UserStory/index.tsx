@@ -1,43 +1,30 @@
-import * as React from 'react';
-import {
-    View,
-    TextInput,
-    Image,
-    ScrollView,
-    StyleSheet,
-    ScrollViewProps,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-} from 'react-native';
-import { useScrollToTop, useTheme } from '@react-navigation/native';
-import {
-    Card,
-    Text,
-    Avatar,
-    Subheading,
-    IconButton,
-    Divider,
-} from 'react-native-paper';
-import Colors from '../../constants/Colors';
-import useColorScheme from '../../hooks/useColorScheme';
-import ProfilePicture from '../ProfilePicture';
-import { Entypo } from '@expo/vector-icons';
-import styles from './styles';
-import moment from 'moment';
-import { UserStoryType, RootStackParamList, ResponseType, currentStory, UserType } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { memo, useContext, useState, useEffect } from 'react';
+import moment from 'moment';
+import * as React from 'react';
+import { memo } from 'react';
+import {
+    Image,
+    TouchableWithoutFeedback, View
+} from 'react-native';
+import {
+    Card,
+    Divider, Text
+} from 'react-native-paper';
+import useColorScheme from '../../hooks/useColorScheme';
+import { ResponseType, RootStackParamList, UserStoryType, UserType } from '../../types';
+import AdminFooter from '../AdminFooter';
 import AudioPlayer from '../AudioPlayer';
+import Footer from '../CardFooter';
+import ProfilePicture from '../ProfilePicture';
 import Tags from '../Tags';
+import styles from './styles';
 export type UserStoryProps = {
     story: UserStoryType,
     admin?: boolean,
     user: UserType | undefined | null,
     disableResponse?: boolean;
 }
-import Footer from '../CardFooter';
-import AdminFooter from '../AdminFooter';
 
 
 
@@ -62,7 +49,7 @@ function UserStory(props: UserStoryProps) {
             <TouchableWithoutFeedback disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.story.user.image === undefined || props.story.user.image === null || props.story.user.image === "" ? 'https://ui-avatars.com/api/?background=006699&color=fff&name=' + props.story.user.name : props.story.user.image} size={45} />
+                        <ProfilePicture image={props.story.user.image} size={45} name={props.story.user.name} />
                         <View style={{ flex: 1 }}>
 
                             <Text style={styles.titleStyle}

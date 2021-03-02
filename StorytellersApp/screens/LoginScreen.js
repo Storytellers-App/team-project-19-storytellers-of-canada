@@ -4,9 +4,8 @@ import { Input, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import * as SecureStore from 'expo-secure-store';
 import base64 from 'react-native-base64'
-
+import { LocalizationContext } from '../LocalizationContext';
 import * as Config from '../config';
-
 /**
  * Class for the login screen component
  */
@@ -14,12 +13,14 @@ export default class LoginScreen extends Component {
     /**
      * Constructor
      */
+    static contextType = LocalizationContext;
     constructor() {
         super()
         this.state = { username: "", password: "", name: "", email: "", authToken: "", type: "", renderScreen: false }
         this.login = this.login.bind(this)
         this.host = Config.HOST
         this.checkPrevLogin();
+
     }
 
     /**
@@ -64,8 +65,8 @@ export default class LoginScreen extends Component {
     }
 
     checkAuth = async (authToken) => {
-          // Submitting a login request
-          fetch(this.host + 'authTokenLogin', {
+        // Submitting a login request
+        fetch(this.host + 'authTokenLogin', {
             headers: new Headers({
                 'Authorization': authToken
             })
@@ -100,8 +101,8 @@ export default class LoginScreen extends Component {
 
         if (this.state.username === "" || this.state.password === "") {
             Alert.alert(
-                "Missing Login Information",
-                "Please make sure you have entered information in all fields before trying to login."
+                this.context.t('missingLogin'),
+                this.context.t('makeSureInfoEntered')
             );
         } else {
             // Submitting a login request
@@ -115,7 +116,6 @@ export default class LoginScreen extends Component {
                 })
                 .then(result => {
                     if (result["success"]) {
-                        console.log("Successful response")
                         // Setting app-wide info
                         this.state.authToken = result["authToken"]
                         this.state.name = result["name"]
@@ -126,15 +126,11 @@ export default class LoginScreen extends Component {
                         this.goToHome(user);
 
                     } else {
-                        console.log(result);
-                        console.log(result["active"]);
-                        console.log(!result["active"]);
-                        console.log(result["active"] === undefined);
                         if (result["active"] === undefined) {
                             // Invalid login information
                             Alert.alert(
-                                "Invalid Login Information",
-                                "Please make sure the username and password you enter is valid."
+                                this.context.t('invalidLogin'),
+                                this.context.t('makeSureUserValid')
                             )
                         } else {
                             // active is defined, check to see if inactive
@@ -171,6 +167,7 @@ export default class LoginScreen extends Component {
         if (!this.state.renderScreen) {
             return null;
         }
+
         return (
             <View style={styles.container}>
                 {/* Storytellers of Canada logo */}
@@ -182,19 +179,19 @@ export default class LoginScreen extends Component {
                 </View>
                 {/* Login form */}
                 <View>
-                    <Text style={styles.title}>Login to the Storytellers App</Text>
+                    <Text style={styles.title}>{this.context.t('loginMessage')}</Text>
                 </View>
                 <View>
                     <Input
                         style={styles.input}
-                        placeholder="Username"
+                        placeholder={this.context.t('username')}
                         autoCapitalize='none'
                         onChangeText={(text) => this.setState({ username: text })}
                     />
                     <Input
                         style={styles.input}
                         secureTextEntry={true}
-                        placeholder="Password"
+                        placeholder={this.context.t('password')}
                         autoCapitalize='none'
                         onChangeText={(text) => this.setState({ password: text })}
                     />
@@ -202,29 +199,38 @@ export default class LoginScreen extends Component {
                 <View>
                     <Button
                         buttonStyle={styles.signInButton}
-                        title="Sign In"
+                        title={this.context.t('signIn')}
                         onPress={this.login}
                     />
                     <Button
                         buttonStyle={styles.registerButton}
                         titleStyle={styles.registerText}
                         onPress={this.goToRegistration}
-                        title="Register a New Account"
+                        title={this.context.t('registerMessage')}
                         type="outline"
                     />
                 </View>
                 <View style={styles.guestButtonText}>
                     <TouchableOpacity onPress={this.goToForgotPassword}>
-                        <Text style={styles.buttonText}>Forgot password</Text>
+                        <Text style={styles.buttonText}>{this.context.t('forgotPassword')}</Text>
                     </TouchableOpacity>
                 </View>
                 {/* Option to enter the app as a guest */}
                 <View style={styles.guestButtonText}>
-                    <Text style={styles.text}>Don't want an account?</Text>
+                    <Text style={styles.text}>{this.context.t('dontWantAccount')}</Text>
                     <TouchableOpacity onPress={() => { this.goToHome() }}>
-                        <Text style={styles.buttonText}> Login as a Guest</Text>
+                        <Text style={styles.buttonText}> {this.context.t('loginAsGuest')}</Text>
                     </TouchableOpacity>
                 </View>
+                {/* {this.context.locale === 'en' ? (
+                    <TouchableOpacity onPress={() => this.context.setLocale('fr')}>
+                        <Text style={styles.languageChoice}>Français</Text>
+                    </TouchableOpacity>
+                ) : (
+                        <TouchableOpacity onPress={() => this.context.setLocale('en')}>
+                            <Text style={styles.languageChoice}>English</Text>
+                        </TouchableOpacity>
+                    )} */}
             </View>
         );
     }
@@ -287,4 +293,9 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         flexDirection: "row",
     },
+    languageChoice: {
+        color: 'black',
+        fontSize: 15,
+        alignSelf: 'center'
+    }
 });
