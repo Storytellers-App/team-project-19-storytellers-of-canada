@@ -23,7 +23,9 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app uses the microphone to let users record stories",
         "NSPhotoLibraryUsageDescription": "This app uses the media library to allow users to upload or download recorded stories"
-      }
+      },
+      "bundleIdentifier": "ca.storytellers-conteurs.storyshare",
+      "buildNumber": "1.0.1"
     },
     "android": {
       "permissions":["RECORD_AUDIO", "READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"],
