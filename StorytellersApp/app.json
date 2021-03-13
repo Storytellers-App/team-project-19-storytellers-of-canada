@@ -25,7 +25,7 @@
         "NSPhotoLibraryUsageDescription": "This app uses the media library to allow users to upload or download recorded stories"
       },
       "bundleIdentifier": "ca.storytellers-conteurs.storyshare",
-      "buildNumber": "1.0.1"
+      "buildNumber": "1.0.2"
     },
     "android": {
       "permissions":["RECORD_AUDIO", "READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"],
