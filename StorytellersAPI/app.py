@@ -23,6 +23,8 @@ from Resources.UpdatePasswordResource import UpdatePassword
 from Resources.UpdateImageResource import UpdateImage
 from Resources.PromoteUserResource import PromoteUser
 from Resources.DeactivateResource import Deactivate
+from Resources.BlockResource import BlockUser
+from Resources.BlockResource import UnBlockUser
 from Resources.AuthTokenLoginResource import AuthTokenLogin
 from Resources.GDPRResource import GDPRResource
 
@@ -81,6 +83,12 @@ api.add_resource(PromoteUser, '/promoteUser')
 
 # POST /deactivate
 api.add_resource(Deactivate, '/deactivate')
+
+# POST /block
+api.add_resource(BlockUser, '/block')
+
+# POST /unblock
+api.add_resource(UnBlockUser, '/unblock')
 
 if __name__ == '__main__':
     # host = ''  # ip host address

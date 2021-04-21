@@ -7,6 +7,7 @@ import {
     Image,
     TouchableWithoutFeedback, View
 } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import {
     Card,
     Divider, Text
@@ -33,6 +34,9 @@ function UserStory(props: UserStoryProps) {
     const responseScreen = (header: ResponseType) => {
         navigation.push("StoryResponse", { 'header': header });
     }
+    const goToUserScreen = (user: UserType) => {
+        navigation.push("UserScreen", {'user': user})
+    }
     const Controls = () => {
         if (props.admin == true) {
             return <AdminFooter story={props.story} user={props.user}></AdminFooter>;
@@ -49,7 +53,9 @@ function UserStory(props: UserStoryProps) {
             <TouchableWithoutFeedback disabled={props.disableResponse == true ? props.disableResponse : false} onPress={() => { responseScreen(props.story) }}>
                 <View>
                     <View style={[styles.row, styles.attribution,]}>
-                        <ProfilePicture image={props.story.user.image} size={45} name={props.story.user.name} />
+                        <TouchableOpacity onPressIn={() => goToUserScreen(props.story.user)}>
+                            <ProfilePicture image={props.story.user.image} size={45} name={props.story.user.name} />
+                        </TouchableOpacity>
                         <View style={{ flex: 1 }}>
 
                             <Text style={styles.titleStyle}

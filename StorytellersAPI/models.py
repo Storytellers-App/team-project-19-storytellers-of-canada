@@ -71,3 +71,9 @@ class Like(db.Model):
     username = db.Column(db.String(255), primary_key=True)
     postType = db.Column(db.String(455), primary_key=True,
                          default=StoryType.USER.value)
+
+
+class BlockedUser(db.Model):
+    __tablename__ = 'BlockedUsers'
+    username = db.Column(db.String(255), primary_key=True)
+    blockedUser = db.Column(db.String(255), primary_key=True)

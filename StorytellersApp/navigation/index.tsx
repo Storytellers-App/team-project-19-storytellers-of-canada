@@ -10,6 +10,7 @@ import NewStoryScreen from '../screens/NewStoryScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import PrivacyScreen from '../screens/PrivacyScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import UserScreen from '../screens/UserScreen';
 import StoryResponseScreen from '../screens/StoryResponseScreen';
 import { currentStory, ResponseType, RootStackParamList, UserType } from '../types';
 import { UserContext } from '../UserContext';
@@ -70,6 +71,7 @@ function BaseNavigation({ navigation, route }) {
         <Stack.Screen name="NewStory" component={NewStoryScreen} />
         <Stack.Screen name="StoryResponse" component={StoryResponseScreen} />
         <Stack.Screen name="NewComment" component={NewCommentScreen} />
+        <Stack.Screen name="UserScreen" component={UserScreen} />
         <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       </Stack.Navigator>
     </AppContext.Provider>

@@ -1,7 +1,7 @@
-import { CommonActions } from "@react-navigation/native";
-import React from "react";
+import { CommonActions, useFocusEffect } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import {
-  Alert, ImageBackground, Platform, StyleSheet, View
+  Alert, ImageBackground, Platform, StyleSheet, TouchableOpacity, View
 } from "react-native";
 import base64 from "react-native-base64";
 import { Button as UpdateButton, Input } from "react-native-elements";
@@ -13,7 +13,8 @@ import {
   IconButton,
   Modal,
   Paragraph,
-  Portal, Text, Title
+  Portal, Text, Title,
+  List
 } from "react-native-paper";
 import * as Config from "../config";
 import { UserType } from "../types";
@@ -25,6 +26,7 @@ import booksImage from "../assets/images/books.jpeg";
 
 import { LocalizationContext } from "../LocalizationContext";
 import ProfilePicture from "../components/ProfilePicture";
+import axios from 'axios';
 
 
 export default function ProfileScreen(props) {
@@ -40,6 +42,39 @@ export default function ProfileScreen(props) {
   const [showConfirmModal, setConfirmModal] = React.useState(false);
   const [showConfirmPicDelete, setShowConfirmPicDelete] = React.useState(false);
   const [name, setName] = React.useState("");
+  const [blockedUsers, setBlockedUsers] = useState<UserType[]>([]);
+  const navigation = props.navigation
+  
+  const goToUserScreen = (user: UserType) => {
+    navigation.navigate("UserScreen", {'user': user, 'blocked': true})
+}
+  const getBlockedUsers = async () => {
+
+    if (user === undefined || user === null) {
+      return;
+    }
+
+    try {
+      axios.get(Config.HOST + 'block', {
+        params: {
+          auth_token: user.authToken,
+        }
+      })
+        .then(response => {
+          setBlockedUsers(response.data as UserType[]);
+        })
+        .catch((error) => {
+          console.error();
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+
+  useFocusEffect(() => {
+    getBlockedUsers();
+  })
 
   // Updating the name in the backend
   const updateName = () => {
@@ -695,6 +730,19 @@ export default function ProfileScreen(props) {
               <Text style={styles.info}>{user?.username}</Text>
             </View>
           </View>
+          <View style={{ marginBottom: 25 }}>
+            <List.Accordion
+              title="Blocked Users"
+              left={props => <List.Icon {...props} icon="block-helper" />}
+            >
+               {blockedUsers.map((user) => {
+                  return <TouchableOpacity key={user.username} onPress={() => goToUserScreen(user) }><List.Item key={user.username} title={user.name} description={user.username} left={(props : any) =>  
+                  <ProfilePicture key={user.username} image={user.image} size={45} name={user.name} />
+                }/>
+                </TouchableOpacity>})}
+            </List.Accordion>
+
+          </View>
           <View style={styles.buttons}>
             <Button
               style={{ marginBottom: 5 }}
@@ -728,6 +776,7 @@ export default function ProfileScreen(props) {
               {t('deactivateAccount')}
             </Button>
           </View>
+
         </View>
       </View>
     </ScrollView>
@@ -738,7 +787,6 @@ const styles = StyleSheet.create({
   userInfoSection: {
     marginLeft: 25,
     marginTop: 25,
-    marginBottom: 25,
   },
   modal: {
     backgroundColor: "white",

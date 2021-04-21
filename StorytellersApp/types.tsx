@@ -8,6 +8,10 @@ export type RootStackParamList = {
     parent?: ResponseType,
     user: UserType,
   };
+  UserScreen: {
+    user: UserType,
+    blocked?: boolean
+  };
   NotFound: undefined;
   NewRecording: { parent?: ResponseType, user: UserType};
   NewStory: { recording: string | null, user: UserType, parent?: ResponseType };
