@@ -4,12 +4,13 @@ import moment from "moment";
 import * as React from "react";
 import { memo } from "react";
 import {
+  Alert,
   Image,
   TouchableWithoutFeedback, View
 } from "react-native";
 import {
   Card,
-  Divider, Text
+  Divider, IconButton, Menu, Text
 } from "react-native-paper";
 import useColorScheme from "../../hooks/useColorScheme";
 import { ResponseType, RootStackParamList, StorySaveType, UserType } from "../../types";
@@ -17,7 +18,10 @@ import AdminFooter from "../AdminFooter";
 import AudioPlayer from "../AudioPlayer";
 import Footer from "../CardFooter";
 import Tags from "../Tags";
+import { LocalizationContext } from '../../LocalizationContext';
 import styles from "./styles";
+import axios from "axios";
+import { HOST } from '../../config';
 export type StoredStoryProps = {
   story: StorySaveType;
   admin?: boolean;
@@ -30,6 +34,7 @@ function SavedStory(props: StoredStoryProps) {
   const responseScreen = (header: ResponseType) => {
     navigation.push("StoryResponse", { header: header });
   };
+  const { t, locale, setLocale } = React.useContext(LocalizationContext);
   const colorScheme = useColorScheme();
   const Controls = () => {
     if (props.admin == true) {
@@ -37,6 +42,34 @@ function SavedStory(props: StoredStoryProps) {
     }
     else {
       return <Footer story={props.story} user={props.user} ></Footer>;
+    }
+  }
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
+  const submitFlag = async () => {
+    try {
+      setLoading(true);
+
+      axios({
+        method: 'post', url: HOST + 'flag', data: {
+          id: props.story.id,
+          type: props.story.type,
+          auth_token: props.user?.authToken,
+        }
+      })
+        .then(response => {
+          setLoading(false);
+          setMenuOpen(false);
+          Alert.alert(t('flagSentForReview'));
+        })
+        .catch((error) => {
+          console.error(error);
+          setLoading(false);
+          setMenuOpen(false);
+        });
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
     }
   }
   return (
@@ -59,6 +92,15 @@ function SavedStory(props: StoredStoryProps) {
                   {moment(props.story.creationTime).fromNow()}
                 </Text>
               </View>
+            </View>
+
+            <View style={{ marginRight: -15 }}>
+              <Menu
+                visible={menuOpen}
+                onDismiss={() => setMenuOpen(false)}
+                anchor={<IconButton size={23} icon="dots-vertical" onPress={() => setMenuOpen(true)} />}>
+                <Menu.Item icon='flag' onPress={() => submitFlag()} title="Flag Post" />
+              </Menu>
             </View>
 
           </View>

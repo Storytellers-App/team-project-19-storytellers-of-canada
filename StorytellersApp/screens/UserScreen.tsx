@@ -64,12 +64,12 @@ export default function UserScreen({ route, navigation }: Props) {
         .catch((error) => {
           console.error(error);
           setIsLoading(false);
-          Alert.alert('somethingWentWrong');
+          Alert.alert(t('somethingWentWrong'));
         });
     } catch (e) {
       console.log(e);
       setIsLoading(false);
-      Alert.alert('somethingWentWrong');
+      Alert.alert(t('somethingWentWrong'));
     }
     }
     if(blocked){

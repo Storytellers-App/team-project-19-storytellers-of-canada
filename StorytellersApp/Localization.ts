@@ -58,6 +58,7 @@ export const en = {
     deleteConfirmation: 'Are you sure that you want to delete this story?',
     cancel: 'Cancel',
     yes: 'Yes',
+    flagSentForReview: 'This post has been sent to the admins for review',
 
     //ResponseScreen
     responses: 'Responses',

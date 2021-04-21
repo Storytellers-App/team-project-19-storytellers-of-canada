@@ -10,6 +10,7 @@ from sqlalchemy.exc import *
 from sqlalchemy import func
 from datetime import datetime
 from common.Enums import StoryType, UserType
+from sqlalchemy import or_
 
 user_fields = {
     'username': fields.String,
@@ -32,6 +33,7 @@ userstory_fields = {
     'tags': fields.List(fields.String),
     'type': fields.String,
     'isLiked': fields.Boolean,
+    'reported': fields.Boolean
 }
 storysave_fields = {
     'id': fields.Integer,
@@ -46,6 +48,7 @@ storysave_fields = {
     'tags': fields.List(fields.String),
     'type': fields.String,
     'isLiked': fields.Boolean,
+    'reported': fields.Boolean
 }
 
 comment_fields = {
@@ -59,6 +62,7 @@ comment_fields = {
     'numReplies': fields.Integer,
     'type': fields.String,
     'isLiked': fields.Boolean,
+    'reported': fields.Boolean
 }
 
 
@@ -115,6 +119,7 @@ class Admin(Resource):
                                                 sqlalchemy.sql.null().label(
                                                     'comment'),
                                                 Story.deleted.label('deleted'),
+                                                Story.reported.label('reported'),
                                                 )
 
             comments = Comment.query.with_entities(Comment.id.label('id'),
@@ -149,6 +154,8 @@ class Admin(Resource):
                                                        'comment'),
                                                    Comment.deleted.label(
                                                        'deleted'),
+                                                   Comment.reported.label(
+                                                       'reported'),
                                                    )
 
             both = stories.union(comments).subquery()
@@ -170,10 +177,11 @@ class Admin(Resource):
                                                              both.c.image,
                                                              both.c.numLikes,
                                                              both.c.numReplies,
+                                                             both.c.reported,
                                                              both.c.approvedTime).outerjoin(
                 User, User.username == both.c.username).order_by(
-                both.c.creationTime.desc(), both.c.id.desc()).filter(
-                both.c.approved.is_(False)).filter(
+                both.c.creationTime.desc(), both.c.id.desc()).filter((
+                both.c.approved.is_(False) | both.c.reported.is_(True))).filter(
                 both.c.creationTime < time).filter(
                 both.c.deleted.is_(False)).paginate(
                 args['page'], args['per_page'], False).items
@@ -198,7 +206,8 @@ class Admin(Resource):
                     'comment': response.comment,
                     'type': response.type,
                     'isLiked': False,
-                    'tags': [tag.tag for tag in tags]
+                    'tags': [tag.tag for tag in tags],
+                    'reported': response.reported,
                 }
                 if response.type == StoryType.USER.value:
                     marshal_list.append(
@@ -252,11 +261,14 @@ class Admin(Resource):
             if args['approved']:
                 if parent is not None and not post.approved:
                     parent.numReplies += 1
-                post.approved = args['approved']
-                post.approvedTime = func.now()
+                if not post.approved:
+                    post.approved = args['approved']
+                    post.approvedTime = func.now()
+                post.reported = False
             else:
                 post.approved = None
                 post.approvedTime = None
+                post.reported = False
             db.session.commit()
         except SQLAlchemyError as e:
             abort(HTTPStatus.BAD_REQUEST, message=str(e.__dict__['orig']))
