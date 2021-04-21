@@ -38,6 +38,7 @@ export default function ProfileScreen(props) {
   const [showEmailModal, setEmailModal] = React.useState(false);
   const [showPasswordModal, setPasswordModal] = React.useState(false);
   const [showAdminModal, setAdminModal] = React.useState(false);
+  const [showBanModal, setBanModal] = React.useState(false);
   const [showDeactivateModal, setDeactivateModal] = React.useState(false);
   const [showConfirmModal, setConfirmModal] = React.useState(false);
   const [showConfirmPicDelete, setShowConfirmPicDelete] = React.useState(false);
@@ -283,6 +284,65 @@ export default function ProfileScreen(props) {
         });
     }
   };
+
+  const [banUsername, setBan] = React.useState("");
+  const [confirmBanUsername, setConfirmBan] = React.useState("");
+
+  // Updating the email in the backend
+  const banUser = () => {
+    // Checking if the emails are the same
+    if (!(banUsername === confirmBanUsername)) {
+      Alert.alert(
+        t('invalidUsernameEntry'),
+        t('makeSureUsernameSame')
+      );
+    } else {
+      fetch(Config.HOST + `removeUser?username=${banUsername}`, {
+        method: "POST",
+        headers: new Headers({
+          Authorization: `${user?.authToken}`,
+        }),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          if (result["success"]) {
+            console.log("Successful response");
+            Alert.alert(
+              t('userBanSuccess'),
+              t('bannedMessage')
+            );
+          } else {
+            if (result["error"] == "NOTADMIN") {
+              Alert.alert(
+                t('userBanFail'),
+                t('mustBeAdmin')
+              );
+            } else if (result["error"] == "NOAUTH") {
+              Alert.alert(
+                t('userBanFail'),
+                t('mustBeAuth')
+              );
+            } else if (result["error"] == "NOUSER") {
+              Alert.alert(
+                t('userBanFail'),
+                t('userNotFound')
+              );
+            }
+          }
+        })
+        .then(() => {
+          setBanModal(false);
+          props.navigation.navigate("ProfilePage");
+        })
+        .catch((error) => {
+          Alert.alert("Connection Error");
+          console.error(error);
+        });
+    }
+  };
+
 
   const [deactivatePassword, setDeactivatePassword] = React.useState("");
 
@@ -581,6 +641,42 @@ export default function ProfileScreen(props) {
         </Portal>
         <Portal>
           <Modal
+            contentContainerStyle={styles.passwordModal}
+            visible={showBanModal}
+            onDismiss={() => {
+              setBanModal(false);
+            }}
+          >
+            <View style={{ alignItems: "center", padding: 20 }}>
+              <Title>{t('banUserModal')}</Title>
+              <Input
+                style={{ fontSize: 16, marginTop: 30 }}
+                placeholder={t('banUsername')}
+                autoCapitalize="none"
+                onChangeText={(text) => {
+                  setBan(text);
+                }}
+              />
+              <Input
+                style={{ fontSize: 16 }}
+                placeholder={t('confirmUsername')}
+                autoCapitalize="none"
+                onChangeText={(text) => {
+                  setConfirmBan(text);
+                }}
+              />
+            </View>
+            <UpdateButton
+              buttonStyle={styles.button}
+              title={t('ban')}
+              onPress={() => {
+                banUser();
+              }}
+            />
+          </Modal>
+        </Portal>
+        <Portal>
+          <Modal
             contentContainerStyle={styles.modal}
             visible={showDeactivateModal}
             onDismiss={() => {
@@ -755,6 +851,7 @@ export default function ProfileScreen(props) {
               {t('changePassword')}
             </Button>
             {user?.type == "ADMIN" && (
+              <View>
               <Button
                 style={{ marginBottom: 5 }}
                 labelStyle={{ fontSize: 16, color: "#008534" }}
@@ -765,6 +862,17 @@ export default function ProfileScreen(props) {
               >
                 {t('elevateUserToAdmin')}
               </Button>
+              <Button
+              style={{ marginBottom: 5 }}
+              labelStyle={{ fontSize: 16, color: "#ab0202" }}
+              icon="close-circle"
+              onPress={() => {
+                setBanModal(true);
+              }}
+            >
+              {t('banUserModal')}
+            </Button>
+            </View>
             )}
             <Button
               labelStyle={{ fontSize: 16, color: "#ab0202" }}

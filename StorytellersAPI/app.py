@@ -27,6 +27,7 @@ from Resources.BlockResource import BlockUser
 from Resources.BlockResource import UnBlockUser
 from Resources.AuthTokenLoginResource import AuthTokenLogin
 from Resources.GDPRResource import GDPRResource
+from Resources.RemoveUserResource import RemoveUser
 
 
 # test database
@@ -80,6 +81,9 @@ api.add_resource(UpdateImage, '/updateImage')
 
 # Promote user to Admin
 api.add_resource(PromoteUser, '/promoteUser')
+
+# Remove user
+api.add_resource(RemoveUser, '/removeUser')
 
 # POST /deactivate
 api.add_resource(Deactivate, '/deactivate')
