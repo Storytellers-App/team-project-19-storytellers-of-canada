@@ -1,1 +1,1 @@
-export const HOST = "http://0.0.0.0:5000/"
+export const HOST = "https://radioapp.storytellers-conteurs.ca/"

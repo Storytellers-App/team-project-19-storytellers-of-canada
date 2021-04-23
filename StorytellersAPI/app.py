@@ -30,7 +30,6 @@ from Resources.AuthTokenLoginResource import AuthTokenLogin
 from Resources.GDPRResource import GDPRResource
 from Resources.RemoveUserResource import RemoveUser
 
-
 # test database
 from Resources.TestResource import TestDB
 
@@ -43,6 +42,11 @@ db.init_app(app)
 @app.route('/gdprportal/<path:path>')
 def send_js(path):
     return send_from_directory('../gdprportal/build', path)
+
+
+@app.route('/tos/<path:path>')
+def send_tos(path):
+    return send_from_directory('../tos/public', path)
 
 
 # gunicorn logging
