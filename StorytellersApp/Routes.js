@@ -11,6 +11,7 @@ import NewStoryScreen from './screens/NewStoryScreen';
 import EmailVerification from './screens/EmailVerification';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
+import UserScreen from './screens/UserScreen';
 
 /**
  * Class for routing between components/screens

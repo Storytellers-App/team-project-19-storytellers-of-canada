@@ -8,6 +8,10 @@ export type RootStackParamList = {
     parent?: ResponseType,
     user: UserType,
   };
+  UserScreen: {
+    user: UserType,
+    blocked?: boolean
+  };
   NotFound: undefined;
   NewRecording: { parent?: ResponseType, user: UserType};
   NewStory: { recording: string | null, user: UserType, parent?: ResponseType };
@@ -61,6 +65,7 @@ export type StorySaveType = {
   image?: string,
   isLiked?: boolean,
   user: UserType,
+  reported?: boolean
 }
 
 export type UserStoryType = {
@@ -79,6 +84,7 @@ export type UserStoryType = {
   type: string,
   image?: string,
   isLiked?: boolean,
+  reported?: boolean
 };
 
 export type CommentType = {
@@ -93,6 +99,7 @@ export type CommentType = {
   type: string,
   comment: string,
   isLiked?: boolean,
+  reported?: boolean
 };
 
 export type StoryType = UserStoryType | StorySaveType;

@@ -40,6 +40,7 @@ class Story(db.Model):
     numReplies = db.Column(db.Integer)
     approvedTime = db.Column(db.DateTime)
     deleted = db.Column(db.Boolean, nullable=False, default=False)
+    reported = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Tag(db.Model):
@@ -63,6 +64,7 @@ class Comment(db.Model):
     numReplies = db.Column(db.Integer, default=0)
     approvedTime = db.Column(db.DateTime)
     deleted = db.Column(db.Boolean, nullable=False, default=False)
+    reported = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Like(db.Model):
@@ -71,3 +73,9 @@ class Like(db.Model):
     username = db.Column(db.String(255), primary_key=True)
     postType = db.Column(db.String(455), primary_key=True,
                          default=StoryType.USER.value)
+
+
+class BlockedUser(db.Model):
+    __tablename__ = 'BlockedUsers'
+    username = db.Column(db.String(255), primary_key=True)
+    blockedUser = db.Column(db.String(255), primary_key=True)

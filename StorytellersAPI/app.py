@@ -23,8 +23,12 @@ from Resources.UpdatePasswordResource import UpdatePassword
 from Resources.UpdateImageResource import UpdateImage
 from Resources.PromoteUserResource import PromoteUser
 from Resources.DeactivateResource import Deactivate
+from Resources.BlockResource import BlockUser
+from Resources.BlockResource import UnBlockUser
+from Resources.FlagResource import Flag
 from Resources.AuthTokenLoginResource import AuthTokenLogin
 from Resources.GDPRResource import GDPRResource
+from Resources.RemoveUserResource import RemoveUser
 
 # test database
 from Resources.TestResource import TestDB
@@ -83,8 +87,20 @@ api.add_resource(UpdateImage, '/updateImage')
 # Promote user to Admin
 api.add_resource(PromoteUser, '/promoteUser')
 
+# Remove user
+api.add_resource(RemoveUser, '/removeUser')
+
 # POST /deactivate
 api.add_resource(Deactivate, '/deactivate')
+
+# POST /block
+api.add_resource(BlockUser, '/block')
+
+# POST /unblock
+api.add_resource(UnBlockUser, '/unblock')
+
+# POST /flag
+api.add_resource(Flag, '/flag')
 
 if __name__ == '__main__':
     # host = ''  # ip host address

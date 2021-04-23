@@ -8,7 +8,7 @@ from sqlalchemy.exc import *
 
 from Services.S3StoryService import *
 from common.Enums import StoryType
-from models import Comment, Like, User
+from models import Comment, Like, User, BlockedUser
 
 user_fields = {
     "username": fields.String,
@@ -171,6 +171,7 @@ class Stories(Resource):
             time = story_args["time"]
         if time is None:
             time = func.now()
+
         try:
             query = (
                 Story.query.with_entities(
@@ -231,10 +232,14 @@ class Stories(Resource):
                 ).join(matched_tags, Story.id == matched_tags.c.storyid)
                 query = matched_stories.union(joined).order_by(Story.creationTime.desc(), Story.id.desc())
                 pass
-
+            if "username" in story_args and story_args["username"] is not None:
+                blockedUsers = BlockedUser.query.with_entities(BlockedUser.blockedUser).filter_by(username=story_args["username"]).all()
+                blockedUsers = [blocked[0] for blocked in blockedUsers]
+                query = query.filter(Story.username.notin_(blockedUsers))
             stories = query.paginate(
-                story_args["page"], story_args["per_page"], False
+            story_args["page"], story_args["per_page"], False
             ).items
+
 
             marshal_list = []
             for story in stories:
@@ -300,6 +305,12 @@ class Responses(Resource):
         if time is None:
             time = func.now()
         try:
+            blockedUsers = None
+            if "username" in args and args["username"] is not None:
+                blockedUsers = BlockedUser.query.with_entities(
+                    BlockedUser.blockedUser).filter_by(
+                    username=args["username"]).all()
+                blockedUsers = [blocked[0] for blocked in blockedUsers]
             stories = Story.query.with_entities(
                 Story.id.label("id"),
                 Story.username.label("username"),
@@ -319,6 +330,10 @@ class Responses(Resource):
                 Story.deleted.label("deleted"),
                 sqlalchemy.sql.null().label("comment"),
             )
+            if blockedUsers is not None:
+                stories = stories.filter(Story.username.notin_(blockedUsers))
+
+
             comments = Comment.query.with_entities(
                 Comment.id.label("id"),
                 Comment.username.label("username"),
@@ -338,6 +353,8 @@ class Responses(Resource):
                 Comment.deleted.label("deleted"),
                 Comment.comment.label("comment"),
             )
+            if blockedUsers is not None:
+                comments = comments.filter(Comment.username.notin_(blockedUsers))
 
             both = stories.union(comments).subquery()
 
