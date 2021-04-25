@@ -1,7 +1,8 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Sound } from "expo-av/build/Audio/Sound";
+import { Audio } from 'expo-av';
 import React, { useContext, useEffect, useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import TextTicker from 'react-native-text-ticker';
@@ -12,16 +13,31 @@ import styles from './styles';
 
 let loading = true;
 let closed = true;
+function StopAudio({ sound }: { sound: Audio.Sound | null }) {
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        if (sound && sound?._loaded && closed) {
+          sound?.stopAsync()
+        }
+      };
+    }, [sound])
+  );
+  return null;
+}
 const BottomPlayer = () => {
   const [sound, setSound] = useState<Sound | null>(null);
+ 
   const [duration, setDuration] = useState<number | null>(null);
   const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
   const [replay, setIsReplay] = useState<boolean>(false);
 
   const { fullStoryType, story, setStory, position, setPosition, isPlaying, setIsPlaying, isSeekingComplete, setIsSeekingComplete, isRadioPlaying } = useContext(AppContext);
-
+  
 
   const onPlaybackStatusUpdate = (status) => {
+    if(!closed){
+    try{
     setSoundPlaying(status.isPlaying);
     setDuration(status.durationMillis);
     setPosition(status.positionMillis);
@@ -30,8 +46,14 @@ const BottomPlayer = () => {
       setIsPlaying(false);
     }
   }
+  catch (error){
+    console.log(error)
+  };
+}
+  }
 
   const playCurrentSong = async () => {
+    
     loading = true;
     if (sound) {
       await sound.pauseAsync();
@@ -57,6 +79,17 @@ const BottomPlayer = () => {
     }
   }, [story])
 
+  
+
+  useEffect(()=> {
+    Audio.setAudioModeAsync({
+      playsInSilentModeIOS : true
+    })
+    return () => {
+      closed = true
+    }
+  }, [])
+
   useEffect(() => {
     if (isPlaying != soundPlaying) {
       toggleAudio();
@@ -71,6 +104,7 @@ const BottomPlayer = () => {
   }), [isSeekingComplete]
 
   const toggleAudio = async () => {
+    
     if (!sound || loading) {
       return;
     }
@@ -110,6 +144,7 @@ const BottomPlayer = () => {
   }
   return (
     <TouchableOpacity onPress={() => { responseScreen(fullStoryType) }}>
+      <StopAudio sound={sound}></StopAudio>
       <View style={styles.container}>
         <View style={[styles.progress, { width: `${getProgress()}%` }]} />
         <View style={styles.row}>

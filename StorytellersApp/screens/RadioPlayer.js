@@ -76,6 +76,9 @@ export default class RadioPlayer extends React.Component {
     }
     componentWillUnmount() {
         this.mounted = false;
+        if(this.state.sound){
+            this.state.sound.stopAsync();
+        }
         clearInterval(this.timer);
     }
 

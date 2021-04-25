@@ -232,7 +232,7 @@ class Stories(Resource):
                 ).join(matched_tags, Story.id == matched_tags.c.storyid)
                 query = matched_stories.union(joined).order_by(Story.creationTime.desc(), Story.id.desc())
                 pass
-            if "username" in story_args and story_args["username"] is not None:
+            if "username" in story_args and story_args["username"] is not None and story_args["type"] == StoryType.USER.value:
                 blockedUsers = BlockedUser.query.with_entities(BlockedUser.blockedUser).filter_by(username=story_args["username"]).all()
                 blockedUsers = [blocked[0] for blocked in blockedUsers]
                 query = query.filter(Story.username.notin_(blockedUsers))
@@ -330,7 +330,7 @@ class Responses(Resource):
                 Story.deleted.label("deleted"),
                 sqlalchemy.sql.null().label("comment"),
             )
-            if blockedUsers is not None:
+            if blockedUsers is not None and args["type"] == StoryType.USER.value:
                 stories = stories.filter(Story.username.notin_(blockedUsers))
 
 
