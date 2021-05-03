@@ -9,33 +9,13 @@ The frontend was developed with React Native and TypeScript integrated with the 
 ## Instructions
 ### Getting the app on your phone
 
-#### <ins>Alpha Version:</ins>
-
-- We are currently in the process of coordinating the deployment of this application to the Apple App Store and Google Play Store. In the meantime, our appliction can be accessed using Expo.
-
 **On Android:**
 
-- Ensure you have the Expo app downloaded on your phone
-
-	([https://play.google.com/store/apps/details?id=host.exp.exponent](https://play.google.com/store/apps/details?id=host.exp.exponent))
-
-- Open the following link on your phone
-
-	[https://expo.io/--/to-exp/exp%3A%2F%2Fexp.host%2F%40jamesmcurrier%2FStorytellersApp](https://expo.io/--/to-exp/exp%3A%2F%2Fexp.host%2F%40jamesmcurrier%2FStorytellersApp)
-
-- A test version of the app should open on your phone
+[https://play.google.com/store/apps/details?id=com.StoryTellers.StoryTellersApplication](https://play.google.com/store/apps/details?id=com.StoryTellers.StoryTellersApplication)
 
 **On iOS:**
 
-- Ensure you have the Expo Client app downloaded on your phone
-
-	([https://itunes.com/apps/exponent](https://play.google.com/store/apps/details?id=host.exp.exponent))
-
-- Open the following link on your phone
-
-	[https://expo.io/--/to-exp/exp%3A%2F%2Fexp.host%2F%40jamesmcurrier%2FStorytellersApp](https://expo.io/--/to-exp/exp%3A%2F%2Fexp.host%2F%40jamesmcurrier%2FStorytellersApp)
-
-- A test version of the app should open on your phone
+[https://apps.apple.com/us/app/storytellers-of-canada/id1553962744](https://apps.apple.com/us/app/storytellers-of-canada/id1553962744)
 
 ## Screenshots
 <p float="left">
